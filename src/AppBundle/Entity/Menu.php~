@@ -1,0 +1,89 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\ExclusionPolicy,
+    JMS\Serializer\Annotation\Expose,
+    JMS\Serializer\Annotation\SerializedName;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+
+/**
+ * Menu
+ *
+ * @ORM\Table(name="menu")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\MenuRepository")
+ * @ExclusionPolicy("all")
+ * @UniqueEntity(fields="nom", message="Ce nom existe déjà.")
+ */
+class Menu
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="guid")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @Expose()
+     */
+    private $id;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="prix", type="float")
+     * @Expose()
+     */
+    private $prix;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Restaurant")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="Veuillez selectionner un restaurant")
+     */
+    private $restaurant;
+    /**
+     * @ORM\ManyToOne(targetEntity="Plat")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="Veuillez selectionner un plat")
+     */
+    private $plat;
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set prix
+     *
+     * @param float $prix
+     *
+     * @return Menu
+     */
+    public function setPrix($prix)
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * Get prix
+     *
+     * @return float
+     */
+    public function getPrix()
+    {
+        return $this->prix;
+    }
+}
+
