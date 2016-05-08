@@ -19,5 +19,10 @@ parameters:
     jwt_public_key_path:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
     jwt_key_pass_phrase:  ''                                      # ssh key pass phrase
     jwt_token_ttl:        86400
+
+    neema_upload_plat_directory : %kernel.root_dir%/../web/images/plats
+    neema_upload_restaurant_directory : %kernel.root_dir%/../web/images/restaurants
+
+    jwt_token_ttl:        86400
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt

@@ -82,6 +82,12 @@ class Restaurant
      */
     private $quartier;
 
+    /**
+     * @ORM\OneToMany(targetEntity="ImageRestaurant",mappedBy="restaurant")
+     * @Expose()
+     */
+    private $images;
+
 
     /**
      * Get id

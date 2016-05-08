@@ -94,7 +94,7 @@ nelmio_cors:
     paths:
         '^/api/':
             allow_origin: ['*']
-            allow_headers: ['X-Custom-Auth','Content-Type']
+            allow_headers: ['*']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             max_age: 3600
 
@@ -103,3 +103,51 @@ lexik_jwt_authentication:
     public_key_path:  %jwt_public_key_path%
     pass_phrase:      %jwt_key_pass_phrase%
     token_ttl:        %jwt_token_ttl%
+
+knp_gaufrette:
+    stream_wrapper: ~
+
+    adapters:
+        neema_plat_storage_local:
+            local:
+                directory: "%neema_upload_plat_directory%"
+        neema_restaurant_storage_local:
+            local:
+                directory: "%neema_upload_restaurant_directory%"
+#        nicetruc_storage_s3:
+#            aws_s3:
+#                service_id: nicetruc.aws_s3.client
+#                bucket_name: '%awss3bucketname%'
+#                options:
+#                    create: true
+    filesystems:
+        neema_plat_storage_local:
+            adapter: neema_plat_storage_local
+        neema_restaurant_storage_local:
+            adapter: neema_restaurant_storage_local
+#        nicetruc_storage_s3:
+#            adapter: nicetruc_storage_s3
+#            alias: nicetruc_storage_s3_filesystem
+
+vich_uploader:
+    db_driver: orm
+    storage:   gaufrette
+
+    mappings:
+        plat_image:
+            uri_prefix: images/plats
+            upload_destination: neema_plat_storage_local
+            namer: neema.namer
+
+            inject_on_load:     true
+            delete_on_update:   true
+            delete_on_remove:   true
+        restaurant_image:
+            uri_prefix: images/restaurant
+            upload_destination: neema_restaurant_storage_local
+            namer: neema.namer
+
+            inject_on_load:     true
+            delete_on_update:   true
+            delete_on_remove:   true
+

@@ -12,4 +12,8 @@ services:
         class: AppBundle\Security\JwtTokenAuthenticator
         autowire: true
 
+    neema.namer:
+        class: AppBundle\Naming\Namer
+
+
 

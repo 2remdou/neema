@@ -39,7 +39,8 @@ class Operation
     }
 
     private function exist($repository,$id){
-        $object = $this->em->getRepository($repository)->find($id);
+        $object = $this->em->getRepository($repository)->findOneBy(array('id'=>$id));
+        dump($object);
         return $object;
     }
 
@@ -84,7 +85,8 @@ class Operation
         $this->em->persist($object);
         $this->em->flush();
 
-        return MessageResponse::message('Enregistrement effectué','success',201);
+        return MessageResponse::message('Enregistrement effectué','success',201,
+            array(strtolower(substr(get_class($object),strrpos(get_class($object),'\\')+1)) =>$object));
     }
 
     public function all($repository){
@@ -126,7 +128,8 @@ class Operation
 
         $this->em->flush();
 
-        return MessageResponse::message('Modification effectuée','success',200);
+        return MessageResponse::message('Modification effectuée','success',200,
+            array(strtolower(substr(get_class($object),strrpos(get_class($object),'\\')+1)) =>$object));
 
     }
 

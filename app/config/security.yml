@@ -19,11 +19,11 @@ security:
         main:
             pattern: ^/
             anonymous: true
-            form_login:
-                check_path: security_login_check
-                login_path: security_login_form
-            logout:
-                path: security_logout
+#            form_login:
+#                check_path: security_login_check
+#                login_path: security_login_form
+#            logout:
+#                path: security_logout
         api:
             pattern: ^/api/
             anonymous: true

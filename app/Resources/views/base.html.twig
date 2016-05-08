@@ -1,13 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html >
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Neema!{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        <link rel="stylesheet" href="bundles/all.css" type="text/css">
+
+        <!--
+    IE8 support, see AngularJS Internet Explorer Compatibility http://docs.angularjs.org/guide/ie
+    For Firefox 3.6, you will also need to include jQuery and ECMAScript 5 shim
+  -->
+        <!--[if lt IE 9]>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.2.0/es5-shim.js"></script>
+        <script>
+            document.createElement('ui-select');
+            document.createElement('ui-select-match');
+            document.createElement('ui-select-choices');
+        </script>
+        <![endif]-->
+
     </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    <body ng-app="neema">
+
+        <div ui-view="nav">
+        </div>
+        <br>
+        <div id="ntSpinner" us-spinner spinner-key="nt-spinner"></div>
+        <div class="container-fluid">
+            <div ui-view="content">
+            </div>
+        </div>
+
+        <script type="application/javascript" src="bundles/all.js"></script>
+
+
     </body>
 </html>

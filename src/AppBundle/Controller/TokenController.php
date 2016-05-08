@@ -38,7 +38,7 @@ class TokenController extends FOSRestController
      * )
      * @RequestParam(name="username",nullable=false, description="username")
      * @RequestParam(name="password",nullable=false, description="password")
-     * @Route("api/tokens",name="get_token", options={"expose"=true})
+     * @Route("api/users/token",name="get_token", options={"expose"=true})
      * @Method({"POST"})
      */
 
@@ -47,7 +47,6 @@ class TokenController extends FOSRestController
                      ->findOneBy(['username'=>$paramFetcher->get('username')]);
 
         if(!$user){
-            throw new BadCredentialsException();
             return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
         }
 
@@ -61,7 +60,7 @@ class TokenController extends FOSRestController
         $token = $this->get('lexik_jwt_authentication.encoder')
                       ->encode(['username' => $user->getUsername()]);
 
-        return $this->view(array('token'=>$token),200);
+        return $this->view(array('token'=>$token,'user'=>$user),200);
 
 
 

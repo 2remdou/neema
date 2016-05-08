@@ -5,6 +5,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ImageRestaurant;
 use AppBundle\Util\FillAttributes;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
@@ -45,6 +46,59 @@ class RestaurantController extends FOSRestController
 		$restaurant = new Restaurant();
 		return $operation->post($request,$restaurant);
 	}
+
+	/**
+	 * Ajouter une image à un restaurant
+	 *
+	 * @ApiDoc(
+	 *   resource = true,
+	 *   description = "Ajouter une image à un restaurant",
+	 *   statusCodes = {
+	 *     201 = "Created",
+	 *   }
+	 * )
+	 * @RequestParam(name="restaurant",nullable=false, description="id du restaurant")
+	 * @Route("api/restaurants/image",name="post_image_restaurant", options={"expose"=true})
+	 * @Method({"POST"})
+	 */
+	public function postRestaurantImageAction(Request $request,ParamFetcher $paramFetcher){
+		$em = $this->getDoctrine()->getManager();
+
+		$restaurant = $em->getRepository('AppBundle:Restaurant')->find($paramFetcher->get('restaurant'));
+		if(!$restaurant){
+			return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
+		}
+
+		$file = $request->files->get('file');
+		$image = new ImageRestaurant();
+		$image->setImageFile($file);
+		$image->setRestaurant($restaurant);
+
+		$em->persist($image);
+		$em->flush();
+
+		return MessageResponse::message('Enregistrement effectué avec succès','success',200);
+	}
+
+	/**
+	 * Supprimer une image à un restaurant
+	 *
+	 * @ApiDoc(
+	 *   resource = true,
+	 *   description = "Supprimer une image à un restaurant",
+	 *   statusCodes = {
+	 *     201 = "Created",
+	 *   }
+	 * )
+	 * @Route("api/restaurants/image/{id}",name="delete_image_restaurant", options={"expose"=true})
+	 * @Method({"DELETE"})
+	 */
+	public function deleteRestaurantImageAction($id){
+
+        $operation = $this->get('app.operation');
+        return $operation->delete('AppBundle:ImageRestaurant',$id);
+	}
+
 
 	/**
      * Lister les restaurants

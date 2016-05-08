@@ -5,6 +5,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\ImagePlat;
 use AppBundle\Util\FillAttributes;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
@@ -35,17 +36,53 @@ class PlatController extends FOSRestController
      *   }
      * )
      * @RequestParam(name="nom",nullable=false, description="nom du plat")
+     * @RequestParam(name="description",nullable=false, description="description du plat")
+     * @RequestParam(name="prix",nullable=false, description="prix du plat")
+     * @RequestParam(name="restaurant",nullable=false, description="id du restaurant")
      * @Route("api/plats",name="post_plat", options={"expose"=true})
      * @Method({"POST"})
      */
 	public function postPlatAction(Request $request,ParamFetcher $paramFetcher){
-        
-		$operation = $this->get('app.operation');
-		$plat = new Plat();
-		return $operation->post($request,$plat);
+        $operation = $this->get('app.operation');
+        $plat = new Plat();
+        return $operation->post($request,$plat);
 	}
 
-	/**
+    /**
+     * Ajouter une image à un plat
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Ajouter une image à un plat",
+     *   statusCodes = {
+     *     201 = "Created",
+     *   }
+     * )
+     * @RequestParam(name="plat",nullable=false, description="id du plat")
+     * @Route("api/plats/image",name="post_image_plat", options={"expose"=true})
+     * @Method({"POST"})
+     */
+    public function postPlatImageAction(Request $request,ParamFetcher $paramFetcher){
+        $em = $this->getDoctrine()->getManager();
+
+        $plat = $em->getRepository('AppBundle:Plat')->find($paramFetcher->get('plat'));
+        if(!$plat){
+            return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
+        }
+
+        $file = $request->files->get('file');
+        $image = new ImagePlat();
+        $image->setImageFile($file);
+        $image->setPlat($plat);
+
+        $em->persist($image);
+        $em->flush();
+
+        return MessageResponse::message('Enregistrement effectué avec succès','success',200);
+    }
+
+
+    /**
      * Lister les plats
      *
      * @ApiDoc(

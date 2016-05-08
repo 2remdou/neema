@@ -40,3 +40,6 @@
 /composer.phar
 
 /.idea
+/node_modules
+/var/sessions
+/web/images

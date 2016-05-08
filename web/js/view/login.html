@@ -1,0 +1,32 @@
+<div class="container">
+    <div class="center-block login-form">
+        <div class="panel panel-default">
+            <div class="panel-heading">Connexion</div>
+            <div class="panel-body">
+                <form role="form" name="form">
+                    <div class="form-group" ng-class="{ 'has-error' : form.username.$invalid  && formSubmit }">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" placeholder="Nom utilisateur"  name="username" ng-model="user.username" required>
+                            <p ng-show="form.username.$invalid  && formSubmit" class="help-block">Adresse email obligatoire.</p>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error' : form.password.$invalid  && formSubmit }">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" placeholder="Password" ng-model="user.password" name="password" required>
+                            <p ng-show="form.password.$invalid  && formSubmit" class="help-block">Mot de passe obligatoire.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sm btn-primary" ng-click="login(user,form.$valid)"><i class="fa fa-long-arrow-right"></i> Connexion</button>
+                        <hr>
+                        <a ng-click="goToPasswordForgotten()" class="btn btn-warning btn-sm">Mot de passe oublié</a>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
