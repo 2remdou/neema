@@ -39,6 +39,7 @@ class RestaurantController extends FOSRestController
 	 * @RequestParam(name="quartier",nullable=false, description="id du quartier")
 	 * @Route("api/restaurants",name="post_restaurant", options={"expose"=true})
      * @Method({"POST"})
+	 * @Security("has_role('ROLE_ADMIN')")
      */
 	public function postRestaurantAction(Request $request,ParamFetcher $paramFetcher){
         
@@ -60,24 +61,30 @@ class RestaurantController extends FOSRestController
 	 * @RequestParam(name="restaurant",nullable=false, description="id du restaurant")
 	 * @Route("api/restaurants/image",name="post_image_restaurant", options={"expose"=true})
 	 * @Method({"POST"})
+	 * @Security("has_role('ROLE_RESTAURANT')")
 	 */
 	public function postRestaurantImageAction(Request $request,ParamFetcher $paramFetcher){
 		$em = $this->getDoctrine()->getManager();
+        $restaurant = $em->getRepository('AppBundle:Restaurant')->find($paramFetcher->get('restaurant'));
+        if(!$restaurant){
+            return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
+        }
 
-		$restaurant = $em->getRepository('AppBundle:Restaurant')->find($paramFetcher->get('restaurant'));
-		if(!$restaurant){
-			return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
-		}
+        try{
+            $file = $request->files->get('file');
+            $image = new ImageRestaurant();
+            $image->setImageFile($file);
+            $image->setRestaurant($restaurant);
 
-		$file = $request->files->get('file');
-		$image = new ImageRestaurant();
-		$image->setImageFile($file);
-		$image->setRestaurant($restaurant);
+            $em->persist($image);
+            $em->flush();
 
-		$em->persist($image);
-		$em->flush();
+            return MessageResponse::message('Enregistrement effectué avec succès','success',200);
 
-		return MessageResponse::message('Enregistrement effectué avec succès','success',200);
+        }catch (Exception $e){
+            $em->remove($restaurant);
+            $em->flush();
+        }
 	}
 
 	/**
@@ -92,6 +99,7 @@ class RestaurantController extends FOSRestController
 	 * )
 	 * @Route("api/restaurants/image/{id}",name="delete_image_restaurant", options={"expose"=true})
 	 * @Method({"DELETE"})
+	 * @Security("has_role('ROLE_RESTAURANT')")
 	 */
 	public function deleteRestaurantImageAction($id){
 
@@ -155,7 +163,8 @@ class RestaurantController extends FOSRestController
 	 * @RequestParam(name="quartier",nullable=false, description="id de quartier")
 	 * @Route("api/restaurants/{id}",name="put_restaurant", options={"expose"=true})
      * @Method({"PUT"})
-     */
+	 * @Security("has_role('ROLE_RESTAURANT')")
+	 */
 	public function putRestaurantAction($id,Request $request,ParamFetcher $paramFetcher){
 		$operation = $this->get('app.operation');
 		return $operation->put($request,'AppBundle:Restaurant',$id);
@@ -174,7 +183,8 @@ class RestaurantController extends FOSRestController
      * )
      * @Route("api/restaurants/{id}",name="delete_restaurant", options={"expose"=true})
      * @Method({"DELETE"})
-     */
+	 * @Security("has_role('ROLE_SUPER_ADMIN')")
+	 */
 	public function deleteRestaurantAction($id){
 		$operation = $this->get('app.operation');
 		return $operation->delete('AppBundle:Restaurant',$id);

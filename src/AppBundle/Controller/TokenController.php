@@ -57,10 +57,13 @@ class TokenController extends FOSRestController
             return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
         }
 
-        $token = $this->get('lexik_jwt_authentication.encoder')
-                      ->encode(['username' => $user->getUsername()]);
+        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
 
-        return $this->view(array('token'=>$token,'user'=>$user),200);
+//        $token = $this->get('lexik_jwt_authentication.encoder')
+//                      ->encode(['username' => $user->getUsername()]);
+
+        return $this->view(array('token'=>$jwt),200);
+//        return $this->view(array('token'=>$token,'user'=>$user),200);
 
 
 

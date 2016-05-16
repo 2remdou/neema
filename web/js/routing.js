@@ -3,11 +3,18 @@
  */
 app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlRouterProvider){
 
-    //$urlRouterProvider.otherwise("/");
+    $urlRouterProvider.otherwise("/");
     $urlRouterProvider.otherwise( function($injector) {
         var $state = $injector.get("$state");
         $state.go('neema');
     });
+
+    var ROLE_CONNECTED = ['ROLE_CLIENT','ROLE_RESTAURANT','ROLE_ADMIN','ROLE_SUPER_ADMIN'];
+    var ROLE_RESTAURANT = ['ROLE_RESTAURANT','ROLE_ADMIN','ROLE_SUPER_ADMIN'];
+    var ROLE_CLIENT = ['ROLE_CLIENT','ROLE_ADMIN','ROLE_SUPER_ADMIN'];
+    var ROLE_ADMIN = ['ROLE_ADMIN','ROLE_SUPER_ADMIN'];
+    var ROLE_SUPER_ADMIN = ['ROLE_SUPER_ADMIN'];
+
     var nav = {templateUrl: 'js/view/nav.html',controller: 'NavController'};
    $stateProvider
        .state('neema',{
@@ -18,7 +25,14 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                    templateUrl: 'js/view/index.html',
                    controller: 'IndexController'
                }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_CONNECTED,
+                   redirectTo:'login'
+               }
            }
+
        })
        .state('login',{
            url:'/login',
@@ -38,6 +52,46 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                    templateUrl: 'js/view/plat.html',
                    controller: 'PlatController'
                }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_RESTAURANT,
+                   redirectTo:'neema'
+               }
+           }
+
+       })
+       .state('editPlat',{
+           url:'/editPlat/:idPlat',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/editPlat.html',
+                   controller: 'PlatController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_RESTAURANT,
+                   redirectTo:'neema'
+               }
+           }
+
+       })
+       .state('menu',{
+           url:'/menu',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/menu.html',
+                   controller: 'PlatController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_RESTAURANT,
+                   redirectTo:'neema'
+               }
            }
        })
        .state('commune',{
@@ -48,7 +102,14 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                    templateUrl: 'js/view/commune.html',
                    controller: 'CommuneController'
                }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
            }
+
        })
        .state('quartier',{
            url:'/quartier',
@@ -57,6 +118,12 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                'content':{
                    templateUrl: 'js/view/quartier.html',
                    controller: 'QuartierController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
                }
            }
        })
@@ -68,6 +135,60 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                    templateUrl: 'js/view/restaurant.html',
                    controller: 'RestaurantController'
                }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
+           }
+       })
+       .state('inscription',{
+           url:'/inscription',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/inscription.html',
+                   controller: 'InscriptionController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
+           }
+       })
+       .state('profil',{
+           url:'/profil',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/profil.html',
+                   controller: 'ProfilController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_CONNECTED,
+                   redirectTo:'neema'
+               }
+           }
+       })
+       .state('resetPassword',{
+           url:'/resetPassword',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/resetPassword.html',
+                   controller: 'ResetPasswordController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
            }
        })
        .state('editRestaurant',{
@@ -78,6 +199,12 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                    templateUrl: 'js/view/restaurant.html',
                    controller: 'RestaurantController'
                }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_RESTAURANT,
+                   redirectTo:'neema'
+               }
            }
        })
        .state('listRestaurant',{
@@ -87,6 +214,12 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                'content':{
                    templateUrl: 'js/view/listRestaurant.html',
                    controller: 'ListRestaurantController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
                }
            }
        })

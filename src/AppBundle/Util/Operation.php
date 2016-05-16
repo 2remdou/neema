@@ -40,11 +40,19 @@ class Operation
 
     private function exist($repository,$id){
         $object = $this->em->getRepository($repository)->findOneBy(array('id'=>$id));
-        dump($object);
         return $object;
     }
 
-    private function fill(ParameterBag $parameterBag,$object){
+    public function getClassName($object){
+        return strtolower(substr(get_class($object),strrpos(get_class($object),'\\')+1));
+    }
+
+    public function getClassNameInRepositoryName($repository){
+        return ucfirst(substr($repository,strrpos($repository,':')+1));
+    }
+
+
+    public function fill(ParameterBag $parameterBag,$object){
 
         foreach($parameterBag->keys() as $attribute){
             $nameMethod='set'.ucfirst($attribute);
@@ -86,7 +94,7 @@ class Operation
         $this->em->flush();
 
         return MessageResponse::message('Enregistrement effectué','success',201,
-            array(strtolower(substr(get_class($object),strrpos(get_class($object),'\\')+1)) =>$object));
+            array($this->getClassName($object) =>$object));
     }
 
     public function all($repository){
@@ -95,14 +103,25 @@ class Operation
         if(!$objects){
             return MessageResponse::message('Aucune donnée','info',400);
         }
-
         return View::create($objects,200);
 
     }
+
+    public function getByCriteria($repository,array $criteria){
+        $objects = $this->em->getRepository($repository)->findBy($criteria);
+
+        if(!$objects){
+            return MessageResponse::message('Aucune donnée','info',400);
+        }
+        return View::create($objects,200);
+
+    }
+
+
     public function get($repository,$id){
         $object =$this->exist($repository,$id);
         if(!$object){
-            return MessageResponse::message('introuvable','info',404);
+            return MessageResponse::message($this->getClassNameInRepositoryName($repository).' introuvable','info',404);
         }
 
         return $object;
@@ -129,7 +148,7 @@ class Operation
         $this->em->flush();
 
         return MessageResponse::message('Modification effectuée','success',200,
-            array(strtolower(substr(get_class($object),strrpos(get_class($object),'\\')+1)) =>$object));
+            array($this->getClassName($object) =>$object));
 
     }
 
@@ -147,5 +166,6 @@ class Operation
         return MessageResponse::message('Suppression effectuée','success',200);
 
     }
+
 
 }

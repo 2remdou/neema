@@ -7,6 +7,7 @@ app.controller('CommuneController',
     ['$scope','usSpinnerService','CommuneService','ModalService',
     function($scope,usSpinnerService,CommuneService,ModalService){
 
+        $scope.commune={};
         CommuneService.list();
 
         $scope.save = function(commune){
@@ -50,7 +51,7 @@ app.controller('CommuneController',
                     usSpinnerService.spin('nt-spinner');
                     CommuneService.delete(commune);
                 })
-            })
+            });
 
 
         };

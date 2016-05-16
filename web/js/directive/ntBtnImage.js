@@ -6,12 +6,15 @@ app.directive('ntBtnImage',[function(){
    return {
        restrict: 'A',
        scope: {
-         cible: '@'
+         cible: '@',
+         replace: '@'
        },
        link : function(scope,element,attributes){
             element.on('click',function(e){
                 cible = $('#'+attributes.cible);
+                replace = $('#'+attributes.replace);
                 $(cible).trigger('click');
+                $(replace).remove();
                 e.preventDefault();
             });
        }

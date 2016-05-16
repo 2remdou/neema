@@ -38,7 +38,8 @@ class QuartierController extends FOSRestController
 	 * @RequestParam(name="commune",nullable=false, description="id de la commune")
 	 * @Route("api/quartiers",name="post_quartier", options={"expose"=true})
      * @Method({"POST"})
-     */
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
 	public function postQuartierAction(Request $request,ParamFetcher $paramFetcher){
         
 		$operation = $this->get('app.operation');
@@ -101,7 +102,8 @@ class QuartierController extends FOSRestController
 	 * @RequestParam(name="commune",nullable=false, description="id de la commune")
 	 * @Route("api/quartiers/{id}",name="put_quartier", options={"expose"=true})
      * @Method({"PUT"})
-     */
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
 	public function putQuartierAction($id,Request $request,ParamFetcher $paramFetcher){
 		$operation = $this->get('app.operation');
 		return $operation->put($request,'AppBundle:Quartier',$id);
@@ -120,7 +122,8 @@ class QuartierController extends FOSRestController
      * )
      * @Route("api/quartiers/{id}",name="delete_quartier", options={"expose"=true})
      * @Method({"DELETE"})
-     */
+	 * @Security("has_role('ROLE_SUPER_ADMIN')")
+	 */
 	public function deleteQuartierAction($id){
 		$operation = $this->get('app.operation');
 		return $operation->delete('AppBundle:Quartier',$id);

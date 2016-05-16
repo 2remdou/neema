@@ -7,6 +7,7 @@ app.controller('QuartierController',
     ['$scope','usSpinnerService','QuartierService','CommuneService','ModalService',
     function($scope,usSpinnerService,QuartierService,CommuneService,ModalService){
 
+        $scope.quartier={};
         $scope.nbreLoader = 2;
         usSpinnerService.spin('nt-spinner');
         QuartierService.list();

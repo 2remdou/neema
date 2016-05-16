@@ -8,6 +8,17 @@ services:
         class: AppBundle\Util\Operation
         arguments: ["@doctrine.orm.entity_manager","@validator"]
 
+    app.api.exception.subscriber:
+        class: AppBundle\EventListener\ApiExceptionSubscriber
+        arguments: ["@security.token_storage"]
+        tags:
+            - { name: kernel.event_subscriber }
+
+    app.api.jwt.subscriber:
+        class: AppBundle\EventListener\JWTSubscriber
+        tags:
+            - { name: kernel.event_subscriber }
+
     jwt_token_authenticator:
         class: AppBundle\Security\JwtTokenAuthenticator
         autowire: true

@@ -3,6 +3,12 @@
  */
 'use strict';
 
-app.controller('NavController',['$scope',function($scope){
+app.controller('NavController',['$scope','UserService','$state',function($scope,UserService,$state){
+    $scope.logout = function(){
+        UserService.logout();
+    };
 
+    $scope.$on('user.logout',function(event,args){
+        $state.go('neema');
+    })
 }]);

@@ -18,6 +18,9 @@ app.controller('LoginController',
     };
 
     $scope.$on('user.connected',function(event,args){
+        var alert = {textAlert:'Bienvenue sur la plateforme Neema',typeAlert:'success'};
+        $scope.$emit('show.message',{alert:alert});
+
         $scope.$emit('stop.spinner');
         $state.go('neema');
     });

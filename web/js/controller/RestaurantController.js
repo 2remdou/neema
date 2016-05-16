@@ -5,10 +5,12 @@
 
 app
     .controller('RestaurantController',
-        ['$scope','usSpinnerService','RestaurantService','QuartierService','ModalService','FileUploader',
-            'UrlApi','CommuneService','$stateParams','$state',
-        function($scope,usSpinnerService,RestaurantService,QuartierService,ModalService,FileUploader,
-                 UrlApi,CommuneService,$stateParams,$state){
+        ['$scope','usSpinnerService','RestaurantService','QuartierService','ModalService','UploaderService',
+            'CommuneService','$stateParams','$state','UserService',
+        function($scope,usSpinnerService,RestaurantService,QuartierService,ModalService,UploaderService,
+                 CommuneService,$stateParams,$state,UserService){
+
+            $scope.restaurant={};
 
             if($stateParams.idRestaurant){
                 $scope.forUpdate=true;
@@ -18,10 +20,7 @@ app
                     log(error);
                 });
             }
-
-            var uploader=$scope.uploader = new FileUploader({
-                url : UrlApi+'/restaurants/image'
-            });
+            var uploader = $scope.uploader = UploaderService.getUploader('/restaurants/image');
 
             $scope.nbreLoader = 2;
             usSpinnerService.spin('nt-spinner');
@@ -30,6 +29,7 @@ app
             var errorUpload=[];
 
             uploader.onBeforeUploadItem = function(item) {
+                log(item);
                 if(angular.isDefined($scope.restaurant.id))
                     item.formData.push({restaurant: $scope.restaurant.id});
             };

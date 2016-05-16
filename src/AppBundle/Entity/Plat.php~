@@ -32,7 +32,7 @@ class Plat
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=255, unique=true)
+     * @ORM\Column(name="nom", type="string", length=255, unique=false)
      * @Expose()
      */
     private $nom;
@@ -40,7 +40,7 @@ class Plat
     /**
      * @var text
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text",nullable=true)
      * @Expose()
      */
     private $description;
@@ -53,6 +53,8 @@ class Plat
     /**
      * @ORM\ManyToOne(targetEntity="Restaurant")
      * @Expose()
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="le restaurant est obligatoire")
      */
     private $restaurant;
 
@@ -65,6 +67,14 @@ class Plat
      */
     private $prix;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
+     * @Expose()
+     * @SerializedName("onMenu")
+     */
+    protected $onMenu;
 
 
     /**
@@ -147,5 +157,53 @@ class Plat
     public function getImage()
     {
         return $this->image;
+    }
+
+    /**
+     * Set prix
+     *
+     * @param float $prix
+     *
+     * @return Plat
+     */
+    public function setPrix($prix)
+    {
+        $this->prix = $prix;
+
+        return $this;
+    }
+
+    /**
+     * Get prix
+     *
+     * @return float
+     */
+    public function getPrix()
+    {
+        return $this->prix;
+    }
+
+    /**
+     * Set restaurant
+     *
+     * @param \AppBundle\Entity\Restaurant $restaurant
+     *
+     * @return Plat
+     */
+    public function setRestaurant(\AppBundle\Entity\Restaurant $restaurant = null)
+    {
+        $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    /**
+     * Get restaurant
+     *
+     * @return \AppBundle\Entity\Restaurant
+     */
+    public function getRestaurant()
+    {
+        return $this->restaurant;
     }
 }

@@ -31,7 +31,6 @@ app.service('QuartierService',
 
             this.update = function(quartier){
                 quartier.commune = extractId(quartier.commune);
-                log(quartier);
                 quartier.put().then(function(response){
                     $rootScope.$broadcast('quartier.updated', {alert:response.data})
                 },function(error){

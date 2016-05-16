@@ -22,6 +22,7 @@ parameters:
 
     neema_upload_plat_directory : %kernel.root_dir%/../web/images/plats
     neema_upload_restaurant_directory : %kernel.root_dir%/../web/images/restaurants
+    defaultPassword : neema
 
     jwt_token_ttl:        86400
     # A secret key that's used to generate certain security-related tokens

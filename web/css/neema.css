@@ -34,6 +34,9 @@ canvas {
 .margin-5{
     margin: 5px;
 }
+.pa-5{
+    padding: 5px;
+}
 .userMenu{
     color: #333;
     font-size: 35px;

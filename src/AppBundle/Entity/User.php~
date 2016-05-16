@@ -74,7 +74,7 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="isReseted", type="boolean", options={"default":false})
+     * @ORM\Column(name="isReseted", type="boolean", options={"default":true})
      * @Expose()
      * @SerializedName("isReseted")
      */
@@ -281,53 +281,5 @@ class User implements UserInterface
     public function getPrenom()
     {
         return $this->prenom;
-    }
-
-    /**
-     * Set isReseted
-     *
-     * @param boolean $isReseted
-     *
-     * @return User
-     */
-    public function setIsReseted($isReseted)
-    {
-        $this->isReseted = $isReseted;
-
-        return $this;
-    }
-
-    /**
-     * Get isReseted
-     *
-     * @return boolean
-     */
-    public function getIsReseted()
-    {
-        return $this->isReseted;
-    }
-
-    /**
-     * Set userRestaurant
-     *
-     * @param \AppBundle\Entity\UserRestaurant $userRestaurant
-     *
-     * @return User
-     */
-    public function setUserRestaurant(\AppBundle\Entity\UserRestaurant $userRestaurant = null)
-    {
-        $this->userRestaurant = $userRestaurant;
-
-        return $this;
-    }
-
-    /**
-     * Get userRestaurant
-     *
-     * @return \AppBundle\Entity\UserRestaurant
-     */
-    public function getUserRestaurant()
-    {
-        return $this->userRestaurant;
     }
 }

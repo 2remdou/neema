@@ -18,6 +18,7 @@ gulp.task('concatJs',function () {
         'web/bundles/spin.js/spin.js',
         'web/bundles/angular-spinner/angular-spinner.min.js',
         'web/bundles/angular-permission/dist/angular-permission.min.js',
+        'web/bundles/angular-permission/dist/angular-permission-ui.min.js',
         'web/bundles/angular-jwt/dist/angular-jwt.min.js',
         'web/bundles/es5-shim/es5-shim.min.js',
         'web/bundles/es5-shim/es5-sham.min.js',
@@ -28,6 +29,13 @@ gulp.task('concatJs',function () {
         'web/js/**/*.js'
     ])
         .pipe(concat('all.js'))
+        .pipe(gulp.dest('web/bundles/'));
+});
+gulp.task('service',function () {
+    return gulp.src([
+        'web/js/service/*.js'
+    ])
+        .pipe(concat('service.js'))
         .pipe(gulp.dest('web/bundles/'));
 });
 //

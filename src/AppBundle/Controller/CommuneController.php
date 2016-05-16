@@ -37,7 +37,8 @@ class CommuneController extends FOSRestController
      * @RequestParam(name="nom",nullable=false, description="libelle de la commune")
      * @Route("api/communes",name="post_commune", options={"expose"=true})
      * @Method({"POST"})
-     */
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
 	public function postCommuneAction(Request $request,ParamFetcher $paramFetcher){
         
 		$operation = $this->get('app.operation');
@@ -99,7 +100,8 @@ class CommuneController extends FOSRestController
      * @RequestParam(name="nom",nullable=false, description="libelle de la commune")
      * @Route("api/communes/{id}",name="put_commune", options={"expose"=true})
      * @Method({"PUT"})
-     */
+	 * @Security("has_role('ROLE_ADMIN')")
+	 */
 	public function putCommuneAction($id,Request $request,ParamFetcher $paramFetcher){
 		$operation = $this->get('app.operation');
 		return $operation->put($request,'AppBundle:Commune',$id);
@@ -118,7 +120,8 @@ class CommuneController extends FOSRestController
      * )
      * @Route("api/communes/{id}",name="delete_commune", options={"expose"=true})
      * @Method({"DELETE"})
-     */
+	 * @Security("has_role('ROLE_SUPER_ADMIN')")
+	 */
 	public function deleteCommuneAction($id){
 		$operation = $this->get('app.operation');
 		return $operation->delete('AppBundle:Commune',$id);

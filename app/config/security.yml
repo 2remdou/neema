@@ -4,6 +4,11 @@ security:
     encoders:
         AppBundle\Entity\User: bcrypt
 
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_RESTAURANT, ROLE_CLIENT]
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+
+
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
@@ -16,6 +21,14 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
+        api:
+            pattern: ^/api/
+            anonymous: true
+            stateless: true
+            guard:
+                authenticators:
+                    - 'jwt_token_authenticator'
+
         main:
             pattern: ^/
             anonymous: true
@@ -24,13 +37,6 @@ security:
 #                login_path: security_login_form
 #            logout:
 #                path: security_logout
-        api:
-            pattern: ^/api/
-            anonymous: true
-            stateless: true
-            guard:
-                authenticators:
-                    - 'jwt_token_authenticator'
             # activate different ways to authenticate
 
             # http_basic: ~

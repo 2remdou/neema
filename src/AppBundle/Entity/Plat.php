@@ -32,7 +32,7 @@ class Plat
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=255, unique=true)
+     * @ORM\Column(name="nom", type="string", length=255, unique=false)
      * @Expose()
      */
     private $nom;
@@ -40,19 +40,21 @@ class Plat
     /**
      * @var text
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text",nullable=true)
      * @Expose()
      */
     private $description;
 
     /**
-     * @ORM\OneToOne(targetEntity="ImagePlat")
+     * @ORM\OneToOne(targetEntity="ImagePlat",mappedBy="plat")
      * @Expose()
      */
     private $image;
     /**
      * @ORM\ManyToOne(targetEntity="Restaurant")
      * @Expose()
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="le restaurant est obligatoire")
      */
     private $restaurant;
 
@@ -65,6 +67,14 @@ class Plat
      */
     private $prix;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
+     * @Expose()
+     * @SerializedName("onMenu")
+     */
+    protected $onMenu;
 
 
     /**
@@ -195,5 +205,29 @@ class Plat
     public function getRestaurant()
     {
         return $this->restaurant;
+    }
+
+    /**
+     * Set onMenu
+     *
+     * @param boolean $onMenu
+     *
+     * @return Plat
+     */
+    public function setOnMenu($onMenu=1)
+    {
+        $this->onMenu = $onMenu;
+
+        return $this;
+    }
+
+    /**
+     * Get onMenu
+     *
+     * @return boolean
+     */
+    public function getOnMenu()
+    {
+        return $this->onMenu;
     }
 }

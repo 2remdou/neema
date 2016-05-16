@@ -23,6 +23,7 @@ app.service('RestaurantService',
 
             this.list = function(){
                 _restaurantService.getList().then(function(response){
+                    log(response);
                     $rootScope.$broadcast('restaurant.list',{restaurants:response});
                 },function(error){
                    log(error);

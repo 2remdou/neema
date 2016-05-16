@@ -9,9 +9,11 @@
 namespace AppBundle\Security;
 
 
+use AppBundle\Exception\ChangePasswordException;
 use Doctrine\ORM\EntityManager;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -92,9 +94,10 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
 
         $username = $data['username'];
 
-        return $this->em
+        $user = $this->em
             ->getRepository('AppBundle:User')
             ->findOneBy(['username' => $username]);
+        return $user;
     }
 
     /**

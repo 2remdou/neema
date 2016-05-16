@@ -18,4 +18,63 @@ app.service('PlatService',
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
             };
-}]);
+
+            this.get = function(id){
+                return _platService.get(id);
+            };
+
+
+            this.list = function(){
+                _platService.customGET().then(function(response){
+                //_platService.getList().then(function(response){
+                    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
+                    $rootScope.$broadcast('plat.list',{plats:plats});
+                },function(error){
+                    log(error);
+                });
+            };
+
+            this.listByRestaurant = function(restaurant){
+                _platService.customGET(null,'restaurant/'+restaurant.id).then(function(response){
+                    //_platService.getList().then(function(response){
+                    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
+                    $rootScope.$broadcast('plat.list',{plats:plats});
+                },function(error){
+                    log(error);
+                });
+            };
+
+            this.listByRestaurantByUserConnected = function(){
+                _platService.customGET('restaurant/userConnected').then(function(response){
+                    //_platService.getList().then(function(response){
+                    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
+                    $rootScope.$broadcast('plat.list',{plats:plats});
+                },function(error){
+                    log(error);
+                });
+            };
+
+            this.updateMenu = function(menu){
+                Restangular.one('updateMenu').customPUT({plats:menu}).then(function(response){
+                    var alert = {textAlert:response.data.textAlert,typeAlert:response.data.typeAlert};
+                    $rootScope.$broadcast('menu.updated',{alert:alert,fail:response.data.fail});
+                },function(error){
+                    var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
+                    $rootScope.$broadcast('show.message',{alert:alert});
+                    log(error);
+                });
+            };
+
+            this.update = function(plat){
+                delete plat.image;
+                delete plat.restaurant;
+                plat.put().then(function(response){
+                    $rootScope.$broadcast('plat.updated', {alert:response.data})
+                },function(error){
+                    log(error);
+                    $rootScope.$broadcast('show.message', {alert:error.data});
+                });
+            };
+
+
+        }]);

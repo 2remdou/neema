@@ -13,6 +13,8 @@ var app = angular.module('neema',[
     'angularFileUpload',
     'ui.select',
     'ngSanitize',
-    'angularModalService'
+    'angularModalService',
+    'permission',
+    'permission.ui'
 ])
     .constant('UrlApi','http://localhost:8000/api');

@@ -22,7 +22,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use AppBundle\Entity\Plat;
 
-
+/**
+ * Class PlatController
+ * @package AppBundle\Controller
+ */
 class PlatController extends FOSRestController
 {
 	/**
@@ -41,12 +44,32 @@ class PlatController extends FOSRestController
      * @RequestParam(name="restaurant",nullable=false, description="id du restaurant")
      * @Route("api/plats",name="post_plat", options={"expose"=true})
      * @Method({"POST"})
+	 * @Security("has_role('ROLE_RESTAURANT')")
      */
 	public function postPlatAction(Request $request,ParamFetcher $paramFetcher){
         $operation = $this->get('app.operation');
         $plat = new Plat();
-        return $operation->post($request,$plat);
-	}
+        $plat = $operation->fill($request->request,$plat);
+        if($plat instanceof View){
+            return $plat;
+        }
+        $restaurant = $this->getUser()->getUserRestaurant()->getRestaurant();
+        $plat->setRestaurant($restaurant);
+        $validator = $this->get('validator');
+
+        if($messages = MessageResponse::messageAfterValidation($validator->validate($plat))){
+            return MessageResponse::message($messages,'danger',400);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $em->persist($plat);
+        $em->flush();
+
+        return MessageResponse::message('Enregistrement effectué','success',201, array('plat' =>$plat));
+
+
+    }
 
     /**
      * Ajouter une image à un plat
@@ -61,13 +84,19 @@ class PlatController extends FOSRestController
      * @RequestParam(name="plat",nullable=false, description="id du plat")
      * @Route("api/plats/image",name="post_image_plat", options={"expose"=true})
      * @Method({"POST"})
-     */
+	 * @Security("has_role('ROLE_RESTAURANT')")
+	 */
     public function postPlatImageAction(Request $request,ParamFetcher $paramFetcher){
         $em = $this->getDoctrine()->getManager();
 
         $plat = $em->getRepository('AppBundle:Plat')->find($paramFetcher->get('plat'));
         if(!$plat){
             return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
+        }
+
+        if($plat->getImage()){ //s'il existe une autre image, je le supprime
+            $em->remove($plat->getImage());
+            $em->flush();
         }
 
         $file = $request->files->get('file');
@@ -99,10 +128,69 @@ class PlatController extends FOSRestController
 
 	public function getPlatsAction(){
 		$operation = $this->get('app.operation');
-		return $operation->all('AppBundle:Plat');
+        return array('plats'=>$operation->all('AppBundle:Plat'));
 	}
 
-	/**
+    /**
+     * Lister les plats par restaurant en fonction du user connecté
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Lister les plats par restaurant en fonction du user connecté",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/plats/restaurant/userConnected",name="get_plats_restaurant_user", options={"expose"=true})
+     * @Method({"GET"})
+     * @Security("has_role('ROLE_RESTAURANT')")
+     */
+
+    public function getPlatsByRestaurantByUserAction(){
+
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+            $operation = $this->get('app.operation');
+            return array('plats'=>$operation->all('AppBundle:Plat'));
+
+        }
+
+        $restaurant = $this->getUser()->getUserRestaurant()->getRestaurant();
+        if(!$restaurant){
+            return MessageResponse::message('Restaurant introuvable','info',400);
+        }
+        $operation = $this->get('app.operation');
+        return array('plats'=>$operation->getByCriteria('AppBundle:Plat',array('restaurant'=>$restaurant)));
+    }
+
+
+    /**
+     * Lister les plats par restaurant
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Lister les plats par restaurant",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/plats/restaurant/{restaurant}",name="get_plats_restaurant", options={"expose"=true})
+     * @Method({"GET"})
+     */
+
+    public function getPlatsByRestaurantAction($restaurant){
+        $em = $this->getDoctrine()->getManager();
+        $restaurant = $em->getRepository('AppBundle:Restaurant')->findOneBy(array('id'=>$restaurant));
+        if(!$restaurant){
+            return MessageResponse::message('Restaurant introuvable','info',400);
+        }
+        $operation = $this->get('app.operation');
+        return array('plats'=>$operation->getByCriteria('AppBundle:Plat',array('restaurant'=>$restaurant)));
+    }
+
+
+    /**
      * retourner un plat
      *
      * @ApiDoc(
@@ -136,7 +224,8 @@ class PlatController extends FOSRestController
      * @RequestParam(name="nom",nullable=false, description="nom du plat")
      * @Route("api/plats/{id}",name="put_plat", options={"expose"=true})
      * @Method({"PUT"})
-     */
+	 * @Security("has_role('ROLE_RESTAURANT')")
+	 */
 	public function putPlatAction($id,Request $request,ParamFetcher $paramFetcher){
 		$operation = $this->get('app.operation');
 		return $operation->put($request,'AppBundle:Plat',$id);
@@ -155,10 +244,51 @@ class PlatController extends FOSRestController
      * )
      * @Route("api/plats/{id}",name="delete_plat", options={"expose"=true})
      * @Method({"DELETE"})
-     */
+	 * @Security("has_role('ROLE_SUPER_ADMIN')")
+	 */
 	public function deletePlatAction($id){
 		$operation = $this->get('app.operation');
 		return $operation->delete('AppBundle:Plat',$id);
 
 	}
+
+    /**
+     * Met a jour le menu d'un restaurant en activant ou desactivant des plats
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Met a jour le menu d'un restaurant en activant ou desactivant des plats",
+     *   statusCodes = {
+     *     201 = "Created",
+     *   }
+     * )
+     * @RequestParam(name="plats", array=true,nullable=false, description="les plats a mettre à jour")
+     * @Route("api/updateMenu",name="update_menu", options={"expose"=true})
+     * @Method({"PUT"})
+     * @Security("has_role('ROLE_RESTAURANT')")
+     */
+
+    public function updateMenu(ParamFetcher $paramFetcher){
+
+        $em = $this->getDoctrine()->getManager();
+        $plats = $paramFetcher->get('plats');
+        if($plats){
+            $fail = array();
+            $success = array();
+            foreach($plats as $p){
+                $plat = $em->getRepository('AppBundle:Plat')->findOneBy(array('id'=>$p['id']));
+                if($plat){
+                    $plat->setOnMenu($p['onMenu']);
+                    $success[]=$p['id'];
+                }else{
+                    $fail[]=$p['id'];
+                }
+            }
+            $em->flush();
+
+            return MessageResponse::message('Le menu a été mis à jour','success',200,array('fail'=>$fail,'success'=>$success));
+        }{
+            return MessageResponse::message('Veuillez fournir des plats à mettre à jour','danger',400);
+        }
+    }
 }
