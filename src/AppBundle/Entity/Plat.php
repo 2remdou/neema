@@ -67,14 +67,14 @@ class Plat
      */
     private $prix;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
-     * @Expose()
-     * @SerializedName("onMenu")
-     */
-    protected $onMenu;
+        /**
+         * @var boolean
+         *
+         * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
+         * @Expose()
+         * @SerializedName("onMenu")
+         */
+        protected $onMenu;
 
 
     /**

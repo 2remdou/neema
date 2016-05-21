@@ -36,6 +36,8 @@ class RestaurantController extends FOSRestController
      *   }
      * )
      * @RequestParam(name="nom",nullable=false, description="nom du restaurant")
+     * @RequestParam(name="longitude",nullable=false, description="longitude du restaurant")
+     * @RequestParam(name="latitude",nullable=false, description="latitude du restaurant")
 	 * @RequestParam(name="quartier",nullable=false, description="id du quartier")
 	 * @Route("api/restaurants",name="post_restaurant", options={"expose"=true})
      * @Method({"POST"})
@@ -160,7 +162,9 @@ class RestaurantController extends FOSRestController
      *   }
      * )
      * @RequestParam(name="nom",nullable=false, description="nom de la restaurant")
-	 * @RequestParam(name="quartier",nullable=false, description="id de quartier")
+     * @RequestParam(name="longitude",nullable=false, description="longitude du restaurant")
+     * @RequestParam(name="latitude",nullable=false, description="latitude du restaurant")
+     * @RequestParam(name="quartier",nullable=false, description="id de quartier")
 	 * @Route("api/restaurants/{id}",name="put_restaurant", options={"expose"=true})
      * @Method({"PUT"})
 	 * @Security("has_role('ROLE_RESTAURANT')")

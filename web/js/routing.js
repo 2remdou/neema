@@ -223,6 +223,24 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                }
            }
        })
+       .state('livreur',{
+           url:'/livreur',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/livreur.html',
+                   controller: 'LivreurController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
+           }
+
+       })
+
 
    ;
 }]);

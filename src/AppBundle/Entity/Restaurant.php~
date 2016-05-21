@@ -17,6 +17,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\RestaurantRepository")
  * @ExclusionPolicy("all")
  * @UniqueEntity(fields="nom", message="Ce nom de restaurant existe déjà.")
+ * @UniqueEntity(fields="telephone", message="Deux restaurant ne peuvent pas avoir le même numero de telephone")
  */
 class Restaurant
 {
@@ -77,8 +78,34 @@ class Restaurant
      * @ORM\ManyToOne(targetEntity="Quartier")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
+     * @Assert\NotNull(message="Le quartier est obligatoire")
      */
     private $quartier;
+
+    /**
+     * @ORM\OneToMany(targetEntity="ImageRestaurant",mappedBy="restaurant")
+     * @Expose()
+     */
+    private $images;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="longitude", type="string", length=255)
+     * @Expose()
+     * @Assert\NotBlank(message="la longitude est obligatoire")
+     */
+    private $longitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="latitude", type="string", length=255)
+     * @Expose()
+     * @Assert\NotBlank(message="la latitude est obligatoire")
+     */
+    private $latitude;
+
 
 
     /**
@@ -210,5 +237,28 @@ class Restaurant
     {
         return $this->description;
     }
-}
 
+    /**
+     * Set quartier
+     *
+     * @param \AppBundle\Entity\Quartier $quartier
+     *
+     * @return Restaurant
+     */
+    public function setQuartier(\AppBundle\Entity\Quartier $quartier)
+    {
+        $this->quartier = $quartier;
+
+        return $this;
+    }
+
+    /**
+     * Get quartier
+     *
+     * @return \AppBundle\Entity\Quartier
+     */
+    public function getQuartier()
+    {
+        return $this->quartier;
+    }
+}

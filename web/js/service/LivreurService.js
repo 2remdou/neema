@@ -2,18 +2,18 @@
  * Created by touremamadou on 07/05/2016.
  */
 
-app.service('CommuneService',
+app.service('LivreurService',
     ['$rootScope','Restangular',
         function($rootScope,Restangular){
 
             var self=this;
 
-            var _communeService = Restangular.all('communes');
+            var _livreurService = Restangular.all('livreurs');
 
-            this.post = function(commune){
-                _communeService.post(commune).then(function(response){
+            this.post = function(livreur){
+                _livreurService.post(livreur).then(function(response){
                     var alert = {textAlert:response.data.textAlert,typeAlert:response.data.typeAlert};
-                    $rootScope.$broadcast('commune.created',{commune:response.data,alert:alert});
+                    $rootScope.$broadcast('livreur.created',{livreur:response.data,alert:alert});
                 },function(error){
                     log(error);
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -21,27 +21,27 @@ app.service('CommuneService',
             };
 
             this.list = function(){
-                _communeService.getList().then(function(response){
-                    $rootScope.$broadcast('commune.list',{communes:response});
+                _livreurService.getList().then(function(response){
+                    $rootScope.$broadcast('livreur.list',{livreurs:response});
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:error.data});
-                    log(error);
+                   log(error);
                 });
             };
 
-            this.update = function(commune){
-                commune.put().then(function(response){
-                    $rootScope.$broadcast('commune.updated', {alert:response.data})
+            this.update = function(livreur){
+                livreur.put().then(function(response){
+                    $rootScope.$broadcast('livreur.updated', {alert:response.data})
                 },function(error){
                     log(error);
                     $rootScope.$broadcast('show.message', {alert:error.data});
                 });
             };
 
-            this.delete = function(commune){
-                commune.remove().then(function(response){
-                    $rootScope.$broadcast('commune.deleted', {alert:response.data})
+            this.delete = function(livreur){
+                livreur.remove().then(function(response){
+                    $rootScope.$broadcast('livreur.deleted', {alert:response.data})
                 },function(error){
                     log(error);
                     $rootScope.$broadcast('show.message', {alert:error.data});

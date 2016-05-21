@@ -8,7 +8,7 @@
                 <th>Telephone</th>
                 <th>Email</th>
                 <th>Site web</th>
-                <th>Commune</th>
+                <th>Latitude,Longitude</th>
                 <th>Quartier</th>
                 <th>Modifier</th>
             </tr>
@@ -28,11 +28,12 @@
                     <span>{{restaurant.siteWeb}}</span>
                 </td>
                 <td>
-                    <span>{{restaurant.quartier.commune.nom}}</span>
+                    <span>{{restaurant.latitude}},{{restaurant.longitude}}</span>
                 </td>
                 <td>
-                    <span>{{restaurant.quartier.nom}}</span>
+                    <span>{{restaurant.quartier.commune.nom}}-{{restaurant.quartier.nom}}</span>
                 </td>
+
                 <td class="text-center">
                     <a ng-click="selectedRestaurant(restaurant)">
                         <i class="glyphicon glyphicon-pencil"></i>

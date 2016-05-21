@@ -24,6 +24,16 @@
                     <input type="text" name="siteWeb" id="siteWeb" tabindex="3" class="form-control"
                            placeholder="Site web" ng-model="restaurant.siteWeb">
                 </div>
+                <div class="col-sm-4">
+                    <label for="longitude" class="text-primary control-label">Longitude</label>
+                    <input type="text" name="longitude" id="longitude" tabindex="3" class="form-control"
+                           placeholder="Longitude" ng-model="restaurant.longitude">
+                </div>
+                <div class="col-sm-4">
+                    <label for="latitude" class="text-primary control-label">Latitude</label>
+                    <input type="text" name="longitude" id="latitude" tabindex="3" class="form-control"
+                           placeholder="Latitude" ng-model="restaurant.latitude">
+                </div>
                 <div class="col-sm-4" ng-class="{ 'has-error' : form.quartier.$invalid && formIsSubmit}">
                     <label for="email" class="text-primary control-label">Quartier</label>
                     <ui-select tabindex="4" ng-model="restaurant.quartier" theme="bootstrap" name="quartier" id="quartier" required>

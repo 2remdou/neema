@@ -58,6 +58,8 @@ app
                 var alert = {textAlert:response.data,typeAlert:'danger'};
                 $rootScope.$broadcast('show.message',{alert:alert});
 
+                return false; // error handled
+
                 ModalService.showModal({
                     templateUrl : 'js/view/modalChangePassword.html',
                     controller: 'ProfilController',
@@ -66,8 +68,6 @@ app
                     modal.close.then(function(){
                     });
                 });
-
-
 
                 return false; // error handled
             }
@@ -93,9 +93,6 @@ app
 
             return false;
         }
-        //PermissionStore.definePermission('ROLE_RESTAURANT',checkRole('ROLE_RESTAURANT'));
-        //PermissionStore.definePermission('ROLE_ADMIN',checkRole('ROLE_ADMIN'));
-        //PermissionStore.definePermission('ROLE_SUPER_ADMIN',checkRole('ROLE_SUPER_ADMIN'));
         PermissionStore.defineManyPermissions(['ROLE_RESTAURANT','ROLE_ADMIN','ROLE_SUPER_ADMIN'],function(permissionName, transitionProperties){
             return checkRole(permissionName);
         });
