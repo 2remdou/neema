@@ -75,15 +75,26 @@ class Commande
      */
     private $latitude;
 
+    /**
+     * @ORM\OneToMany(targetEntity="DetailCommande",mappedBy="commande")
+     * @Expose()
+     * @SerializedName("detailCommandes")
+     */
+    private $detailCommandes;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Livraison", mappedBy="commande")
+     * @Expose()
+     */
+    private $livraison;
+
+
 
 
 
     public function __construct(){
         $this->dateCommande = new \DateTime();
         $this->isDelivered = false;
-
-        $this->setLongitude('9.500124');
-        $this->setLatitude('-13.714314');
     }
     /**
      * Get id
@@ -213,5 +224,64 @@ class Commande
     public function getLatitude()
     {
         return $this->latitude;
+    }
+
+    /**
+     * Add detailCommande
+     *
+     * @param \AppBundle\Entity\DetailCommande $detailCommande
+     *
+     * @return Commande
+     */
+    public function addDetailCommande(\AppBundle\Entity\DetailCommande $detailCommande)
+    {
+        $this->detailCommandes[] = $detailCommande;
+
+        return $this;
+    }
+
+    /**
+     * Remove detailCommande
+     *
+     * @param \AppBundle\Entity\DetailCommande $detailCommande
+     */
+    public function removeDetailCommande(\AppBundle\Entity\DetailCommande $detailCommande)
+    {
+        $this->detailCommandes->removeElement($detailCommande);
+    }
+
+    /**
+     * Get detailCommandes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDetailCommandes()
+    {
+        return $this->detailCommandes;
+    }
+
+
+    /**
+     * Set livraison
+     *
+     * @param \AppBundle\Entity\Livraison $livraison
+     *
+     * @return Commande
+     */
+    public function setLivraison(\AppBundle\Entity\Livraison $livraison = null)
+    {
+        $this->livraison = $livraison;
+
+        return $this;
+    }
+
+    /**
+     * Get livraison
+     *
+     * @return \AppBundle\Entity\Livraison
+     */
+    public function getLivraison()
+    {
+        return $this->livraison;
     }
 }

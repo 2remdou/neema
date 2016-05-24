@@ -39,7 +39,7 @@ class DetailCommande
     private $quantite;
 
     /**
-     * @var int
+     * @var float
      *
      * @ORM\Column(name="prix", type="float")
      * @Expose()
@@ -47,7 +47,7 @@ class DetailCommande
     private $prix;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Commande")
+     * @ORM\ManyToOne(targetEntity="Commande",inversedBy="detailCommandes")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="La commande est obligatoire")

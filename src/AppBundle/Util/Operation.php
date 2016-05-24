@@ -114,7 +114,6 @@ class Operation
             return MessageResponse::message('Aucune donnée','info',400);
         }
         return View::create($objects,200);
-
     }
 
 

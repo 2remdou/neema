@@ -6,6 +6,8 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\DetailCommande;
+use AppBundle\Event\CommandeEnregistreEvent;
+use AppBundle\NeemaEvents;
 use AppBundle\Util\FillAttributes;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
@@ -71,9 +73,17 @@ class CommandeController extends FOSRestController
             $em->persist($commande);
             $em->flush();
 
+            $nbrePlat = 1;
+            $restaurant = null;
             foreach($details as $detail){
                 $plat = $operation->get('AppBundle:Plat',$detail['plat']);
-
+                if($nbrePlat===1){
+                    $restaurant = $plat->getRestaurant();
+                }else{
+                    if($restaurant !== $plat->getRestaurant()){
+                        return MessageResponse::message('La même commande ne peut avoir des plats de differents restaurants','danger',400);
+                    }
+                }
                 //plat introuvable
                 if($plat instanceof View){
                     return $plat;
@@ -91,7 +101,12 @@ class CommandeController extends FOSRestController
                 $em->persist($detailCommande);
                 $em->flush();
 
+                $nbrePlat++;
+
             }
+            $dispatcher = $this->get('event_dispatcher');
+            $dispatcher->dispatch(NeemaEvents::COMMANDE_ENREGISTRE,new CommandeEnregistreEvent($commande));
+
             $em->getConnection()->commit();
 
         }catch (Exception $e){
@@ -122,6 +137,35 @@ class CommandeController extends FOSRestController
 	public function getCommandesAction(){
 		$operation = $this->get('app.operation');
 		return $operation->all('AppBundle:Commande');
+	}
+	/**
+     * Lister les commandes d'un restaurant
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Lister les commandes d'un restaurant",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/commandes/restaurantConnected",name="get_commandes_by_restaurant", options={"expose"=true})
+     * @Method({"GET"})
+     * @Security("has_role('ROLE_RESTAURANT')")
+     */
+
+	public function getCommandesByRestaurantAction(){
+        $em = $this->getDoctrine()->getManager();
+
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+            $operation = $this->get('app.operation');
+            return array('plats'=>$operation->all('AppBundle:Commande'));
+        }
+
+        $user = $this->getUser();
+
+        $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant($user->getUserRestaurant()->getRestaurant()->getId());
+        return array('commandes'=> $commandes);
 	}
 	/**
      * Lister les details commandes

@@ -14,8 +14,15 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    app.commande.subscriber:
+        class: AppBundle\EventListener\CommandeSubscriber
+        arguments: ["@doctrine.orm.entity_manager"]
+        tags:
+            - { name: kernel.event_subscriber }
+
     app.api.jwt.subscriber:
         class: AppBundle\EventListener\JWTSubscriber
+        arguments: ["@serializer"]
         tags:
             - { name: kernel.event_subscriber }
 

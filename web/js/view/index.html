@@ -1,0 +1,49 @@
+
+<div class="col-md-12 col-xs-12">
+    <h1 class="text-center">LISTE DES COMMANDES</h1>
+    <div class="col-md-8 col-md-offset-2 mg-top-20" ng-repeat="commande in commandes">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="col-md-6">
+                    <p><strong>Telephone client:</strong> {{commande.telephone}}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Date commande:</strong> {{commande.dateCommande}}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Livreur:</strong> {{commande.livraison.livreur.prenom}}  {{commande.livraison.livreur.nom}}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Telephone Livreur:</strong> {{commande.livraison.livreur.telephone}}</p>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Plat</th>
+                        <th>Temps restant</th>
+                        <th>Terminer</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="detail in commande.detailCommandes">
+                        <td>
+                            <span>{{detail.plat.nom}}</span>
+                        </td>
+                        <td>
+                            <span>{{detail.plat.dureePreparation}}</span>
+                        </td>
+                        <td class="text-center">
+                            <a ng-click="selectedRestaurant(restaurant)">
+                                <i class="btn btn-success glyphicon glyphicon-ok"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div>
+</div>

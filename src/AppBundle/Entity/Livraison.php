@@ -33,14 +33,14 @@ class Livraison
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateLivraison", type="datetime")
+     * @ORM\Column(name="dateLivraison", type="datetime", nullable=true)
      * @Expose()
      * @SerializedName("dateLivraison")
      */
     private $dateLivraison;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Commande")
+     * @ORM\OneToOne(targetEntity="Commande", inversedBy="livraison")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="La commande est obligatoire")
@@ -49,7 +49,7 @@ class Livraison
 
     /**
      * @ORM\ManyToOne(targetEntity="Livreur")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      * @Expose()
      * @Assert\NotNull(message="Le livreur est obligatoire")
      */

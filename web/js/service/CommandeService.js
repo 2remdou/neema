@@ -30,6 +30,15 @@ app.service('CommandeService',
                 });
             };
 
+            this.listByRestaurant = function(idRestaurant){
+                _commandeService.one('restaurantConnected').customGET().then(function(response){
+                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
+                },function(error){
+                   log(error)
+                });
+
+            };
+
             this.update = function(commande){
                 commande.put().then(function(response){
                     $rootScope.$broadcast('commande.updated', {alert:response.data})

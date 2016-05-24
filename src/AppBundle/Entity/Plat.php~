@@ -46,7 +46,7 @@ class Plat
     private $description;
 
     /**
-     * @ORM\OneToOne(targetEntity="ImagePlat")
+     * @ORM\OneToOne(targetEntity="ImagePlat",mappedBy="plat")
      * @Expose()
      */
     private $image;
@@ -68,13 +68,22 @@ class Plat
     private $prix;
 
     /**
-     * @var boolean
+     * @var float
      *
-     * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
+     * @ORM\Column(name="dureePreparation", type="float")
      * @Expose()
-     * @SerializedName("onMenu")
+     * @SerializedName("dureePreparation")
      */
-    protected $onMenu;
+    private $dureePreparation;
+
+        /**
+         * @var boolean
+         *
+         * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
+         * @Expose()
+         * @SerializedName("onMenu")
+         */
+        protected $onMenu;
 
 
     /**
@@ -205,5 +214,29 @@ class Plat
     public function getRestaurant()
     {
         return $this->restaurant;
+    }
+
+    /**
+     * Set onMenu
+     *
+     * @param boolean $onMenu
+     *
+     * @return Plat
+     */
+    public function setOnMenu($onMenu=1)
+    {
+        $this->onMenu = $onMenu;
+
+        return $this;
+    }
+
+    /**
+     * Get onMenu
+     *
+     * @return boolean
+     */
+    public function getOnMenu()
+    {
+        return $this->onMenu;
     }
 }

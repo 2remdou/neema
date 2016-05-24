@@ -75,6 +75,20 @@ class Commande
      */
     private $latitude;
 
+    /**
+     * @ORM\OneToMany(targetEntity="DetailCommande",mappedBy="commande")
+     * @Expose()
+     * @SerializedName("detailCommandes")
+     */
+    private $detailCommandes;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Livraison", mappedBy="commande")
+     * @Expose()
+     */
+    private $livraison;
+
+
 
 
 
@@ -163,4 +177,87 @@ class Commande
     {
         return $this->isDelivered;
     }
+
+    /**
+     * Set longitude
+     *
+     * @param string $longitude
+     *
+     * @return Commande
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return string
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * Set latitude
+     *
+     * @param string $latitude
+     *
+     * @return Commande
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return string
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+
+    /**
+     * Add detailCommande
+     *
+     * @param \AppBundle\Entity\DetailCommande $detailCommande
+     *
+     * @return Commande
+     */
+    public function addDetailCommande(\AppBundle\Entity\DetailCommande $detailCommande)
+    {
+        $this->detailCommandes[] = $detailCommande;
+
+        return $this;
+    }
+
+    /**
+     * Remove detailCommande
+     *
+     * @param \AppBundle\Entity\DetailCommande $detailCommande
+     */
+    public function removeDetailCommande(\AppBundle\Entity\DetailCommande $detailCommande)
+    {
+        $this->detailCommandes->removeElement($detailCommande);
+    }
+
+    /**
+     * Get detailCommandes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDetailCommandes()
+    {
+        return $this->detailCommandes;
+    }
+
 }

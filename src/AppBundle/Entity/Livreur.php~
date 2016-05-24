@@ -58,6 +58,15 @@ class Livreur
     private $code;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="telephone", type="string", length=255, unique=true)
+     * @Expose()
+     * @Assert\NotBlank(message="le telephone est obligatoire")
+     */
+    private $telephone;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="isFree", type="boolean", options={"default":true})
@@ -65,6 +74,12 @@ class Livreur
      * @SerializedName("isFree")
      */
     private $isFree;
+
+
+
+    public function __construct(){
+        $this->isFree = true;
+    }
 
 
 
@@ -148,5 +163,29 @@ class Livreur
     public function getCode()
     {
         return $this->code;
+    }
+
+    /**
+     * Set isFree
+     *
+     * @param boolean $isFree
+     *
+     * @return Livreur
+     */
+    public function setIsFree($isFree)
+    {
+        $this->isFree = $isFree;
+
+        return $this;
+    }
+
+    /**
+     * Get isFree
+     *
+     * @return boolean
+     */
+    public function getIsFree()
+    {
+        return $this->isFree;
     }
 }

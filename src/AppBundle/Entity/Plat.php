@@ -67,6 +67,15 @@ class Plat
      */
     private $prix;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="dureePreparation", type="float")
+     * @Expose()
+     * @SerializedName("dureePreparation")
+     */
+    private $dureePreparation;
+
         /**
          * @var boolean
          *
@@ -229,5 +238,29 @@ class Plat
     public function getOnMenu()
     {
         return $this->onMenu;
+    }
+
+    /**
+     * Set dureePreparation
+     *
+     * @param float $dureePreparation
+     *
+     * @return Plat
+     */
+    public function setDureePreparation($dureePreparation)
+    {
+        $this->dureePreparation = $dureePreparation;
+
+        return $this;
+    }
+
+    /**
+     * Get dureePreparation
+     *
+     * @return float
+     */
+    public function getDureePreparation()
+    {
+        return $this->dureePreparation;
     }
 }

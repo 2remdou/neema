@@ -95,7 +95,8 @@ app.service('UserService',
                         nom:tokenDecoded.nom,
                         prenom:tokenDecoded.prenom,
                         username:tokenDecoded.username,
-                        roles : tokenDecoded.roles
+                        roles : tokenDecoded.roles,
+                        restaurant : tokenDecoded.restaurant
                     };
                     return user;
                 }

@@ -10,6 +10,7 @@ namespace AppBundle\EventListener;
 
 
 
+use JMS\Serializer\Serializer;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
@@ -17,6 +18,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class JWTSubscriber implements EventSubscriberInterface
 {
+    private $serializer;
+
+    public function __construct(Serializer $serializer){
+        $this->serializer = $serializer;
+    }
 
     public function onJWTCreated(JWTCreatedEvent $event){
 
@@ -29,6 +35,12 @@ class JWTSubscriber implements EventSubscriberInterface
         $payload['nom'] = $user->getNom();
         $payload['prenom'] = $user->getPrenom();
         $payload['roles'] = $user->getRoles();
+        if($user->getUserRestaurant()){
+            $payload['restaurant'] = array(
+                                        'id'=>$user->getUserRestaurant()->getRestaurant()->getId(),
+                                        'nom' => $user->getUserRestaurant()->getRestaurant()->getNom()
+                                         ) ;
+        }
 
         $event->setData($payload);
     }
