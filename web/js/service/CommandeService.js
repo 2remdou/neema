@@ -32,7 +32,7 @@ app.service('CommandeService',
 
             this.listByRestaurant = function(idRestaurant){
                 _commandeService.one('restaurantConnected').customGET().then(function(response){
-                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
+                    $rootScope.$broadcast('commande.list',{commandes:response.commandes.data});
                 },function(error){
                    log(error)
                 });

@@ -76,6 +76,16 @@ class Commande
     private $latitude;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="fraisTransport", type="float")
+     * @Assert\NotBlank(message="Le transport est obligatoire")
+     * @Expose()
+     */
+    private $fraisTransport;
+
+
+    /**
      * @ORM\OneToMany(targetEntity="DetailCommande",mappedBy="commande")
      * @Expose()
      * @SerializedName("detailCommandes")
@@ -260,4 +270,28 @@ class Commande
         return $this->detailCommandes;
     }
 
+
+    /**
+     * Set livraison
+     *
+     * @param \AppBundle\Entity\Livraison $livraison
+     *
+     * @return Commande
+     */
+    public function setLivraison(\AppBundle\Entity\Livraison $livraison = null)
+    {
+        $this->livraison = $livraison;
+
+        return $this;
+    }
+
+    /**
+     * Get livraison
+     *
+     * @return \AppBundle\Entity\Livraison
+     */
+    public function getLivraison()
+    {
+        return $this->livraison;
+    }
 }

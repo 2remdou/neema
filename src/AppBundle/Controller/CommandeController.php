@@ -42,6 +42,7 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="detailCommandes", array=true,nullable=false, description="les details de la commande")
      * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
      * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
+     * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
      * @Route("api/commandes",name="post_commande", options={"expose"=true})
      * @Method({"POST"})
 	 */
@@ -63,6 +64,7 @@ class CommandeController extends FOSRestController
             $commande->setTelephone($paramFetcher->get('telephone'));
             $commande->setLatitude($paramFetcher->get('latitude'));
             $commande->setLongitude($paramFetcher->get('longitude'));
+            $commande->setFraisTransport($paramFetcher->get('fraisTransport'));
 
             $validator = $this->get('validator');
 
@@ -159,7 +161,7 @@ class CommandeController extends FOSRestController
 
         if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $operation = $this->get('app.operation');
-            return array('plats'=>$operation->all('AppBundle:Commande'));
+            return array('commandes'=>$operation->all('AppBundle:Commande'));
         }
 
         $user = $this->getUser();
@@ -242,6 +244,7 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="telephone",nullable=false, description="le numero de telephone du client")
      * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
      * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
+     * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
      * @Route("api/commandes/{id}",name="put_commande", options={"expose"=true})
      * @Method({"PUT"})
 	 * @Security("has_role('ROLE_ADMIN')")
