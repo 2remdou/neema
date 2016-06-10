@@ -15,13 +15,13 @@ parameters:
 #    maileruser:       ~
 #    mailerpassword:   ~
 #
-#    jwtprivatekeypath: %kernel.root_dir%/../var/jwt/private.pem   # ssh private key path
-#    jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
-#    jwttokenttl:        86400
-#
-#    neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
-#    neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
-#    defaultpassword : neema
+    jwtprivatekeypath: %kernel.root_dir%/../var/jwt/private.pem   # ssh private key path
+    jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
+    jwttokenttl:        86400
+
+    neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
+    neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
+    defaultpassword : neema
 #
 #    jwttokenttl:        86400
 #    # A secret key that's used to generate certain security-related tokens
