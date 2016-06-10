@@ -31,7 +31,10 @@ class NeemaController extends FOSRestController
      */
 
 	public function indexAction(){
-        return $this->render('base.html.twig');
+        $env=$this->get('kernel')->getEnvironment();
+        $template='base_'.$env.'.html.twig';
+
+        return $this->render($template);
 	}
 
 }

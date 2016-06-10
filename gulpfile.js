@@ -54,8 +54,8 @@ gulp.task('concatCss',function(){
         .pipe(gulp.dest('web/bundles/'));
 });
 
-    //aws s3 cp web/bundles/compiled/all.js s3://nicetruc/js/
-    //aws s3 cp web/client/app/views/css/all.css s3://nicetruc/css/
+    //aws s3 --region us-east-1 cp web/bundles/all.js s3://neemas3/js/
+    //aws s3 --region us-east-1 cp web/bundles/all.css s3://neemas3/css/
 
 gulp.task('default', function() {
     gulp.start('concatJs', 'concatCss');
