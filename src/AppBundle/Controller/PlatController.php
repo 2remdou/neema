@@ -124,6 +124,7 @@ class PlatController extends FOSRestController
      * )
      * @Route("api/plats",name="get_plats", options={"expose"=true})
      * @Method({"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
 	public function getPlatsAction(){

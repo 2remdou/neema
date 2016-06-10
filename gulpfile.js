@@ -33,6 +33,7 @@ gulp.task('concatJs',function () {
 });
 gulp.task('service',function () {
     return gulp.src([
+        'web/js/Util.js',
         'web/js/service/*.js'
     ])
         .pipe(concat('service.js'))

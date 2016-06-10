@@ -9,6 +9,7 @@
 namespace AppBundle\EventListener;
 
 
+use AppBundle\Exception\AccountEnabledException;
 use AppBundle\Exception\ChangePasswordException;
 use JMS\Serializer\Serializer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\Security\Core\Exception\AccountExpiredException;
 use Symfony\Component\Security\Core\Exception\InsufficientAuthenticationException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -39,7 +41,11 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
 
         if($e instanceof ChangePasswordException){
             $response = new JsonResponse($e->getMessage(),$e->getCode());
-            dump($response);
+            $event->setResponse($response);
+        }
+
+        if($e instanceof AccountEnabledException){
+            $response = new JsonResponse($e->getMessage(),$e->getCode());
             $event->setResponse($response);
         }
 
@@ -62,6 +68,10 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         if($user instanceof UserInterface){
             if($user->getIsReseted() && $event->getController()[1]!=='changePasswordAction'){
                 throw new ChangePasswordException('Vous devez changer votre mot de passe, après réinitialisation');
+            }
+            if(!$user->getEnabled() && $event->getController()[1]!=='enabledAction' && $event->getController()[1]!=='sendBackActivationCodeAction'){
+//                throw new ChangePasswordException('Tapez le code réçu par sms, pour activer votre compte');
+                throw new AccountEnabledException('Tapez le code réçu par sms, pour activer votre compte');
             }
         }
     }

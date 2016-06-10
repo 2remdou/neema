@@ -74,11 +74,29 @@ class User implements UserInterface
     /**
      * @var string
      *
-     * @ORM\Column(name="isReseted", type="boolean", options={"default":true})
+     * @ORM\Column(name="isReseted", type="boolean", options={"default":false})
      * @Expose()
      * @SerializedName("isReseted")
      */
     protected $isReseted;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="enabled", type="boolean", options={"default":false})
+     * @Expose()
+     * @SerializedName("enabled")
+     */
+    protected $enabled;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="activationCode", type="integer",nullable=false)
+     * @Expose()
+     */
+    protected $activationCode;
+
 
     /**
      * @var array
@@ -281,5 +299,113 @@ class User implements UserInterface
     public function getPrenom()
     {
         return $this->prenom;
+    }
+
+    /**
+     * Set isReseted
+     *
+     * @param boolean $isReseted
+     *
+     * @return User
+     */
+    public function setIsReseted($isReseted)
+    {
+        $this->isReseted = $isReseted;
+
+        return $this;
+    }
+
+    /**
+     * Get isReseted
+     *
+     * @return boolean
+     */
+    public function getIsReseted()
+    {
+        return $this->isReseted;
+    }
+
+    /**
+     * Set userRestaurant
+     *
+     * @param \AppBundle\Entity\UserRestaurant $userRestaurant
+     *
+     * @return User
+     */
+    public function setUserRestaurant(\AppBundle\Entity\UserRestaurant $userRestaurant = null)
+    {
+        $this->userRestaurant = $userRestaurant;
+
+        return $this;
+    }
+
+    /**
+     * Get userRestaurant
+     *
+     * @return \AppBundle\Entity\UserRestaurant
+     */
+    public function getUserRestaurant()
+    {
+        return $this->userRestaurant;
+    }
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     *
+     * @return User
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Set activationCode
+     *
+     * @param integer $activationCode
+     *
+     * @return User
+     */
+    public function setActivationCode($activationCode)
+    {
+        $this->activationCode = $activationCode;
+
+        return $this;
+    }
+
+    /**
+     * generate activationCode
+     *
+     * @return User
+     */
+    public function generateActivationCode()
+    {
+        $this->activationCode = rand(10000,99999);
+
+        return $this;
+    }
+
+    /**
+     * Get activationCode
+     *
+     * @return integer
+     */
+    public function getActivationCode()
+    {
+        return $this->activationCode;
     }
 }

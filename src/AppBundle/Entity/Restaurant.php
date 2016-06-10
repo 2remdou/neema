@@ -89,6 +89,12 @@ class Restaurant
     private $images;
 
     /**
+     * @ORM\OneToMany(targetEntity="Commande",mappedBy="restaurant")
+     * @Expose()
+     */
+    private $commandes;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="longitude", type="string", length=255)
@@ -349,5 +355,39 @@ class Restaurant
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * Add commande
+     *
+     * @param \AppBundle\Entity\Commande $commande
+     *
+     * @return Restaurant
+     */
+    public function addCommande(\AppBundle\Entity\Commande $commande)
+    {
+        $this->commandes[] = $commande;
+
+        return $this;
+    }
+
+    /**
+     * Remove commande
+     *
+     * @param \AppBundle\Entity\Commande $commande
+     */
+    public function removeCommande(\AppBundle\Entity\Commande $commande)
+    {
+        $this->commandes->removeElement($commande);
+    }
+
+    /**
+     * Get commandes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommandes()
+    {
+        return $this->commandes;
     }
 }

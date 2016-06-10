@@ -98,6 +98,23 @@ class Commande
      */
     private $livraison;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="commande")
+     * @Expose()
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="Le user est obligatoire")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Restaurant", inversedBy="commande")
+     * @Expose()
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="Le restaurant est obligatoire")
+     */
+    private $restaurant;
+
+
 
 
 
@@ -137,7 +154,7 @@ class Commande
      */
     public function getDateCommande()
     {
-        return $this->dateCommande;
+        return $this->dateCommande->getTimestamp();
     }
 
     /**
@@ -317,5 +334,53 @@ class Commande
     public function getFraisTransport()
     {
         return $this->fraisTransport;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Commande
+     */
+    public function setUser(\AppBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set restaurant
+     *
+     * @param \AppBundle\Entity\Restaurant $restaurant
+     *
+     * @return Commande
+     */
+    public function setRestaurant(\AppBundle\Entity\Restaurant $restaurant)
+    {
+        $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    /**
+     * Get restaurant
+     *
+     * @return \AppBundle\Entity\Restaurant
+     */
+    public function getRestaurant()
+    {
+        return $this->restaurant;
     }
 }

@@ -30,9 +30,18 @@ app.service('CommandeService',
                 });
             };
 
-            this.listByRestaurant = function(idRestaurant){
+            this.listByRestaurant = function(){
                 _commandeService.one('restaurantConnected').customGET().then(function(response){
-                    $rootScope.$broadcast('commande.list',{commandes:response.commandes.data});
+                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
+                },function(error){
+                   log(error)
+                });
+
+            };
+
+            this.listByUserConnected = function(){
+                _commandeService.one('userConnected').customGET().then(function(response){
+                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
                 },function(error){
                    log(error)
                 });

@@ -31,9 +31,21 @@ app.service('UserService',
                 });
             };
 
+
             this.inscription = function(user){
                 user.restaurant = extractId(user.restaurant);
                 _loginService.one('userRestaurant').post('',user).then(function(response){
+                    $rootScope.$broadcast('user.registred',{alert:response.data});
+                },function(error){
+                    that.clear();
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
+            this.inscriptionClient = function(user){
+                _loginService.post(user).then(function(response){
+                    that.setToken(response.data.token);
+                    $rootScope.userConnnected = that.getUser();
                     $rootScope.$broadcast('user.registred',{alert:response.data});
                 },function(error){
                     that.clear();
@@ -49,9 +61,49 @@ app.service('UserService',
                 });
             };
 
+            this.newPassword = function(username,newPassword,confirmationPassword){
+                _loginService.customPUT({username:username,newPassword:newPassword,confirmationPassword:confirmationPassword},'newPassword').then(function(response){
+                    $rootScope.$broadcast('user.password.changed',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
             this.reset = function(user){
                 _loginService.customPUT(user,'reset/'+user.id).then(function(response){
                     $rootScope.$broadcast('user.password.reseted',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
+            this.resetClient = function(user){
+                _loginService.customPUT(null,'resetClient/'+user.telephone).then(function(response){
+                    $rootScope.$broadcast('user.password.reseted',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
+            this.enabled = function(code){
+                _loginService.customPUT(code,'enabled').then(function(response){
+                    $rootScope.$broadcast('user.account.enabled',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
+            this.sendBackCodeActivation = function(telephone){
+                _loginService.customPUT({username:telephone},'sendBackActivationCode').then(function(response){
+                    $rootScope.$broadcast('user.code.sendback',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
+            this.checkCode = function(telephone,code){
+                _loginService.customPUT({username:telephone,code:code},'checkCode').then(function(response){
+                    $rootScope.$broadcast('user.code.checked',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });

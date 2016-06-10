@@ -43,9 +43,11 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
      * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
      * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
+     * @RequestParam(name="restaurant",nullable=false, description="Le restaurant de la commande")
      * @Route("api/commandes",name="post_commande", options={"expose"=true})
      * @Method({"POST"})
-	 */
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
 	public function postCommandeAction(Request $request,ParamFetcher $paramFetcher){
 
         $details = $paramFetcher->get('detailCommandes');
@@ -58,6 +60,11 @@ class CommandeController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
 
+        $restaurant = $em->getRepository('AppBundle:Restaurant')->findOneBy(array('id'=>$paramFetcher->get('restaurant')));
+
+        if(!$restaurant){
+            return MessageResponse::message('Le restaurant de la commande est inconnu','danger',400);
+        }
         $commande = new Commande();
         try{
 
@@ -65,6 +72,8 @@ class CommandeController extends FOSRestController
             $commande->setLatitude($paramFetcher->get('latitude'));
             $commande->setLongitude($paramFetcher->get('longitude'));
             $commande->setFraisTransport($paramFetcher->get('fraisTransport'));
+            $commande->setUser($this->getUser());
+            $commande->setRestaurant($restaurant);
 
             $validator = $this->get('validator');
 
@@ -76,14 +85,17 @@ class CommandeController extends FOSRestController
             $em->flush();
 
             $nbrePlat = 1;
-            $restaurant = null;
+            $restaurantPlat = null;
             foreach($details as $detail){
                 $plat = $operation->get('AppBundle:Plat',$detail['plat']);
                 if($nbrePlat===1){
-                    $restaurant = $plat->getRestaurant();
+                    $restaurantPlat = $plat->getRestaurant();
+                    if($restaurantPlat !== $restaurant){
+                        return MessageResponse::message('Une commande ne peut avoir des plats de differents restaurants','danger',400);
+                    }
                 }else{
-                    if($restaurant !== $plat->getRestaurant()){
-                        return MessageResponse::message('La même commande ne peut avoir des plats de differents restaurants','danger',400);
+                    if($restaurantPlat !== $plat->getRestaurant()){
+                        return MessageResponse::message('Une commande ne peut avoir des plats de differents restaurants','danger',400);
                     }
                 }
                 //plat introuvable
@@ -161,12 +173,40 @@ class CommandeController extends FOSRestController
 
         if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $operation = $this->get('app.operation');
-            return array('commandes'=>$operation->all('AppBundle:Commande'));
+
+            $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant();
+            return array('commandes'=> $commandes);
         }
 
         $user = $this->getUser();
 
         $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant($user->getUserRestaurant()->getRestaurant()->getId());
+        return array('commandes'=> $commandes);
+	}
+
+	/**
+     * Lister les commandes passées par utilisateur connecté
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Lister les commandes passées par utilisateur connecté",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/commandes/userConnected",name="get_commandes_by_user", options={"expose"=true})
+     * @Method({"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+
+	public function getCommandesByUserConnectedAction(){
+        $em = $this->getDoctrine()->getManager();
+
+
+        $user = $this->getUser();
+
+        $commandes = $em->getRepository('AppBundle:Commande')->findByUser($user->getId());
         return array('commandes'=> $commandes);
 	}
 	/**

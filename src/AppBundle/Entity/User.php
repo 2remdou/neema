@@ -81,6 +81,24 @@ class User implements UserInterface
     protected $isReseted;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="enabled", type="boolean", options={"default":false})
+     * @Expose()
+     * @SerializedName("enabled")
+     */
+    protected $enabled;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="activationCode", type="integer",nullable=false)
+     * @Expose()
+     */
+    protected $activationCode;
+
+
+    /**
      * @var array
      *
      * @ORM\Column(name="role", type="array", length=255)
@@ -329,5 +347,65 @@ class User implements UserInterface
     public function getUserRestaurant()
     {
         return $this->userRestaurant;
+    }
+
+    /**
+     * Set enabled
+     *
+     * @param boolean $enabled
+     *
+     * @return User
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * Get enabled
+     *
+     * @return boolean
+     */
+    public function getEnabled()
+    {
+        return $this->enabled;
+    }
+
+    /**
+     * Set activationCode
+     *
+     * @param integer $activationCode
+     *
+     * @return User
+     */
+    public function setActivationCode($activationCode)
+    {
+        $this->activationCode = $activationCode;
+
+        return $this;
+    }
+
+    /**
+     * generate activationCode
+     *
+     * @return User
+     */
+    public function generateActivationCode()
+    {
+        $this->activationCode = rand(10000,99999);
+
+        return $this;
+    }
+
+    /**
+     * Get activationCode
+     *
+     * @return integer
+     */
+    public function getActivationCode()
+    {
+        return $this->activationCode;
     }
 }

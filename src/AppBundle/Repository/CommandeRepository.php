@@ -10,17 +10,31 @@ namespace AppBundle\Repository;
  */
 class CommandeRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function findByRestaurant($idRestaurant){
+    public function findByRestaurant($idRestaurant=''){
         $dql  = "SELECT c from AppBundle:Commande c
                   JOIN c.detailCommandes d
                   JOIN d.plat p
                   JOIN p.restaurant r
-                  WHERE r.id=:idRestaurant";
+                  WHERE r.id LIKE :idRestaurant";
 
 
         $query = $this->getEntityManager()
                     ->createQuery($dql)
-                    ->setParameter('idRestaurant',$idRestaurant);
+                    ->setParameter('idRestaurant','%'.$idRestaurant.'%');
         return $query->getResult();
+    }
+
+    public function findByUser($idUser){
+        $dql  = "SELECT c,r from AppBundle:Commande c
+                  JOIN c.user u
+                  JOIN c.restaurant r
+                  WHERE u.id LIKE :idUser
+                  GROUP BY c,r";
+
+
+        $query = $this->getEntityManager()
+                    ->createQuery($dql)
+                    ->setParameter('idUser','%'.$idUser.'%');
+        return $query->getArrayResult();
     }
 }

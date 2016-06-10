@@ -91,6 +91,8 @@ class UserController extends FOSRestController
      * )
 	 * @RequestParam(name="username",nullable=false, description="username")
 	 * @RequestParam(name="password",nullable=false, description="password")
+     * @RequestParam(name="nom",nullable=true, description="nom")
+     * @RequestParam(name="prenom",nullable=true, description="prenom")
      * @Route("api/users",name="post_user", options={"expose"=true})
      * @Method({"POST"})
      */
@@ -100,6 +102,11 @@ class UserController extends FOSRestController
 
 		$user->setUsername($paramFetcher->get('username'));
 		$user->setPassword($paramFetcher->get('password'));
+        $user->setNom($paramFetcher->get('nom'));
+        $user->setPrenom($paramFetcher->get('prenom'));
+        $user->setIsReseted(false);
+		$user->setEnabled(false);
+        $user->generateActivationCode();
         $user->setRoles(array('ROLE_CLIENT'));
 
 
@@ -117,7 +124,9 @@ class UserController extends FOSRestController
 
 		$em->flush();
 
-		return MessageResponse::message('utilisateur ajouté avec succès','success',201);
+        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+		return MessageResponse::message('utilisateur ajouté avec succès','success',201,array('token'=>$jwt));
 
 
 	}
@@ -156,6 +165,7 @@ class UserController extends FOSRestController
             $user->setPassword($paramFetcher->get('password'));
             $user->setNom($paramFetcher->get('nom'));
             $user->setPrenom($paramFetcher->get('prenom'));
+            $user->setEnabled(true);
             $user->setRoles(array('ROLE_RESTAURANT'));
 
             //pour encoder le password
@@ -207,7 +217,7 @@ class UserController extends FOSRestController
      * @RequestParam(name="prenom",nullable=true, description="prenom de l'utilisateur")
      * @Route("api/users/edit/{id}",name="put_edit_user", options={"expose"=true})
      * @Method({"PUT"})
-     * @Security("!has_role('IS_AUTHENTICATED_ANONYMOUSLY')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
     public function putUserAction($id,Request $request,ParamFetcher $paramFetcher){
         $em = $this->getDoctrine()->getManager();
@@ -227,11 +237,11 @@ class UserController extends FOSRestController
     }
 
     /**
-     * Reinitialiser le mot de passe d'un utilisateur
+     * Reinitialiser le mot de passe d'un utilisateur restaurant
      *
      * @ApiDoc(
      *   resource = true,
-     *   description = "Reinitialiser le mot de passe d'un utilisateur",
+     *   description = "Reinitialiser le mot de passe d'un utilisateur restaurant",
      *   statusCodes = {
      *     	200 = "Success",
      *		404 = "Not found"
@@ -260,6 +270,149 @@ class UserController extends FOSRestController
         return MessageResponse::message('Le mot de passe reinitialiser avec succès','success',200);
 
     }
+    /**
+     * Reinitialiser le mot de passe d'un client
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Reinitialiser le mot de passe d'un client",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @Route("api/users/resetClient/{telephone}",name="put_reset_client", options={"expose"=true})
+     * @Method({"PUT"})
+     */
+
+    public function resetClientAction($telephone){
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')->findOneBy(array('username'=>$telephone));
+
+        if(!$user){
+            return MessageResponse::message('Numero de telephone introuvable','danger',400);
+        }
+
+//        $user->setIsReseted(true);
+        $user->generateActivationCode();
+
+        $em->flush();
+
+        return MessageResponse::message('Le mot de passe reinitialiser avec succès','success',200);
+
+    }
+
+    /**
+     * Activation compte
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Activation compte",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @RequestParam(name="code",nullable=false, description="code d'activation")
+     * @Route("api/users/enabled",name="put_user_enabled", options={"expose"=true})
+     * @Method({"PUT"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+
+    public function enabledAction(ParamFetcher $paramFetcher){
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $this->getUser();
+
+        if($paramFetcher->get('code') != $user->getActivationCode()){
+            return MessageResponse::message('Le code est incorrect','danger',400);
+        }
+
+        $user->setActivationCode(null);
+        $user->setEnabled(true);
+
+        $em->flush();
+
+        return MessageResponse::message('Votre compte a été activé avec succès','success',200);
+
+    }
+
+    /**
+     * Verifier le code pour la reinitialisation du mot de passe
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Verifier le code pour la reinitialisation du mot de passe",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @RequestParam(name="username",nullable=false, description="username")
+     * @RequestParam(name="code",nullable=false, description="code d'activation")
+     * @Route("api/users/checkCode",name="put_user_check_code", options={"expose"=true})
+     * @Method({"PUT"})
+     */
+
+    public function checkCodeAction(ParamFetcher $paramFetcher){
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')->findOneBy(array('username'=>$paramFetcher->get('username')));
+        if(!$user){
+            return MessageResponse::message('Numero de telephone est introuvable','danger',400);
+        }
+
+        if($paramFetcher->get('code') != $user->getActivationCode()){
+            return MessageResponse::message('Le code est incorrect','danger',400);
+        }
+
+        $user->setActivationCode(null);
+        $user->setIsReseted(true);
+
+        $em->flush();
+
+        return MessageResponse::message('Le code est correct','success',200);
+
+    }
+
+    /**
+     * Renvoyer le code activation
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Renvoyer le code activation",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @RequestParam(name="username",nullable=true, description="username")
+     * @Route("api/users/sendBackActivationCode",name="put_user_sendback_code", options={"expose"=true})
+     * @Method({"PUT"})
+     */
+
+    public function sendBackActivationCodeAction(ParamFetcher $paramFetcher){
+        $em = $this->getDoctrine()->getManager();
+
+        //s\'il est authentifié, c'est une activation de compte, non une réinitialisation
+        if($this->get('security.authorization_checker')->isGranted('IS_AUTHENTICATED_FULLY')){
+            $user = $this->getUser();
+            $user->setEnabled(false);
+        }else{
+            $user = $em->getRepository('AppBundle:User')->findOneBy(array('username'=>$paramFetcher->get('username')));
+            if(!$user){
+                return MessageResponse::message('Numero de telephone introuvable','danger',400);
+            }
+        }
+
+        $user->generateActivationCode();
+
+        $em->flush();
+
+        return MessageResponse::message('Code renvoyé','success',200);
+
+    }
 
     /**
      * Changer le mot de passe d'un utilisateur
@@ -277,7 +430,7 @@ class UserController extends FOSRestController
      * @RequestParam(name="confirmationPassword",nullable=false, description="La confirmation du mot de passe de l'utilisateur")
      * @Route("api/users/changePassword",name="put_change_password", options={"expose"=true})
      * @Method({"PUT"})
-     * @Security("!has_role('IS_AUTHENTICATED_ANONYMOUSLY')")
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
     public function changePasswordAction(ParamFetcher $paramFetcher){
@@ -297,6 +450,50 @@ class UserController extends FOSRestController
 
         if(!$encoder->isPasswordValid($user,$paramFetcher->get('passwordActuel'))){
             return MessageResponse::message('Le mot de passe actuel est incorrect','danger',400);
+        }
+
+        $user->setPassword($paramFetcher->get('newPassword'));
+        $user->setIsReseted(false);
+        $this->updatePassword($user);
+
+        $em->flush();
+
+        return MessageResponse::message('Votre mot de passe a été modifié avec succès','success',200);
+
+    }
+    /**
+     * Reinitialiser le mot de passe d'un utilisateur
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Reinitialiser le mot de passe d'un utilisateur",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @RequestParam(name="username",nullable=false, description="Username")
+     * @RequestParam(name="newPassword",nullable=false, description="Le nouveau mot de passe de l'utilisateur")
+     * @RequestParam(name="confirmationPassword",nullable=false, description="La confirmation du mot de passe de l'utilisateur")
+     * @Route("api/users/newPassword",name="put_new_password", options={"expose"=true})
+     * @Method({"PUT"})
+     */
+
+    public function newPasswordAction(ParamFetcher $paramFetcher){
+        $em = $this->getDoctrine()->getManager();
+
+        $user = $em->getRepository('AppBundle:User')->findOneBy(array('username'=>$paramFetcher->get('username')));
+
+        if(!$user){
+            return MessageResponse::message('Numero de telephone introuvable','danger',400);
+        }
+
+        if(!$user->getIsReseted()){
+            return MessageResponse::message('Vous devez réinitialiser le mot de passe, avant de le modifier','danger',400);
+        }
+
+        if($paramFetcher->get('newPassword') !== $paramFetcher->get('confirmationPassword')){
+            return MessageResponse::message('La confirmation doit être identique au nouveau mot de passe','danger',400);
         }
 
         $user->setPassword($paramFetcher->get('newPassword'));

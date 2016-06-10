@@ -98,6 +98,23 @@ class Commande
      */
     private $livraison;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="commande")
+     * @Expose()
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="Le user est obligatoire")
+     */
+    private $user;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Restaurant", inversedBy="commande")
+     * @Expose()
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="Le restaurant est obligatoire")
+     */
+    private $restaurant;
+
+
 
 
 
@@ -293,5 +310,53 @@ class Commande
     public function getLivraison()
     {
         return $this->livraison;
+    }
+
+    /**
+     * Set fraisTransport
+     *
+     * @param float $fraisTransport
+     *
+     * @return Commande
+     */
+    public function setFraisTransport($fraisTransport)
+    {
+        $this->fraisTransport = $fraisTransport;
+
+        return $this;
+    }
+
+    /**
+     * Get fraisTransport
+     *
+     * @return float
+     */
+    public function getFraisTransport()
+    {
+        return $this->fraisTransport;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return Commande
+     */
+    public function setUser(\AppBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

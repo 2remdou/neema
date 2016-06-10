@@ -15,7 +15,7 @@ app.controller('IndexController',
                 $state.go('login');
             }
             usSpinnerService.spin('nt-spinner');
-            CommandeService.listByRestaurant(user.restaurant.id);
+            CommandeService.listByRestaurant();
 
 
             //*************LISTENER***************
