@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38a9718a-34a0-4cfc-8b05-8dd02b59691a" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/composer.json" afterPath="$PROJECT_DIR$/composer.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/parameters.yml.dist" afterPath="$PROJECT_DIR$/app/config/parameters.yml.dist" />
     </list>
     <ignored path="neema.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,16 +24,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="config.yml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/config/config.yml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="106" column="0" selection-start-line="106" selection-start-column="0" selection-end-line="106" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="config_prod.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/config/config_prod.yml">
           <provider selected="true" editor-type-id="text-editor">
@@ -54,11 +44,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parameters.yml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="parameters.yml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/config/parameters.yml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6195652">
-              <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="parameters.yml.dist" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/config/parameters.yml.dist">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.26086956">
+              <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+              <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+              <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+              <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+              <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
               <folding />
             </state>
           </provider>
@@ -183,7 +187,6 @@
         <option value="$PROJECT_DIR$/Procfile" />
         <option value="$PROJECT_DIR$/app/AppKernel.php" />
         <option value="$PROJECT_DIR$/app/config/parameters.yml" />
-        <option value="$PROJECT_DIR$/app/config/parameters.yml.dist" />
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/UserController.php" />
         <option value="$PROJECT_DIR$/app/config/services_prod.yml" />
         <option value="$PROJECT_DIR$/app/config/services.yml" />
@@ -195,6 +198,7 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Controller/NeemaController.php" />
         <option value="$PROJECT_DIR$/app/Resources/views/base_prod.html.twig" />
         <option value="$PROJECT_DIR$/composer.json" />
+        <option value="$PROJECT_DIR$/app/config/parameters.yml.dist" />
       </list>
     </option>
   </component>
@@ -1042,14 +1046,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/config/parameters.yml.dist">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="27" column="53" selection-start-line="27" selection-start-column="23" selection-end-line="27" selection-end-column="53" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1152,8 +1148,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/config/parameters.yml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6195652">
-          <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/config/parameters.yml.dist">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.26086956">
+          <caret line="4" column="1" selection-start-line="4" selection-start-column="1" selection-end-line="4" selection-end-column="1" />
+          <caret line="5" column="1" selection-start-line="5" selection-start-column="1" selection-end-line="5" selection-end-column="1" />
+          <caret line="6" column="1" selection-start-line="6" selection-start-column="1" selection-end-line="6" selection-end-column="1" />
+          <caret line="7" column="1" selection-start-line="7" selection-start-column="1" selection-end-line="7" selection-end-column="1" />
+          <caret line="8" column="1" selection-start-line="8" selection-start-column="1" selection-end-line="8" selection-end-column="1" />
           <folding />
         </state>
       </provider>
