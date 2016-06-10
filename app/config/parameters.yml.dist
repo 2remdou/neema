@@ -2,6 +2,18 @@
 # Set parameters here that may be different on each deployment target of the app, e.g. development, staging, production.
 # http://symfony.com/doc/current/best_practices/configuration.html#infrastructure-related-configuration
 parameters:
+    databasehost:     127.0.0.1
+    databaseport:     ~
+    databasename:     symfony
+    databaseuser:     root
+    databasepassword: ~
+    # You should uncomment this if you want use pdo_sqlite
+    # database_path: "%kernel.root_dir%/data.db3"
+
+    mailertransport:  smtp
+    mailerhost:       127.0.0.1
+    maileruser:       ~
+    mailerpassword:   ~
 
     jwtprivatekeypath: %kernel.root_dir%/../var/jwt/private.pem   # ssh private key path
     jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
@@ -13,4 +25,4 @@ parameters:
 
     jwttokenttl:        86400
     # A secret key that's used to generate certain security-related tokens
-    #secret:            ThisTokenIsNotSoSecretChangeIt
+    secret:            ThisTokenIsNotSoSecretChangeIt
