@@ -1,6 +1,6 @@
 imports:
+    - { resource: services_prod.yml }
     - { resource: config.yml }
-    - { resource: service_prod.yml }
 
 #framework:
 #    validation:
