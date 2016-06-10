@@ -41,11 +41,11 @@ twig:
 doctrine:
     dbal:
         driver:   pdo_mysql
-        host:     %database.host%
-        port:     %database.port%
-        dbname:   %database.name%
-        user:     %database.user%
-        password: %database.password%
+        host:     %databasehost%
+        port:     %databaseport%
+        dbname:   %databasename%
+        user:     %databaseuser%
+        password: %databasepassword%
         charset:  UTF8
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
@@ -61,10 +61,10 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: "%mailer.transport%"
-    host:      "%mailer.host%"
-    username:  "%mailer.user%"
-    password:  "%mailer.password%"
+    transport: "%mailertransport%"
+    host:      "%mailerhost%"
+    username:  "%maileruser%"
+    password:  "%mailerpassword%"
     spool:     { type: memory }
 
 fos_rest:
