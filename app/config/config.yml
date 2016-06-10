@@ -41,11 +41,11 @@ twig:
 doctrine:
     dbal:
         driver:   pdo_mysql
-        host:     "%database_host%"
-        port:     "%database_port%"
-        dbname:   "%database_name%"
-        user:     "%database_user%"
-        password: "%database_password%"
+        host:     "%databasehost%"
+        port:     "%databaseport%"
+        dbname:   "%databasename%"
+        user:     "%databaseuser%"
+        password: "%databasepassword%"
         charset:  UTF8
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
@@ -61,10 +61,10 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
-    transport: "%mailer_transport%"
-    host:      "%mailer_host%"
-    username:  "%mailer_user%"
-    password:  "%mailer_password%"
+    transport: "%mailertransport%"
+    host:      "%mailerhost%"
+    username:  "%maileruser%"
+    password:  "%mailerpassword%"
     spool:     { type: memory }
 
 fos_rest:
@@ -99,55 +99,11 @@ nelmio_cors:
             max_age: 3600
 
 lexik_jwt_authentication:
-    private_key_path: %jwt_private_key_path%
-    public_key_path:  %jwt_public_key_path%
-    pass_phrase:      %jwt_key_pass_phrase%
-    token_ttl:        %jwt_token_ttl%
+    private_key_path: %jwtprivatekeypath%
+    public_key_path:  %jwtpublickeypath%
+    pass_phrase:      %jwtkeypassphrase%
+    token_ttl:        %jwttokenttl%
 
-knp_gaufrette:
-    stream_wrapper: ~
 
-    adapters:
-        neema_plat_storage_local:
-            local:
-                directory: "%neema_upload_plat_directory%"
-        neema_restaurant_storage_local:
-            local:
-                directory: "%neema_upload_restaurant_directory%"
-#        nicetruc_storage_s3:
-#            aws_s3:
-#                service_id: nicetruc.aws_s3.client
-#                bucket_name: '%awss3bucketname%'
-#                options:
-#                    create: true
-    filesystems:
-        neema_plat_storage_local:
-            adapter: neema_plat_storage_local
-        neema_restaurant_storage_local:
-            adapter: neema_restaurant_storage_local
-#        nicetruc_storage_s3:
-#            adapter: nicetruc_storage_s3
-#            alias: nicetruc_storage_s3_filesystem
 
-vich_uploader:
-    db_driver: orm
-    storage:   gaufrette
-
-    mappings:
-        plat_image:
-            uri_prefix: images/plats
-            upload_destination: neema_plat_storage_local
-            namer: neema.namer
-
-            inject_on_load:     true
-            delete_on_update:   true
-            delete_on_remove:   true
-        restaurant_image:
-            uri_prefix: images/restaurant
-            upload_destination: neema_restaurant_storage_local
-            namer: neema.namer
-
-            inject_on_load:     true
-            delete_on_update:   true
-            delete_on_remove:   true
 

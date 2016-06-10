@@ -261,7 +261,7 @@ class UserController extends FOSRestController
             return MessageResponse::message('utilisateur introuvable','danger',400);
         }
 
-        $user->setPassword($this->getParameter('defaultPassword'));
+        $user->setPassword($this->getParameter('defaultpassword'));
         $user->setIsReseted(true);
         $this->updatePassword($user);
 
