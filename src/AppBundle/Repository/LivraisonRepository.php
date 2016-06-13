@@ -10,4 +10,19 @@ namespace AppBundle\Repository;
  */
 class LivraisonRepository extends \Doctrine\ORM\EntityRepository
 {
+    private function getMainDql(){
+        $dql  = "SELECT l,c,li
+                  from AppBundle:Livraison l
+                  JOIN l.commande c
+                  JOIN l.livreur li";
+        return $dql;
+    }
+    public function findAll(){
+
+        $dql = $this->getMainDql();
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+        return $query->getArrayResult();
+    }
+
 }

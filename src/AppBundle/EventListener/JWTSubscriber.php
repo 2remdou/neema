@@ -15,13 +15,14 @@ use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\JWTCreatedEvent;
 use Lexik\Bundle\JWTAuthenticationBundle\Events;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 class JWTSubscriber implements EventSubscriberInterface
 {
-    private $serializer;
+    private $authorizationChecker;
 
-    public function __construct(Serializer $serializer){
-        $this->serializer = $serializer;
+    public function __construct(AuthorizationChecker $authorizationChecker){
+        $this->authorizationChecker = $authorizationChecker;
     }
 
     public function onJWTCreated(JWTCreatedEvent $event){
@@ -35,7 +36,7 @@ class JWTSubscriber implements EventSubscriberInterface
         $payload['nom'] = $user->getNom();
         $payload['prenom'] = $user->getPrenom();
         $payload['roles'] = $user->getRoles();
-        if($user->getUserRestaurant()){
+        if($this->authorizationChecker->isGranted('ROLE_RESTAURANT')){
             $payload['restaurant'] = array(
                                         'id'=>$user->getUserRestaurant()->getRestaurant()->getId(),
                                         'nom' => $user->getUserRestaurant()->getRestaurant()->getNom()

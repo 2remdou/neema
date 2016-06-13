@@ -66,7 +66,7 @@ class ImagePlat
     private $webPath;
 
     /**
-     * @ORM\OneToOne(targetEntity="Plat", inversedBy="imagePlat")
+     * @ORM\OneToOne(targetEntity="Plat", inversedBy="image")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="Veuillez fournir un plat")

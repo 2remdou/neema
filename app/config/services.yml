@@ -22,7 +22,7 @@ services:
 
     app.api.jwt.subscriber:
         class: AppBundle\EventListener\JWTSubscriber
-        arguments: ["@serializer"]
+        arguments: ["@security.authorization_checker"]
         tags:
             - { name: kernel.event_subscriber }
 

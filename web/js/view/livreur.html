@@ -1,6 +1,6 @@
 
 <div class="col-md-12 col-xs-12">
-    <div class="col-md-8 col-md-offset-3 mg-top-20">
+    <div class="col-md-8 col-md-offset-2 mg-top-20">
         <form class="form-horizontal" name="form" novalidate>
             <div class="col-md-12 col-xs-12  mg-top-20">
                 <div class="col-sm-3" ng-class="{ 'has-error' : form.code.$invalid && formIsSubmit}">
@@ -21,6 +21,12 @@
                            placeholder="Prenom du livreur" ng-model="livreur.prenom" required>
                     <p ng-show="form.prenom.$invalid && formIsSubmit" class="help-block">Le prenom est obligatoire.</p>
                 </div>
+                <div class="col-sm-3" ng-class="{ 'has-error' : form.telephone.$invalid && formIsSubmit}">
+                    <label for="telephone" class="text-primary control-label">N° Telephone livreur</label>
+                    <input type="text" name="telephone" id="telephone" tabindex="3" class="form-control"
+                           placeholder="N° Telephone du livreur" ng-model="livreur.telephone" required>
+                    <p ng-show="form.telephone.$invalid && formIsSubmit" class="help-block">Le telephone est obligatoire.</p>
+                </div>
             </div>
             <div class="col-sm-offset-3 col-sm-3 mg-top-20">
                 <button class="form-control btn btn-success" tabindex="3" ng-click="save(livreur)" ng-hide="forUpdate"> Enregistrer</button>
@@ -36,6 +42,7 @@
                 <th>Code</th>
                 <th>Nom</th>
                 <th>Prenom</th>
+                <th>Telephone</th>
                 <th>Modifier</th>
                 <th>Supprimer</th>
             </tr>
@@ -50,6 +57,9 @@
                 </td>
                 <td>
                     <span>{{livreur.prenom}}</span>
+                </td>
+                <td>
+                    <span>{{livreur.telephone}}</span>
                 </td>
                 <td class="text-center">
                     <a ng-click="selected(livreur)">

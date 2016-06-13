@@ -10,4 +10,18 @@ namespace AppBundle\Repository;
  */
 class QuartierRepository extends \Doctrine\ORM\EntityRepository
 {
+    private function getMainDql(){
+        $dql  = "SELECT q,c
+                  from AppBundle:Quartier q
+                  JOIN q.commune c";
+        return $dql;
+    }
+    public function findAll(){
+
+        $dql = $this->getMainDql();
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+        return $query->getArrayResult();
+    }
+
 }

@@ -37,6 +37,7 @@ app
 
         Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
             if(response.status === 401) {
+                UserService.logout();
                 usSpinnerService.stop('nt-spinner');
                 var alert = {textAlert:'Vous devez vous connectez pour effectuer cette opération',typeAlert:'danger'};
                 $rootScope.$broadcast('show.message',{alert:alert});

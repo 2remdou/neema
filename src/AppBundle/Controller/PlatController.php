@@ -47,13 +47,22 @@ class PlatController extends FOSRestController
 	 * @Security("has_role('ROLE_RESTAURANT')")
      */
 	public function postPlatAction(Request $request,ParamFetcher $paramFetcher){
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+            return MessageResponse::message('Un administrateur ne peut creer de plat','danger',400);
+        }
+
+        $em = $this->getDoctrine()->getManager();
         $operation = $this->get('app.operation');
         $plat = new Plat();
         $plat = $operation->fill($request->request,$plat);
         if($plat instanceof View){
             return $plat;
         }
-        $restaurant = $this->getUser()->getUserRestaurant()->getRestaurant();
+        $userRestaurant = $em->getRepository('AppBundle:UserRestaurant')->findOneBy(array('user'=>$this->getUser()->getId()));
+        if(!$userRestaurant){
+            return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
+        }
+        $restaurant = $userRestaurant->getRestaurant();
         $plat->setRestaurant($restaurant);
         $validator = $this->get('validator');
 
@@ -149,19 +158,22 @@ class PlatController extends FOSRestController
      */
 
     public function getPlatsByRestaurantByUserAction(){
+        $em = $this->getDoctrine()->getManager();
 
         if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $operation = $this->get('app.operation');
-            return array('plats'=>$operation->all('AppBundle:Plat'));
-
+            return $operation->all('AppBundle:Plat');
         }
-
-        $restaurant = $this->getUser()->getUserRestaurant()->getRestaurant();
+        $userRestaurant = $em->getRepository('AppBundle:UserRestaurant')->findOneBy(array('user'=>$this->getUser()->getId()));
+        if(!$userRestaurant){
+            return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
+        }
+        $restaurant = $userRestaurant->getRestaurant();
         if(!$restaurant){
             return MessageResponse::message('Restaurant introuvable','info',400);
         }
         $operation = $this->get('app.operation');
-        return array('plats'=>$operation->getByCriteria('AppBundle:Plat',array('restaurant'=>$restaurant)));
+        return $em->getRepository('AppBundle:Plat')->findByRestaurant($restaurant->getId());
     }
 
 
@@ -186,8 +198,7 @@ class PlatController extends FOSRestController
         if(!$restaurant){
             return MessageResponse::message('Restaurant introuvable','info',400);
         }
-        $operation = $this->get('app.operation');
-        return array('plats'=>$operation->getByCriteria('AppBundle:Plat',array('restaurant'=>$restaurant)));
+        return $em->getRepository('AppBundle:Plat')->findByRestaurant($restaurant->getId());
     }
 
 

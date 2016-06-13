@@ -10,4 +10,20 @@ namespace AppBundle\Repository;
  */
 class RestaurantRepository extends \Doctrine\ORM\EntityRepository
 {
+    private function getMainQuery(){
+        $dql  = "SELECT r,q from AppBundle:Restaurant r
+                  JOIN r.quartier q";
+
+
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+
+        return $query;
+    }
+    public function findAll(){
+
+        $query = $this->getMainQuery();
+        return $query->getArrayResult();
+    }
+
 }

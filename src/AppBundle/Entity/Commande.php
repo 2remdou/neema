@@ -20,7 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Commande
 {
     /**
-     * @var int
+     * @var string
      *
      * @ORM\Column(name="id", type="guid")
      * @ORM\Id
@@ -99,16 +99,14 @@ class Commande
     private $livraison;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="commande")
-     * @Expose()
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="commandes")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull(message="Le user est obligatoire")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Restaurant", inversedBy="commande")
-     * @Expose()
+     * @ORM\ManyToOne(targetEntity="Restaurant", inversedBy="commandes")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull(message="Le restaurant est obligatoire")
      */

@@ -10,6 +10,19 @@ namespace AppBundle\Repository;
  */
 class LivreurRepository extends \Doctrine\ORM\EntityRepository
 {
+    private function getMainDql(){
+        $dql  = "SELECT l
+                  from AppBundle:Livreur l";
+        return $dql;
+    }
+    public function findAll(){
+
+        $dql = $this->getMainDql();
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+        return $query->getArrayResult();
+    }
+
     public function findFree(){
         $dql = "SELECT l from AppBundle:Livreur l WHERE l.isFree=:isFree";
 

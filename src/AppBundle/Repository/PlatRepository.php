@@ -10,4 +10,32 @@ namespace AppBundle\Repository;
  */
 class PlatRepository extends \Doctrine\ORM\EntityRepository
 {
+    private function getMainDql(){
+        $dql  = "SELECT p,r,i
+                  from AppBundle:Plat p
+                  JOIN p.restaurant r
+                  LEFT JOIN p.image i";
+        return $dql;
+    }
+    public function findAll(){
+
+        $dql = $this->getMainDql();
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+        return $query->getArrayResult();
+    }
+
+    public function findByRestaurant($idRestaurant=''){
+        $dql  = "SELECT p,r,i from AppBundle:Plat p
+                  JOIN p.restaurant r
+                  LEFT JOIN p.image i
+                  WHERE r.id LIKE :idRestaurant";
+
+        $query = $this->getEntityManager()
+            ->createQuery($dql)
+            ->setParameter('idRestaurant','%'.$idRestaurant.'%');
+        return $query->getArrayResult();
+    }
+
+
 }

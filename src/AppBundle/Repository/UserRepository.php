@@ -10,4 +10,16 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    private function getMainDql(){
+        $dql  = "SELECT u.id,u.username,u.nom,u.prenom from AppBundle:User u";
+        return $dql;
+    }
+    public function findAll(){
+
+        $dql = $this->getMainDql();
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+        return $query->getArrayResult();
+    }
+
 }

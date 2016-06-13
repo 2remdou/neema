@@ -22,7 +22,7 @@ app.service('CommandeService',
 
             this.list = function(){
                 _commandeService.getList().then(function(response){
-                    $rootScope.$broadcast('commande.list',{commandes:response});
+                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -32,9 +32,10 @@ app.service('CommandeService',
 
             this.listByRestaurant = function(){
                 _commandeService.one('restaurantConnected').customGET().then(function(response){
-                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
+                    $rootScope.$broadcast('commande.list',{commandes:response});
                 },function(error){
-                   log(error)
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                    log(error)
                 });
 
             };

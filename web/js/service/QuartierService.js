@@ -25,7 +25,8 @@ app.service('QuartierService',
                 _quartierService.getList().then(function(response){
                     $rootScope.$broadcast('quartier.list',{quartiers:response});
                 },function(error){
-                   log(error);
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                    log(error);
                 });
             };
 

@@ -92,7 +92,7 @@ class User implements UserInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="activationCode", type="integer",nullable=false)
+     * @ORM\Column(name="activationCode", type="integer",nullable=true)
      * @Expose()
      */
     protected $activationCode;
@@ -108,17 +108,16 @@ class User implements UserInterface
     protected $roles;
 
     /**
-     * @ORM\OneToOne(targetEntity="UserRestaurant",mappedBy="user")
+     * @ORM\OneToMany(targetEntity="Commande",mappedBy="user")
      * @Expose()
-     * @SerializedName("userRestaurant")
      */
-
-    private $userRestaurant;
+    private $commandes;
 
 
 
     public function __construct(){
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->isReseted = false;
     }
 
 
@@ -408,4 +407,39 @@ class User implements UserInterface
     {
         return $this->activationCode;
     }
+
+    /**
+     * Add commande
+     *
+     * @param \AppBundle\Entity\Commande $commande
+     *
+     * @return User
+     */
+    public function addCommande(\AppBundle\Entity\Commande $commande)
+    {
+        $this->commandes[] = $commande;
+
+        return $this;
+    }
+
+    /**
+     * Remove commande
+     *
+     * @param \AppBundle\Entity\Commande $commande
+     */
+    public function removeCommande(\AppBundle\Entity\Commande $commande)
+    {
+        $this->commandes->removeElement($commande);
+    }
+
+    /**
+     * Get commandes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommandes()
+    {
+        return $this->commandes;
+    }
+
 }

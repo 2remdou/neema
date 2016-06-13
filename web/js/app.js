@@ -3,6 +3,8 @@
  */
 'use strict';
 
+var urlApi = window.location.origin+'/api';
+
 var app = angular.module('neema',[
     'ui.router',
     'restangular',
@@ -17,4 +19,4 @@ var app = angular.module('neema',[
     'permission',
     'permission.ui'
 ])
-    .constant('UrlApi','http://localhost:8000/api');
+    .constant('UrlApi',urlApi);

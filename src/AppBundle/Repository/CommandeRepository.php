@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use Doctrine\ORM\AbstractQuery;
 
 /**
  * CommandeRepository
@@ -10,6 +11,22 @@ namespace AppBundle\Repository;
  */
 class CommandeRepository extends \Doctrine\ORM\EntityRepository
 {
+
+    private function getMainDql(){
+        $dql  = "SELECT c.dateCommande,c.latitude,c.longitude from AppBundle:Commande c
+                  JOIN c.livraison l
+                  JOIN c.user u
+                  JOIN c.restaurant r";
+        return $dql;
+    }
+    public function findAll(){
+
+        $dql = $this->getMainDql();
+        $query = $this->getEntityManager()
+            ->createQuery($dql);
+        return $query->getResult();
+    }
+
     public function findByRestaurant($idRestaurant=''){
         $dql  = "SELECT c from AppBundle:Commande c
                   JOIN c.detailCommandes d
@@ -21,7 +38,7 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
         $query = $this->getEntityManager()
                     ->createQuery($dql)
                     ->setParameter('idRestaurant','%'.$idRestaurant.'%');
-        return $query->getResult();
+        return $query->getArrayResult();
     }
 
     public function findByUser($idUser){

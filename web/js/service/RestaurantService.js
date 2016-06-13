@@ -25,7 +25,8 @@ app.service('RestaurantService',
                 _restaurantService.getList().then(function(response){
                     $rootScope.$broadcast('restaurant.list',{restaurants:response});
                 },function(error){
-                   log(error);
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                    log(error);
                 });
             };
 

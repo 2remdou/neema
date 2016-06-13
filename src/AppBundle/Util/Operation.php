@@ -98,13 +98,13 @@ class Operation
     }
 
     public function all($repository){
+
         $objects = $this->em->getRepository($repository)->findAll();
-
         if(!$objects){
-            return MessageResponse::message('Aucune donnée','info',400);
+            return MessageResponse::message('Aucune donnée','info',200);
         }
-        return View::create($objects,200);
-
+//        return array(strtolower($this->getClassNameInRepositoryName($repository)).'s'=>$objects);
+        return $objects;
     }
 
     public function getByCriteria($repository,array $criteria){

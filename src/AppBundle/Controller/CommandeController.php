@@ -15,6 +15,7 @@ use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\View\View,
 	FOS\RestBundle\Controller\Annotations as Rest;
 use AppBundle\MessageResponse\MessageResponse;
+use JMS\SerializerBundle\JMSSerializerBundle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
 	Sensio\Bundle\FrameworkExtraBundle\Configuration\Security,
 	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -150,7 +151,8 @@ class CommandeController extends FOSRestController
 
 	public function getCommandesAction(){
 		$operation = $this->get('app.operation');
-		return $operation->all('AppBundle:Commande');
+		$commandes =  $operation->all('AppBundle:Commande');
+        return $commandes;
 	}
 	/**
      * Lister les commandes d'un restaurant
@@ -175,13 +177,16 @@ class CommandeController extends FOSRestController
             $operation = $this->get('app.operation');
 
             $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant();
-            return array('commandes'=> $commandes);
+            return $commandes;
         }
 
         $user = $this->getUser();
-
-        $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant($user->getUserRestaurant()->getRestaurant()->getId());
-        return array('commandes'=> $commandes);
+        $userRestaurant = $em->getRepository('AppBundle:UserRestaurant')->findOneBy(array('user'=>$user->getId()));
+        if(!$userRestaurant){
+            return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
+        }
+        $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant($userRestaurant->getRestaurant()->getId());
+        return $commandes;
 	}
 
 	/**
@@ -207,7 +212,7 @@ class CommandeController extends FOSRestController
         $user = $this->getUser();
 
         $commandes = $em->getRepository('AppBundle:Commande')->findByUser($user->getId());
-        return array('commandes'=> $commandes);
+        return $commandes;
 	}
 	/**
      * Lister les details commandes

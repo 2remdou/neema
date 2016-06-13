@@ -6,7 +6,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
-    JMS\Serializer\Annotation\SerializedName;
+    JMS\Serializer\Annotation\SerializedName,
+    JMS\Serializer\Annotation\MaxDepth;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 

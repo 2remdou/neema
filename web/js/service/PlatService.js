@@ -25,10 +25,10 @@ app.service('PlatService',
 
 
             this.list = function(){
-                _platService.customGET().then(function(response){
+                _platService.getList().then(function(response){
                 //_platService.getList().then(function(response){
-                    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
-                    $rootScope.$broadcast('plat.list',{plats:plats});
+                //    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
+                    $rootScope.$broadcast('plat.list',{plats:response});
                 },function(error){
                     log(error);
                 });
@@ -37,19 +37,19 @@ app.service('PlatService',
             this.listByRestaurant = function(restaurant){
                 _platService.customGET(null,'restaurant/'+restaurant.id).then(function(response){
                     //_platService.getList().then(function(response){
-                    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
+                    var plats = Restangular.restangularizeCollection(_platService,response.plats);
                     $rootScope.$broadcast('plat.list',{plats:plats});
                 },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error);
                 });
             };
 
             this.listByRestaurantByUserConnected = function(){
-                _platService.customGET('restaurant/userConnected').then(function(response){
-                    //_platService.getList().then(function(response){
-                    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
-                    $rootScope.$broadcast('plat.list',{plats:plats});
+                _platService.one('restaurant/userConnected').getList().then(function(response){
+                    $rootScope.$broadcast('plat.list',{plats:response});
                 },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error);
                 });
             };

@@ -6,7 +6,7 @@ imports:
 # Put parameters here that don't need to change on each machine where the app is deployed
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-    locale: en
+    locale: fr
 
 framework:
     #esi:             ~
@@ -31,7 +31,6 @@ framework:
     fragments:       ~
     http_method_override: true
     assets: ~
-
 # Twig Configuration
 twig:
     debug:            "%kernel.debug%"
@@ -68,7 +67,7 @@ swiftmailer:
     spool:     { type: memory }
 
 fos_rest:
-    disable_csrf_role: ROLE_USER
+#    disable_csrf_role: ROLE_USER
     view:
         formats:
             json: true

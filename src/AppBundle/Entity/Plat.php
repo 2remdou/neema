@@ -76,15 +76,19 @@ class Plat
      */
     private $dureePreparation;
 
-        /**
-         * @var boolean
-         *
-         * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
-         * @Expose()
-         * @SerializedName("onMenu")
-         */
-        protected $onMenu;
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="onMenu", type="boolean", options={"default":true})
+     * @Expose()
+     * @SerializedName("onMenu")
+     */
+    protected $onMenu;
 
+
+    public function __construct(){
+        $this->onMenu = false;
+    }
 
     /**
      * Get id

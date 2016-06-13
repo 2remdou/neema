@@ -55,7 +55,8 @@ class UserController extends FOSRestController
 
     public function getUsersAction(){
         $operation = $this->get('app.operation');
-        return $operation->all('AppBundle:User');
+        $users =  $operation->all('AppBundle:User');
+        return $users;
     }
     /**
      * Retourne un user

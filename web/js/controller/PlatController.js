@@ -44,6 +44,7 @@ app.controller('PlatController',
             var alert = {textAlert:'Enregistrement effectué',typeAlert:'success'};
             $scope.$emit('show.message',{alert:alert});
             usSpinnerService.stop('nt-spinner');
+            $state.go('menu');
         };
 
         var imageSelected = function(){

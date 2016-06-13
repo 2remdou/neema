@@ -19,6 +19,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="prix" class="text-primary control-label col-md-4">Temps de cuisson(mn) :</label>
+                        <div class="col-md-7">
+                            <input id="dureePreparation" name="prix" ng-model="plat.dureePreparation" tabindex="0" placeholder="Temps de cuisson(en minutes)" class="form-control" required type="number" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="onMenu" class="text-primary control-label col-md-4">Afficher sur le menu :</label>
                         <div class="col-md-7">
                             <input id="onMenu" name="onMenu" ng-model="plat.onMenu" tabindex="0" placeholder="Prix du plat" class="form-control" required type="checkbox">
