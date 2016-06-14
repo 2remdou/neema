@@ -37,14 +37,14 @@ knp_gaufrette:
                 service_id: neema.aws_s3.client
                 bucket_name: '%awss3bucketname%'
                 options:
-                    directory: plats
+                    directory: images/plats
                     create: true
         neema_restaurant_storage_s3:
             aws_s3:
                 service_id: neema.aws_s3.client
                 bucket_name: '%awss3bucketname%'
                 options:
-                    directory: restaurants
+                    directory: images/restaurants
                     create: true
     filesystems:
         neema_plat_storage_s3:

@@ -75,6 +75,7 @@ class RestaurantController extends FOSRestController
         try{
             $file = $request->files->get('file');
             $image = new ImageRestaurant();
+            $image->setWebPath($this->getParameter('urlimages').'/restaurants');
             $image->setImageFile($file);
             $image->setRestaurant($restaurant);
 

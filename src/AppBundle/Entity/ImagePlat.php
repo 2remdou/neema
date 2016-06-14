@@ -78,7 +78,6 @@ class ImagePlat
 
 
     public function __construct(){
-        $this->setWebPath('images/plats');
     }
 
     /**

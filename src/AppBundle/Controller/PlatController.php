@@ -110,6 +110,7 @@ class PlatController extends FOSRestController
 
         $file = $request->files->get('file');
         $image = new ImagePlat();
+        $image->setWebPath($this->getParameter('urlimages').'/plats');
         $image->setImageFile($file);
         $image->setPlat($plat);
 

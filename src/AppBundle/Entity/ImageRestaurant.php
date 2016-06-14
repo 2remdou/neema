@@ -74,7 +74,6 @@ class ImageRestaurant
 
 
     public function __construct(){
-        $this->setWebPath('images/restaurants');
     }
 
 

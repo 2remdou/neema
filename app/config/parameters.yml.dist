@@ -22,6 +22,8 @@ parameters:
     neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
     neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
     defaultpassword : neema
+	urlimages: 'http://127.0.0.1:8000/images'
+
 #
 #    jwttokenttl:        86400
 #    # A secret key that's used to generate certain security-related tokens
