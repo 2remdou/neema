@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38a9718a-34a0-4cfc-8b05-8dd02b59691a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/UtilForRepository.php" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/web/js/controller/navController.js" afterPath="$PROJECT_DIR$/web/js/controller/NavController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/service/CommandeService.js" afterPath="$PROJECT_DIR$/web/js/service/CommandeService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/PlatController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/PlatController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/PlatRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/PlatRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/service/PlatService.js" afterPath="$PROJECT_DIR$/web/js/service/PlatService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/RestaurantRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/RestaurantRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/UserRestaurant.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/UserRestaurant.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/service/UserService.js" afterPath="$PROJECT_DIR$/web/js/service/UserService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/view/nav.html" afterPath="$PROJECT_DIR$/web/js/view/nav.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Util/Operation.php" afterPath="$PROJECT_DIR$/src/AppBundle/Util/Operation.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="neema.iws" />
@@ -35,10 +25,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="CommandeRepository.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CommandeRepository.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="1.8359375">
+            <state vertical-scroll-proportion="-8.92405">
               <caret line="47" column="22" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="22" />
               <folding>
                 <marker date="1465895460000" expanded="true" signature="354:388" placeholder="SELECT c fro..AppBundle..." />
@@ -46,6 +36,26 @@
                 <marker date="1465895460000" expanded="true" signature="933:1049" placeholder="SELECT c fro..AppBundle..." />
                 <marker date="1465895460000" expanded="true" signature="1352:1492" placeholder="SELECT c,r f..AppBundle..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gulpfile.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gulpfile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="56" column="70" selection-start-line="56" selection-start-column="6" selection-end-line="56" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="PlatController.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/PlatController.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="2.5">
+              <caret line="163" column="22" selection-start-line="163" selection-start-column="22" selection-end-line="163" selection-end-column="22" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -75,7 +85,7 @@
       <file leaf-file-name="PlatRepository.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Repository/PlatRepository.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.5">
+            <state vertical-scroll-proportion="-4.375">
               <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
               <folding>
                 <marker date="1465894346000" expanded="true" signature="308:511" placeholder="SELECT p,r,i..AppBundle..." />
@@ -94,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Operation.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Operation.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Util/Operation.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-55.625">
-              <caret line="101" column="65" selection-start-line="101" selection-start-column="58" selection-end-line="101" selection-end-column="65" />
+            <state vertical-scroll-proportion="0.71753985">
+              <caret line="102" column="0" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -161,7 +171,6 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Entity/DetailCommande.php" />
         <option value="$PROJECT_DIR$/app/config/services.yml" />
         <option value="$PROJECT_DIR$/app/config/config.yml" />
-        <option value="$PROJECT_DIR$/src/AppBundle/Util/Operation.php" />
         <option value="$PROJECT_DIR$/web/js/service/CommuneService.js" />
         <option value="$PROJECT_DIR$/web/js/service/LivreurService.js" />
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/QuartierRepository.php" />
@@ -191,6 +200,7 @@
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/PlatRepository.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php" />
         <option value="$PROJECT_DIR$/src/AppBundle/Repository/UtilForRepository.php" />
+        <option value="$PROJECT_DIR$/src/AppBundle/Util/Operation.php" />
       </list>
     </option>
   </component>
@@ -805,7 +815,7 @@
     <property name="FullScreen" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../neema-client" />
     <property name="DefaultHtmlFileTemplate" value="Html5" />
-    <property name="SearchEverywhereHistoryKey" value="Comman&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/service/CommandeService.js&#10;platSer&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/service/PlatService.js&#10;gul&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/gulpfile.js&#10;gu&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/gulpfile.js&#10;rou&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/routing.js&#10;rout&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/routing.js&#10;plats&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/service/PlatService.js&#10;serv&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/app/config/services.yml&#10;user&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/src/AppBundle/Controller/UserController.php&#10;contro&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/src/AppBundle/Controller/UserController.php&#10;n&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/view/nav.html" />
+    <property name="SearchEverywhereHistoryKey" value="gulp&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/gulpfile.js&#10;Comman&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/service/CommandeService.js&#10;platSer&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/service/PlatService.js&#10;gul&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/gulpfile.js&#10;gu&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/gulpfile.js&#10;rou&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/routing.js&#10;rout&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/routing.js&#10;plats&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/service/PlatService.js&#10;serv&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/app/config/services.yml&#10;user&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/src/AppBundle/Controller/UserController.php&#10;contro&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/src/AppBundle/Controller/UserController.php&#10;n&#9;FILE&#9;file:///Applications/MAMP/htdocs/neema/web/js/view/nav.html" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
@@ -1124,14 +1134,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gulpfile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/vendor/friendsofsymfony/rest-bundle/FOS/RestBundle/EventListener/ParamFetcherListener.php">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1228,14 +1230,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/PlatController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-15.791667">
-          <caret line="163" column="22" selection-start-line="163" selection-start-column="22" selection-end-line="163" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/js/service/PlatService.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1267,24 +1261,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Util/Operation.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-55.625">
-          <caret line="101" column="65" selection-start-line="101" selection-start-column="58" selection-end-line="101" selection-end-column="65" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/AppBundle/Repository/PlatRepository.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.5">
-          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
-          <folding>
-            <marker date="1465894346000" expanded="true" signature="308:511" placeholder="SELECT p,r,i..AppBundle..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1330,7 +1306,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.8359375">
+        <state vertical-scroll-proportion="-8.92405">
           <caret line="47" column="22" selection-start-line="47" selection-start-column="22" selection-end-line="47" selection-end-column="22" />
           <folding>
             <marker date="1465895460000" expanded="true" signature="354:388" placeholder="SELECT c fro..AppBundle..." />
@@ -1338,6 +1314,40 @@
             <marker date="1465895460000" expanded="true" signature="933:1049" placeholder="SELECT c fro..AppBundle..." />
             <marker date="1465895460000" expanded="true" signature="1352:1492" placeholder="SELECT c,r f..AppBundle..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gulpfile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="56" column="70" selection-start-line="56" selection-start-column="6" selection-end-line="56" selection-end-column="70" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Controller/PlatController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="2.5">
+          <caret line="163" column="22" selection-start-line="163" selection-start-column="22" selection-end-line="163" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Repository/PlatRepository.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.375">
+          <caret line="12" column="25" selection-start-line="12" selection-start-column="25" selection-end-line="12" selection-end-column="25" />
+          <folding>
+            <marker date="1465894346000" expanded="true" signature="308:511" placeholder="SELECT p,r,i..AppBundle..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/AppBundle/Util/Operation.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.71753985">
+          <caret line="102" column="0" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
