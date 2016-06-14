@@ -3,8 +3,8 @@
  */
 
 app.service('UserService',
-    ['$rootScope','Restangular','localStorageFactory','jwtHelper',
-        function($rootScope,Restangular,localStorageFactory,jwtHelper){
+    ['$rootScope','Restangular','localStorageFactory','jwtHelper','$q',
+        function($rootScope,Restangular,localStorageFactory,jwtHelper,$q){
 
             var that=this;
             var user=null;
@@ -126,7 +126,6 @@ app.service('UserService',
             this.logout = function(){
                 that.clear();
                 $rootScope.$broadcast('user.logout');
-
             };
 
             this.setToken = function(token){
@@ -169,6 +168,7 @@ app.service('UserService',
 
             this.clear = function(){
                 localStorageFactory.clear();
+                user = null;
                 delete $rootScope.userConnnected;
             };
 

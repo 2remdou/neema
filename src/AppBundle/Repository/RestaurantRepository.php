@@ -11,8 +11,9 @@ namespace AppBundle\Repository;
 class RestaurantRepository extends \Doctrine\ORM\EntityRepository
 {
     private function getMainQuery(){
-        $dql  = "SELECT r,q from AppBundle:Restaurant r
-                  JOIN r.quartier q";
+        $dql  = "SELECT r,q,c from AppBundle:Restaurant r
+                  JOIN r.quartier q
+                  JOIN q.commune c";
 
 
         $query = $this->getEntityManager()

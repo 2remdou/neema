@@ -140,6 +140,29 @@ class PlatController extends FOSRestController
 		$operation = $this->get('app.operation');
         return array('plats'=>$operation->all('AppBundle:Plat'));
 	}
+    /**
+     * Lister les plats sur des menus
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Lister les plats sur des menus",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/plats/onMenu",name="get_plats", options={"expose"=true})
+     * @Method({"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+
+	public function getPlatsOnMenuAction(){
+        $em = $this->getDoctrine()->getManager();
+
+        $plats = $em->getRepository('AppBundle:Plat')->findOnMenu();
+
+        return $plats;
+	}
 
     /**
      * Lister les plats par restaurant en fonction du user connecté

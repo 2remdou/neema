@@ -26,8 +26,14 @@ app.service('PlatService',
 
             this.list = function(){
                 _platService.getList().then(function(response){
-                //_platService.getList().then(function(response){
-                //    var plats = Restangular.restangularizeCollection(_platService,response.plats.data) ;
+                    $rootScope.$broadcast('plat.list',{plats:response});
+                },function(error){
+                    log(error);
+                });
+            };
+
+            this.listOnMenu = function(){
+                _platService.one('onMenu').getList().then(function(response){
                     $rootScope.$broadcast('plat.list',{plats:response});
                 },function(error){
                     log(error);

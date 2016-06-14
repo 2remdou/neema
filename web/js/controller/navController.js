@@ -9,6 +9,6 @@ app.controller('NavController',['$scope','UserService','$state',function($scope,
     };
 
     $scope.$on('user.logout',function(event,args){
-        $state.go('neema');
+        $state.go('login');
     })
 }]);

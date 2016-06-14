@@ -41,8 +41,8 @@ app.service('CommandeService',
             };
 
             this.listByUserConnected = function(){
-                _commandeService.one('userConnected').customGET().then(function(response){
-                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
+                _commandeService.one('userConnected').getList().then(function(response){
+                    $rootScope.$broadcast('commande.list',{commandes:response});
                 },function(error){
                    log(error)
                 });

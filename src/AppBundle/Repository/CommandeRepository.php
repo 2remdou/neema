@@ -11,47 +11,44 @@ use Doctrine\ORM\AbstractQuery;
  */
 class CommandeRepository extends \Doctrine\ORM\EntityRepository
 {
+    use UtilForRepository;
 
+    private function getMinSelectDql(){
+        $dql  = "SELECT c from AppBundle:Commande c ";
+        return $dql;
+    }
     private function getMainDql(){
-        $dql  = "SELECT c.dateCommande,c.latitude,c.longitude from AppBundle:Commande c
+        $dql  = "SELECT c,l,r,d,p from AppBundle:Commande c
                   JOIN c.livraison l
-                  JOIN c.user u
-                  JOIN c.restaurant r";
+                  JOIN c.restaurant r ";
         return $dql;
     }
     public function findAll(){
 
-        $dql = $this->getMainDql();
+        $dql = $this->getMinSelectDql();
         $query = $this->getEntityManager()
             ->createQuery($dql);
         return $query->getResult();
     }
 
     public function findByRestaurant($idRestaurant=''){
-        $dql  = "SELECT c from AppBundle:Commande c
-                  JOIN c.detailCommandes d
-                  JOIN d.plat p
-                  JOIN p.restaurant r
-                  WHERE r.id LIKE :idRestaurant";
+        $dql = $this->getMainDql();
 
-
-        $query = $this->getEntityManager()
-                    ->createQuery($dql)
-                    ->setParameter('idRestaurant','%'.$idRestaurant.'%');
-        return $query->getArrayResult();
+        $dql  = $dql. " LEFT JOIN c.detailCommandes d
+                        JOIN d.plat p
+                        WHERE r.id LIKE :idRestaurant
+                        ORDER BY c.dateCommande DESC";
+        return $this->fillParameterAndGetResult($dql,array('idRestaurant'=>$idRestaurant));
     }
 
     public function findByUser($idUser){
-        $dql  = "SELECT c,r from AppBundle:Commande c
-                  JOIN c.user u
+        $dql = $this->getMinSelectDql();
+        $dql = $this->addColumn($dql,'r');
+        $dql  = $dql. "JOIN c.user u
                   JOIN c.restaurant r
                   WHERE u.id LIKE :idUser
-                  GROUP BY c,r";
+                  ORDER BY c.dateCommande DESC";
 
-
-        $query = $this->getEntityManager()
-                    ->createQuery($dql)
-                    ->setParameter('idUser','%'.$idUser.'%');
-        return $query->getArrayResult();
+        return $this->fillParameterAndGetResult($dql,array('idUser'=>$idUser));
     }
 }

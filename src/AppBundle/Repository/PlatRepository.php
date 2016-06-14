@@ -10,10 +10,13 @@ namespace AppBundle\Repository;
  */
 class PlatRepository extends \Doctrine\ORM\EntityRepository
 {
+    use UtilForRepository;
     private function getMainDql(){
-        $dql  = "SELECT p,r,i
+        $dql  = "SELECT p,r,i,q,c
                   from AppBundle:Plat p
                   JOIN p.restaurant r
+                  JOIN r.quartier q
+                  JOIN q.commune c
                   LEFT JOIN p.image i";
         return $dql;
     }
@@ -25,16 +28,18 @@ class PlatRepository extends \Doctrine\ORM\EntityRepository
         return $query->getArrayResult();
     }
 
-    public function findByRestaurant($idRestaurant=''){
-        $dql  = "SELECT p,r,i from AppBundle:Plat p
-                  JOIN p.restaurant r
-                  LEFT JOIN p.image i
-                  WHERE r.id LIKE :idRestaurant";
+    public function findOnMenu(){
+        $dql = $this->getMainDql();
+        $dql = $dql." WHERE p.onMenu=:onMenu";
 
-        $query = $this->getEntityManager()
-            ->createQuery($dql)
-            ->setParameter('idRestaurant','%'.$idRestaurant.'%');
-        return $query->getArrayResult();
+        return $this->fillParameterAndGetResult($dql,array('onMenu'=>true));
+    }
+
+    public function findByRestaurant($idRestaurant=''){
+        $dql = $this->getMainDql();
+        $dql = $dql." WHERE r.id LIKE :idRestaurant";
+
+        return $this->fillParameterAndGetResult($dql,array('idRestaurant'=>$idRestaurant));
     }
 
 
