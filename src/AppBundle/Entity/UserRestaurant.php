@@ -41,7 +41,7 @@ class UserRestaurant
     private $restaurant;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\OneToOne(targetEntity="User", inversedBy="userRestaurant")
      * @Expose()
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull(message="Le user est obligatoire")

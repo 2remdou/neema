@@ -113,6 +113,13 @@ class User implements UserInterface
      */
     private $commandes;
 
+    /**
+     * @ORM\OneToOne(targetEntity="UserRestaurant",mappedBy="user")
+     * @Expose()
+     * @SerializedName("userRestaurant")
+     */
+    private $userRestaurant;
+
 
 
     public function __construct(){

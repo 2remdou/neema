@@ -10,16 +10,20 @@ namespace AppBundle\Repository;
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
+    use UtilForRepository;
     private function getMainDql(){
-        $dql  = "SELECT u.id,u.username,u.nom,u.prenom from AppBundle:User u";
+        $dql  = "SELECT PARTIAL u.{id,username,nom,prenom},ur,r,q,c
+                 FROM AppBundle:User u
+                 LEFT JOIN u.userRestaurant ur
+                 LEFT JOIN ur.restaurant r
+                 LEFT JOIN r.quartier q
+                 LEFT JOIN q.commune c";
         return $dql;
     }
     public function findAll(){
 
         $dql = $this->getMainDql();
-        $query = $this->getEntityManager()
-            ->createQuery($dql);
-        return $query->getArrayResult();
+        return $this->fillParameterAndGetResult($dql);
     }
 
 }

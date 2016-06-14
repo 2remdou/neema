@@ -92,7 +92,7 @@ class User implements UserInterface
     /**
      * @var integer
      *
-     * @ORM\Column(name="activationCode", type="integer",nullable=false)
+     * @ORM\Column(name="activationCode", type="integer",nullable=true)
      * @Expose()
      */
     protected $activationCode;
@@ -108,23 +108,22 @@ class User implements UserInterface
     protected $roles;
 
     /**
-     * @ORM\OneToMany(targetEntity="UserRestaurant", mappedBy="user")
-     * @Expose()
-     * @SerializedName("userRestaurant")
-     */
-
-    private $userRestaurant;
-
-    /**
      * @ORM\OneToMany(targetEntity="Commande",mappedBy="user")
      * @Expose()
      */
     private $commandes;
 
+    /**
+     * @ORM\OneToOne(targetEntity="UserRestaurant",mappedBy="user")
+     * @Expose()
+     */
+    private $userRestaurant;
+
 
 
     public function __construct(){
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
+        $this->isReseted = false;
     }
 
 

@@ -23,10 +23,8 @@ trait UtilForRepository
 
     private function fillParameterAndGetResult($dql,$paramters=array()){
         $query = $this->getEntityManager()
-            ->createQuery($dql);
-        foreach($paramters as $key => $paramter){
-            $query->setParameter($key,$paramter);
-        }
+            ->createQuery($dql)
+            ->setParameters($paramters);
         return $query->getArrayResult();
     }
 
