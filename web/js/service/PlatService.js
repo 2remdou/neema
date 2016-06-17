@@ -3,8 +3,8 @@
  */
 
 app.service('PlatService',
-    ['$rootScope','Restangular',
-        function($rootScope,Restangular){
+    ['$rootScope','Restangular','$q',
+        function($rootScope,Restangular,$q){
 
             var self=this;
 
@@ -32,12 +32,16 @@ app.service('PlatService',
                 });
             };
 
-            this.listOnMenu = function(){
-                _platService.one('onMenu').getList().then(function(response){
+            this.listOnMenu = function(page){
+                var deffered = $q.defer();
+                _platService.one('onMenu').getList(null,{page:page}).then(function(response){
                     $rootScope.$broadcast('plat.list',{plats:response});
+                    deffered.resolve(response);
                 },function(error){
+                    deffered.reject(error);
                     log(error);
                 });
+                return deffered.promise;
             };
 
             this.listByRestaurant = function(restaurant){

@@ -103,6 +103,8 @@ lexik_jwt_authentication:
     pass_phrase:      %jwtkeypassphrase%
     token_ttl:        %jwttokenttl%
 
+knp_paginator:
+    page_range: 5
 
 
 

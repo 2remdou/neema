@@ -27,6 +27,22 @@ trait UtilForRepository
             ->setParameters($paramters);
         return $query->getArrayResult();
     }
+    /**
+     *
+     * Ajoute des parametres à une requete dql, et retourne une query
+     *
+     * @param string $dql
+     * @param array $paramters
+     *
+     * @return array
+     */
+
+    private function fillParameterAndGetQuery($dql,$paramters=array()){
+        $query = $this->getEntityManager()
+            ->createQuery($dql)
+            ->setParameters($paramters);
+        return $query;
+    }
 
     /**
      *

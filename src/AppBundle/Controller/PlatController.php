@@ -152,17 +152,19 @@ class PlatController extends FOSRestController
      *		404= "Not found"
      *   }
      * )
-     * @Route("api/plats/onMenu",name="get_plats", options={"expose"=true})
+     * @Route("api/plats/onMenu",name="get_plats_onmenu", options={"expose"=true})
      * @Method({"GET"})
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
-	public function getPlatsOnMenuAction(){
+	public function getPlatsOnMenuAction(Request $request){
         $em = $this->getDoctrine()->getManager();
 
         $plats = $em->getRepository('AppBundle:Plat')->findOnMenu();
 
-        return $plats;
+        $paginator  = $this->get('knp_paginator');
+        $platsPaginate = $paginator->paginate($plats,$request->query->getInt('page', 1),10);
+        return $platsPaginate->getItems();
 	}
 
     /**
