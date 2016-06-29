@@ -29,6 +29,20 @@ trait UtilForRepository
     }
     /**
      *
+     * Ajoute des parametres à une requete dql, et retourne une cellule d'un arrayResult
+     *
+     * @param string $dql
+     * @param array $paramters
+     *
+     * @return array
+     */
+
+    private function fillParameterAndGetSingleResult($dql,$paramters=array()){
+        $resultat = $this->fillParameterAndGetResult($dql,$paramters);
+        return count($resultat)===1?$resultat[0]:null;
+    }
+    /**
+     *
      * Ajoute des parametres à une requete dql, et retourne une query
      *
      * @param string $dql

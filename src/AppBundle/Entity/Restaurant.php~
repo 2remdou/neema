@@ -2,12 +2,15 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
     JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use AppBundle\Validator\Constraints as NeemaAssert;
+
 
 
 /**
@@ -21,6 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Restaurant
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -46,6 +50,7 @@ class Restaurant
      * @ORM\Column(name="telephone", type="string", length=255, unique=true)
      * @Expose()
      * @Assert\NotBlank(message="Un numero de telephone est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
      */
     private $telephone;
 
@@ -86,7 +91,7 @@ class Restaurant
      * @ORM\OneToMany(targetEntity="ImageRestaurant",mappedBy="restaurant")
      * @Expose()
      */
-    private $images;
+    private $imageRestaurants;
 
     /**
      * @ORM\OneToMany(targetEntity="Commande",mappedBy="restaurant")
@@ -123,6 +128,15 @@ class Restaurant
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set nom
@@ -355,5 +369,39 @@ class Restaurant
     public function getImages()
     {
         return $this->images;
+    }
+
+    /**
+     * Add commande
+     *
+     * @param \AppBundle\Entity\Commande $commande
+     *
+     * @return Restaurant
+     */
+    public function addCommande(\AppBundle\Entity\Commande $commande)
+    {
+        $this->commandes[] = $commande;
+
+        return $this;
+    }
+
+    /**
+     * Remove commande
+     *
+     * @param \AppBundle\Entity\Commande $commande
+     */
+    public function removeCommande(\AppBundle\Entity\Commande $commande)
+    {
+        $this->commandes->removeElement($commande);
+    }
+
+    /**
+     * Get commandes
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getCommandes()
+    {
+        return $this->commandes;
     }
 }

@@ -18,6 +18,7 @@ app.controller('PlatController',
             }
             PlatService.get($stateParams.idPlat).then(function(response){
                 $scope.plat = response;
+                $scope.plat.dureePreparation = Math.floor($scope.plat.dureePreparation/60);
             },function(error){
                 var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                 $scope.$emit('show.message',{alert:alert});
@@ -61,6 +62,9 @@ app.controller('PlatController',
                 return;
             }
             usSpinnerService.spin('nt-spinner');
+            //conversion de dureePreparation en seconde
+            if(plat.dureePreparation) plat.dureePreparation *= 60;
+
             PlatService.post(plat);
         };
 
@@ -71,6 +75,10 @@ app.controller('PlatController',
                 return;
             }
             usSpinnerService.spin('nt-spinner');
+
+            //conversion de dureePreparation en seconde
+            if(plat.dureePreparation) plat.dureePreparation *= 60;
+
             PlatService.update(plat);
 
 

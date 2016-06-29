@@ -48,7 +48,6 @@ class JWTSubscriber implements EventSubscriberInterface
 
 
     public function onAuthenticationSuccessResponse(AuthenticationSuccessEvent $event){
-        dump($event);
 
         $data = $event->getData();
         $user = $event->getUser();

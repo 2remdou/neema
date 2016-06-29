@@ -2,6 +2,8 @@
  * Created by touremamadou on 07/05/2016.
  */
 
+'use strict';
+
 app.service('CommandeService',
     ['$rootScope','Restangular',
         function($rootScope,Restangular){
@@ -34,8 +36,8 @@ app.service('CommandeService',
                 _commandeService.one('restaurantConnected').customGET().then(function(response){
                     $rootScope.$broadcast('commande.list',{commandes:response});
                 },function(error){
-                    $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error)
+                    $rootScope.$broadcast('show.message',{alert:error.data});
                 });
 
             };

@@ -2,6 +2,8 @@
  * Created by touremamadou on 08/05/2016.
  */
 
+'use strict';
+
 app.service('RestaurantService',
     ['$rootScope','Restangular',
         function($rootScope,Restangular){

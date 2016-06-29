@@ -55,9 +55,26 @@ app
 
     }])
     .config(['$httpProvider','jwtInterceptorProvider',function Config($httpProvider, jwtInterceptorProvider) {
-        // Please note we're annotating the function so that the $injector works when the file is minified
-        jwtInterceptorProvider.tokenGetter = ['UserService', function(UserService) {
-            return UserService.getToken();
+        var requestForRefreshAlreadySend = false;
+        jwtInterceptorProvider.tokenGetter = ['jwtHelper','UserService', function(jwtHelper,UserService) {
+
+            var token = UserService.getToken();
+            //var refreshToken = UserService.getRefreshToken();
+            //
+            if(requestForRefreshAlreadySend) return;
+            //
+            if(!token) return;
+
+            if (jwtHelper.isTokenExpired(token)) {
+                requestForRefreshAlreadySend=true;
+                UserService.refreshToken().then(function(response){
+                    requestForRefreshAlreadySend=false;
+                    return UserService.getToken();
+                });
+            }
+            else{
+                return token;
+            }
         }];
 
         $httpProvider.interceptors.push('jwtInterceptor');

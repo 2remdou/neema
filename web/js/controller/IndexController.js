@@ -18,12 +18,20 @@ app.controller('IndexController',
             CommandeService.listByRestaurant();
 
 
+
+
             //*************LISTENER***************
             $scope.$on('commande.list',function(event,args){
                 $scope.commandes = args.commandes;
                 usSpinnerService.stop('nt-spinner');
+
+                //determination du temps de preparation restant pour chaque plat
+                // en fonction de la date de la commande
+                angular.forEach($scope.commandes,function(commande){
+                    angular.forEach(commande.detailCommandes,function(detailCommande){
+                        detailCommande.dureePreparationRestant = getDureeRestant(new Date(commande.dateCommande).getTime(),detailCommande.plat.dureePreparation*1000)/1000 ;
+                   })
+                });
             });
-
-
 
         }]);

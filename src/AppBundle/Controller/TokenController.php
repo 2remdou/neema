@@ -16,6 +16,10 @@ use FOS\RestBundle\Request\ParamFetcher,
 	FOS\RestBundle\View\View,
 	FOS\RestBundle\Controller\Annotations as Rest;
 ;
+use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
+use Lexik\Bundle\JWTAuthenticationBundle\Events;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
@@ -42,7 +46,7 @@ class TokenController extends FOSRestController
      * @Method({"POST"})
      */
 
-    public function newTokenAction(ParamFetcher $paramFetcher){
+    public function newTokenAction(Request $request, ParamFetcher $paramFetcher){
         $user = $this->getDoctrine()->getRepository('AppBundle:User')
                      ->findOneBy(['username'=>$paramFetcher->get('username')]);
 
@@ -59,10 +63,19 @@ class TokenController extends FOSRestController
 
         $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
 
+        $response = new JsonResponse();
+        $event    = new AuthenticationSuccessEvent(['token' => $jwt], $user, $request, $response);
+
+        $dispatcher = $this->get('event_dispatcher');
+
+        $dispatcher->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
+        $response->setData($event->getData());
+
+
 //        $token = $this->get('lexik_jwt_authentication.encoder')
 //                      ->encode(['username' => $user->getUsername()]);
 
-        return $this->view(array('token'=>$jwt),200);
+        return $response;
 //        return $this->view(array('token'=>$token,'user'=>$user),200);
 
 

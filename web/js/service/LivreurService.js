@@ -2,6 +2,9 @@
  * Created by touremamadou on 07/05/2016.
  */
 
+'use strict';
+
+
 app.service('LivreurService',
     ['$rootScope','Restangular',
         function($rootScope,Restangular){

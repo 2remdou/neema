@@ -106,5 +106,20 @@ lexik_jwt_authentication:
 knp_paginator:
     page_range: 5
 
+gesdinet_jwt_refresh_token:
+    ttl: 5184000
+    ttl_update: true
+    user_provider: app.user_neema.provider
+
+vresh_twilio:
+    #(Required) Your Account SID from www.twilio.com/user/account
+    sid: 'AC223fd4ad209a6e42610ad83164daa896'
+    #(Required) Your Auth Token from www.twilio.com/user/account
+    authToken: '73c5d63cc8c129c71ba4575de55e23c7'
+    #(Optional, default: '2010-04-01') Twilio API version
+    version: '2010-04-01'
+    #(Optional, default: 1) Number of times to retry failed requests
+    retryAttempts: 3
+
 
 

@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
@@ -19,6 +21,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Commande
 {
+
+    use Hydrator;
     /**
      * @var string
      *
@@ -81,8 +85,50 @@ class Commande
      * @ORM\Column(name="fraisTransport", type="float")
      * @Assert\NotBlank(message="Le transport est obligatoire")
      * @Expose()
+     * @SerializedName("fraisTransport")
      */
     private $fraisTransport;
+
+    /**
+     * La durée de livraison entre le client et le restaurant en seconde
+     * @var float
+     *
+     * @ORM\Column(name="durationLivraison", type="float")
+     * @Assert\NotBlank(message="La durée de livraison  est obligatoire")
+     * @Expose()
+     * @SerializedName("durationLivraison")
+     */
+    private $durationLivraison;
+
+    /**
+     * La somme des différentes durées pour determiner approximativement
+     * le temps de livraison
+     * @var float
+     *
+     * @ORM\Column(name="durationEstimative", type="float")
+     * @Assert\NotBlank(message="La durée estimative de livraison  est obligatoire")
+     * @Expose()
+     * @SerializedName("durationEstimative")
+     */
+    private $durationEstimative;
+
+    /**
+     * @var float
+     * La durée exacte, obtenue après la livraison
+     * @ORM\Column(name="durationExact", type="float", nullable=true)
+     * @Expose()
+     */
+    private $durationExact;
+
+
+    /**
+     * @var float
+     * en metre
+     * @ORM\Column(name="distance", type="float")
+     * @Assert\NotBlank(message="La distance entre le restaurant et le client  est obligatoire")
+     * @Expose()
+     */
+    private $distance;
 
 
     /**
@@ -121,6 +167,7 @@ class Commande
         $this->dateCommande = new \DateTime();
         $this->isDelivered = false;
     }
+
     /**
      * Get id
      *
@@ -129,6 +176,14 @@ class Commande
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -380,5 +435,125 @@ class Commande
     public function getRestaurant()
     {
         return $this->restaurant;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param float $duration
+     *
+     * @return Commande
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return float
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Set distance
+     *
+     * @param float $distance
+     *
+     * @return Commande
+     */
+    public function setDistance($distance)
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    /**
+     * Get distance
+     *
+     * @return float
+     */
+    public function getDistance()
+    {
+        return $this->distance;
+    }
+
+    /**
+     * Set durationExact
+     *
+     * @param float $durationExact
+     *
+     * @return Commande
+     */
+    public function setDurationExact($durationExact)
+    {
+        $this->durationExact = $durationExact;
+
+        return $this;
+    }
+
+    /**
+     * Get durationExact
+     *
+     * @return float
+     */
+    public function getDurationExact()
+    {
+        return $this->durationExact;
+    }
+
+    /**
+     * Set durationLivraison
+     *
+     * @param float $durationLivraison
+     *
+     * @return Commande
+     */
+    public function setDurationLivraison($durationLivraison)
+    {
+        $this->durationLivraison = $durationLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get durationLivraison
+     *
+     * @return float
+     */
+    public function getDurationLivraison()
+    {
+        return $this->durationLivraison;
+    }
+
+    /**
+     * Set durationEstimative
+     *
+     * @param float $durationEstimative
+     *
+     * @return Commande
+     */
+    public function setDurationEstimative($durationEstimative)
+    {
+        $this->durationEstimative = $durationEstimative;
+
+        return $this;
+    }
+
+    /**
+     * Get durationEstimative
+     *
+     * @return float
+     */
+    public function getDurationEstimative()
+    {
+        return $this->durationEstimative;
     }
 }

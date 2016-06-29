@@ -13,42 +13,62 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
 {
     use UtilForRepository;
 
-    private function getMinSelectDql(){
-        $dql  = "SELECT c from AppBundle:Commande c ";
-        return $dql;
+    private function minQueryBuilder(){
+        $queryBuilder = $this->createQueryBuilder('c');
+        return $queryBuilder;
     }
-    private function getMainDql(){
-        $dql  = "SELECT c,l,r,d,p from AppBundle:Commande c
-                  JOIN c.livraison l
-                  JOIN c.restaurant r ";
-        return $dql;
+    private function mainQueryBuilder(){
+
+        $queryBuilder = $this->minQueryBuilder()
+            ->addSelect(['l','lr','r','ir','d','p','ip'])
+            ->leftJoin('c.livraison','l')
+            ->leftJoin('l.livreur','lr')
+            ->leftJoin('c.restaurant','r')
+            ->leftJoin('r.imageRestaurants','ir')
+            ->leftJoin('c.detailCommandes','d')
+            ->leftJoin('d.plat','p')
+            ->leftJoin('p.imagePlat','ip');
+
+        return $queryBuilder;
     }
     public function findAll(){
 
-        $dql = $this->getMinSelectDql();
-        $query = $this->getEntityManager()
-            ->createQuery($dql);
-        return $query->getResult();
+       return $this->minQueryBuilder()
+           ->getQuery()
+           ->getArrayResult();
     }
 
     public function findByRestaurant($idRestaurant=''){
-        $dql = $this->getMainDql();
 
-        $dql  = $dql. " LEFT JOIN c.detailCommandes d
-                        JOIN d.plat p
-                        WHERE r.id LIKE :idRestaurant
-                        ORDER BY c.dateCommande DESC";
-        return $this->fillParameterAndGetResult($dql,array('idRestaurant'=>$idRestaurant));
+        return $this->mainQueryBuilder()
+            ->where('r.id LIKE :idRestaurant')
+            ->setParameter('idRestaurant',$idRestaurant)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
     }
 
     public function findByUser($idUser){
-        $dql = $this->getMinSelectDql();
-        $dql = $this->addColumn($dql,'r');
-        $dql  = $dql. "JOIN c.user u
-                  JOIN c.restaurant r
-                  WHERE u.id LIKE :idUser
-                  ORDER BY c.dateCommande DESC";
 
-        return $this->fillParameterAndGetResult($dql,array('idUser'=>$idUser));
+        $commandes = $this->mainQueryBuilder()
+            ->leftJoin('c.user','u')
+            ->where('u.id LIKE :idUser')
+            ->setParameter('idUser',$idUser)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+        return $commandes;
     }
+
+    public function findById($id){
+
+        $commande = $this->mainQueryBuilder()
+            ->where('c.id = :id')
+            ->setParameter('id',$id)
+            ->getQuery()
+            ->getArrayResult();
+        return count($commande)===1?$commande[0]:null;
+
+    }
+
 }

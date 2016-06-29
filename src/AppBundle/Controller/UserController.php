@@ -7,6 +7,9 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserRestaurant;
 use AppBundle\Util\FillAttributes;
+use AppBundle\Validator\Constraints\IsGuineanPhone;
+use AppBundle\Validator\Constraints\IsGuineanPhoneValidator;
+use AppBundle\Validator\Validator;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
 	FOS\RestBundle\Controller\Annotations\RequestParam,
@@ -26,7 +29,7 @@ use AppBundle\Entity\User;
 
 class UserController extends FOSRestController
 {
-
+    use Validator;
 	private function updatePassword(UserInterface $user)
 	{
 		if (0 !== strlen($password = $user->getPassword())) {
@@ -98,36 +101,60 @@ class UserController extends FOSRestController
      * @Method({"POST"})
      */
 	public function postUserAction(Request $request,ParamFetcher $paramFetcher){
-        
-		$user = new User();
 
-		$user->setUsername($paramFetcher->get('username'));
-		$user->setPassword($paramFetcher->get('password'));
-        $user->setNom($paramFetcher->get('nom'));
-        $user->setPrenom($paramFetcher->get('prenom'));
-        $user->setIsReseted(false);
-		$user->setEnabled(false);
-        $user->generateActivationCode();
-        $user->setRoles(array('ROLE_CLIENT'));
+        if(!$this->validatePhoneNumber($paramFetcher->get('username'))){
+            return MessageResponse::message($paramFetcher->get('username').' n\'est pas un numero valide','danger',400);
+        }
+        $em = $this->getDoctrine()->getManager();
+
+        $em->getConnection()->beginTransaction();
+
+        try{
+            $user = new User();
+
+            $user->setUsername($paramFetcher->get('username'));
+            $user->setPassword($paramFetcher->get('password'));
+            $user->setNom($paramFetcher->get('nom'));
+            $user->setPrenom($paramFetcher->get('prenom'));
+            $user->setIsReseted(false);
+            $user->setEnabled(false);
+            $user->generateActivationCode();
+            $user->setRoles(array('ROLE_CLIENT'));
 
 
-        //pour encoder le password
-		$this->updatePassword($user);
+            //pour encoder le password
+            $this->updatePassword($user);
 
-		$validator = $this->get('validator');
+            $validator = $this->get('validator');
 
-		if($messages = MessageResponse::messageAfterValidation($validator->validate($user))){
-			return MessageResponse::message($messages,'danger',400);
-		}
-		$em = $this->getDoctrine()->getManager();
+            if($messages = MessageResponse::messageAfterValidation($validator->validate($user))){
+                return MessageResponse::message($messages,'danger',400);
+            }
 
-		$em->persist($user);
 
-		$em->flush();
 
-        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+            $em->persist($user);
 
-		return MessageResponse::message('utilisateur ajouté avec succès','success',201,array('token'=>$jwt));
+            $em->flush();
+
+            $twilio = $this->get('twilio.api');
+
+            $message = $twilio->account->messages->sendMessage(
+                $this->getParameter('phonenumber'), // From a Twilio number in your account
+                '+224'.$user->getUsername(), // Text any number
+                "Hi, c'est l'equipe de neema. Votre code est ".$user->getActivationCode()
+            );
+
+
+            $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+            return MessageResponse::message('utilisateur ajouté avec succès','success',201,array('token'=>$jwt));
+
+        }catch (\Exception $e){
+            $em->getConnection()->rollBack();
+            throw $e;
+        }
+
 
 
 	}
@@ -299,6 +326,15 @@ class UserController extends FOSRestController
         $user->generateActivationCode();
 
         $em->flush();
+
+        $twilio = $this->get('twilio.api');
+
+        $message = $twilio->account->messages->sendMessage(
+            $this->getParameter('phonenumber'), // From a Twilio number in your account
+            '+224'.$telephone, // Text any number
+            "Hi, c'est l'equipe neema. Votre code est ".$user->getActivationCode()
+        );
+
 
         return MessageResponse::message('Le mot de passe reinitialiser avec succès','success',200);
 

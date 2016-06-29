@@ -8,6 +8,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\DetailCommande;
 use AppBundle\Event\CommandeEnregistreEvent;
 use AppBundle\NeemaEvents;
+use AppBundle\Service\DurationCommande;
 use AppBundle\Util\FillAttributes;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
@@ -44,6 +45,8 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
      * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
      * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
+     * @RequestParam(name="durationLivraison",nullable=false, description="le temps de livraison de la commande en secondes")
+     * @RequestParam(name="distance",nullable=false, description="la distance entre le client et le restaurant en metre")
      * @RequestParam(name="restaurant",nullable=false, description="Le restaurant de la commande")
      * @Route("api/commandes",name="post_commande", options={"expose"=true})
      * @Method({"POST"})
@@ -73,8 +76,14 @@ class CommandeController extends FOSRestController
             $commande->setLatitude($paramFetcher->get('latitude'));
             $commande->setLongitude($paramFetcher->get('longitude'));
             $commande->setFraisTransport($paramFetcher->get('fraisTransport'));
+            $commande->setDurationLivraison($paramFetcher->get('durationLivraison'));
+            $commande->setDistance($paramFetcher->get('distance'));
             $commande->setUser($this->getUser());
             $commande->setRestaurant($restaurant);
+
+            $duration = new DurationCommande($commande);
+
+            dump($commande);
 
             $validator = $this->get('validator');
 
@@ -83,7 +92,7 @@ class CommandeController extends FOSRestController
             }
 
             $em->persist($commande);
-            $em->flush();
+//            $em->flush();
 
             $nbrePlat = 1;
             $restaurantPlat = null;
@@ -109,19 +118,25 @@ class CommandeController extends FOSRestController
                 $detailCommande->setPlat($plat);
                 $detailCommande->setQuantite($detail['quantite']);
 
+                $duration->addDuration($plat->getDureePreparation());
+
                 if($messages = MessageResponse::messageAfterValidation($validator->validate($detailCommande))){
                     return MessageResponse::message($messages,'danger',400);
                 }
 
                 $em->persist($detailCommande);
-                $em->flush();
+//                $em->flush();
 
                 $nbrePlat++;
 
             }
+
+            $duration->addDuration($this->getParameter('majorationTimeLivraison'));
+
             $dispatcher = $this->get('event_dispatcher');
             $dispatcher->dispatch(NeemaEvents::COMMANDE_ENREGISTRE,new CommandeEnregistreEvent($commande));
 
+            $em->flush();
             $em->getConnection()->commit();
 
         }catch (Exception $e){
@@ -250,8 +265,15 @@ class CommandeController extends FOSRestController
      */
 
 	public function getCommandeAction($id){
-		$operation = $this->get('app.operation');
-		return $operation->get('AppBundle:Commande',$id);
+
+        $em = $this->getDoctrine()->getManager();
+        $commande=$em->getRepository('AppBundle:Commande')->findById($id);
+//        $commande=$em->getRepository('AppBundle:Commande')->findOneBy(array("id"=>$id));
+        if(!$commande){
+            return MessageResponse::message('Commande introuvable','danger',400);
+        }
+//        dump($c);
+        return $commande;
 	}
 
 	/**
@@ -290,6 +312,8 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
      * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
      * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
+     * @RequestParam(name="durationLivraison",nullable=false, description="le temps de livraison de la commande")
+     * @RequestParam(name="distance",nullable=false, description="la distance entre le client et le restaurant")
      * @Route("api/commandes/{id}",name="put_commande", options={"expose"=true})
      * @Method({"PUT"})
 	 * @Security("has_role('ROLE_ADMIN')")

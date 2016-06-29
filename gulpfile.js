@@ -26,6 +26,10 @@ gulp.task('concatJs',function () {
         'web/bundles/angular-sanitize/angular-sanitize.min.js',
         'web/bundles/ui-select/dist/select.min.js',
         'web/bundles/angular-modal-service/dst/angular-modal-service.min.js',
+        'web/bundles/angular-timer/dist/angular-timer.min.js',
+        'web/bundles/moment/min/moment.min.js',
+        'web/bundles/moment/min/locales.min.js',
+        'web/bundles/humanize-duration/humanize-duration.js',
         'web/js/**/*.js'
     ])
         .pipe(concat('all.js'))
@@ -34,6 +38,8 @@ gulp.task('concatJs',function () {
 gulp.task('service',function () {
     return gulp.src([
         'web/js/Util.js',
+        'web/js/filter/*.js',
+        'web/js/directive/*.js',
         'web/js/service/*.js'
     ])
         .pipe(concat('service.js'))

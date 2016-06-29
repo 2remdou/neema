@@ -27,4 +27,6 @@ parameters:
 
 #   A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
+    phonenumber: +33644607306
+    majorationTimeLivraison: 600 # 10 minutes
 

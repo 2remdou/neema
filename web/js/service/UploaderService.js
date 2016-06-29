@@ -2,6 +2,9 @@
  * Created by touremamadou on 10/05/2016.
  */
 
+'use strict';
+
+
 app.service('UploaderService',
     ['FileUploader','UserService','UrlApi',
         function(FileUploader,UserService,UrlApi){

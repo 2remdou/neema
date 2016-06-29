@@ -2,12 +2,15 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
     JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use AppBundle\Validator\Constraints as NeemaAssert;
+
 
 
 /**
@@ -21,6 +24,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Restaurant
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -46,6 +50,7 @@ class Restaurant
      * @ORM\Column(name="telephone", type="string", length=255, unique=true)
      * @Expose()
      * @Assert\NotBlank(message="Un numero de telephone est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
      */
     private $telephone;
 
@@ -85,8 +90,9 @@ class Restaurant
     /**
      * @ORM\OneToMany(targetEntity="ImageRestaurant",mappedBy="restaurant")
      * @Expose()
+     * @SerializedName("images")
      */
-    private $images;
+    private $imageRestaurants;
 
     /**
      * @ORM\OneToMany(targetEntity="Commande",mappedBy="restaurant")
@@ -123,6 +129,15 @@ class Restaurant
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set nom
@@ -324,40 +339,6 @@ class Restaurant
     }
 
     /**
-     * Add image
-     *
-     * @param \AppBundle\Entity\ImageRestaurant $image
-     *
-     * @return Restaurant
-     */
-    public function addImage(\AppBundle\Entity\ImageRestaurant $image)
-    {
-        $this->images[] = $image;
-
-        return $this;
-    }
-
-    /**
-     * Remove image
-     *
-     * @param \AppBundle\Entity\ImageRestaurant $image
-     */
-    public function removeImage(\AppBundle\Entity\ImageRestaurant $image)
-    {
-        $this->images->removeElement($image);
-    }
-
-    /**
-     * Get images
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getImages()
-    {
-        return $this->images;
-    }
-
-    /**
      * Add commande
      *
      * @param \AppBundle\Entity\Commande $commande
@@ -389,5 +370,39 @@ class Restaurant
     public function getCommandes()
     {
         return $this->commandes;
+    }
+
+    /**
+     * Add imageRestaurant
+     *
+     * @param \AppBundle\Entity\ImageRestaurant $imageRestaurant
+     *
+     * @return Restaurant
+     */
+    public function addImageRestaurant(\AppBundle\Entity\ImageRestaurant $imageRestaurant)
+    {
+        $this->imageRestaurants[] = $imageRestaurant;
+
+        return $this;
+    }
+
+    /**
+     * Remove imageRestaurant
+     *
+     * @param \AppBundle\Entity\ImageRestaurant $imageRestaurant
+     */
+    public function removeImageRestaurant(\AppBundle\Entity\ImageRestaurant $imageRestaurant)
+    {
+        $this->imageRestaurants->removeElement($imageRestaurant);
+    }
+
+    /**
+     * Get imageRestaurants
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getImageRestaurants()
+    {
+        return $this->imageRestaurants;
     }
 }

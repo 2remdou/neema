@@ -2,6 +2,8 @@
  * Created by touremamadou on 07/05/2016.
  */
 
+'use strict';
+
 app.service('UserService',
     ['$rootScope','Restangular','localStorageFactory','jwtHelper','$q',
         function($rootScope,Restangular,localStorageFactory,jwtHelper,$q){
@@ -23,6 +25,7 @@ app.service('UserService',
             this.login = function(user){
                 _loginService.one('token').post('',user).then(function(response){
                     that.setToken(response.token);
+                    that.setRefreshToken(response.refresh_token);
                     $rootScope.userConnnected = that.getUser();
                     $rootScope.$broadcast('user.connected',{token:response.token});
                 },function(error){
@@ -31,6 +34,17 @@ app.service('UserService',
                 });
             };
 
+            this.refreshToken = function(){
+                var deffered = $q.defer();
+                _loginService.one('token/refresh').post('',{refresh_token:that.getRefreshToken()}).then(function(response){
+                    that.setToken(response.token);
+                    that.setRefreshToken(response.refresh_token);
+                    deffered.resolve(response);
+                },function(error){
+                    deffered.reject(error);
+                });
+                return deffered.promise;
+            };
 
             this.inscription = function(user){
                 user.restaurant = extractId(user.restaurant);
@@ -140,7 +154,7 @@ app.service('UserService',
                 if(user) return user; //si la fonction déja executée
 
                 if(that.getToken()){ // si un token existe
-                    tokenDecoded= jwtHelper.decodeToken(that.getToken());
+                    var tokenDecoded= jwtHelper.decodeToken(that.getToken());
                     user = {
                         id : tokenDecoded.id,
                         nom:tokenDecoded.nom,

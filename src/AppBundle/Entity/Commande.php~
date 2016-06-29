@@ -20,7 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Commande
 {
     /**
-     * @var int
+     * @var string
      *
      * @ORM\Column(name="id", type="guid")
      * @ORM\Id
@@ -84,6 +84,46 @@ class Commande
      */
     private $fraisTransport;
 
+    /**
+     * La durée de livraison entre le client et le restaurant en seconde
+     * @var float
+     *
+     * @ORM\Column(name="durationLivraison", type="float")
+     * @Assert\NotBlank(message="La durée de livraison  est obligatoire")
+     * @Expose()
+     */
+    private $durationLivraison;
+
+    /**
+     * La somme des différentes durées pour determiner approximativement
+     * le temps de livraison
+     * @var float
+     *
+     * @ORM\Column(name="durationEstimative", type="float")
+     * @Assert\NotBlank(message="La durée estimative de livraison  est obligatoire")
+     * @Expose()
+     */
+    private $durationEstimative;
+
+    /**
+     * @var float
+     * La durée exacte, obtenue après la livraison
+     * @ORM\Column(name="durationExact", type="float", nullable=true)
+     * @Assert\NotBlank(message="La durée exacte après livraison  est obligatoire")
+     * @Expose()
+     */
+    private $durationExact;
+
+
+    /**
+     * @var float
+     * en metre
+     * @ORM\Column(name="distance", type="float")
+     * @Assert\NotBlank(message="La distance entre le restaurant et le client  est obligatoire")
+     * @Expose()
+     */
+    private $distance;
+
 
     /**
      * @ORM\OneToMany(targetEntity="DetailCommande",mappedBy="commande")
@@ -99,16 +139,14 @@ class Commande
     private $livraison;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="commande")
-     * @Expose()
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="commandes")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull(message="Le user est obligatoire")
      */
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Restaurant", inversedBy="commande")
-     * @Expose()
+     * @ORM\ManyToOne(targetEntity="Restaurant", inversedBy="commandes")
      * @ORM\JoinColumn(nullable=false)
      * @Assert\NotNull(message="Le restaurant est obligatoire")
      */
@@ -154,7 +192,7 @@ class Commande
      */
     public function getDateCommande()
     {
-        return $this->dateCommande;
+        return $this->dateCommande->getTimestamp();
     }
 
     /**
@@ -358,5 +396,149 @@ class Commande
     public function getUser()
     {
         return $this->user;
+    }
+
+    /**
+     * Set restaurant
+     *
+     * @param \AppBundle\Entity\Restaurant $restaurant
+     *
+     * @return Commande
+     */
+    public function setRestaurant(\AppBundle\Entity\Restaurant $restaurant)
+    {
+        $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    /**
+     * Get restaurant
+     *
+     * @return \AppBundle\Entity\Restaurant
+     */
+    public function getRestaurant()
+    {
+        return $this->restaurant;
+    }
+
+    /**
+     * Set duration
+     *
+     * @param float $duration
+     *
+     * @return Commande
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+
+        return $this;
+    }
+
+    /**
+     * Get duration
+     *
+     * @return float
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
+
+    /**
+     * Set distance
+     *
+     * @param float $distance
+     *
+     * @return Commande
+     */
+    public function setDistance($distance)
+    {
+        $this->distance = $distance;
+
+        return $this;
+    }
+
+    /**
+     * Get distance
+     *
+     * @return float
+     */
+    public function getDistance()
+    {
+        return $this->distance;
+    }
+
+    /**
+     * Set durationExact
+     *
+     * @param float $durationExact
+     *
+     * @return Commande
+     */
+    public function setDurationExact($durationExact)
+    {
+        $this->durationExact = $durationExact;
+
+        return $this;
+    }
+
+    /**
+     * Get durationExact
+     *
+     * @return float
+     */
+    public function getDurationExact()
+    {
+        return $this->durationExact;
+    }
+
+    /**
+     * Set durationLivraison
+     *
+     * @param float $durationLivraison
+     *
+     * @return Commande
+     */
+    public function setDurationLivraison($durationLivraison)
+    {
+        $this->durationLivraison = $durationLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get durationLivraison
+     *
+     * @return float
+     */
+    public function getDurationLivraison()
+    {
+        return $this->durationLivraison;
+    }
+
+    /**
+     * Set durationEstimative
+     *
+     * @param float $durationEstimative
+     *
+     * @return Commande
+     */
+    public function setDurationEstimative($durationEstimative)
+    {
+        $this->durationEstimative = $durationEstimative;
+
+        return $this;
+    }
+
+    /**
+     * Get durationEstimative
+     *
+     * @return float
+     */
+    public function getDurationEstimative()
+    {
+        return $this->durationEstimative;
     }
 }

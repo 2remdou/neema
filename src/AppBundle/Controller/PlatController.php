@@ -41,6 +41,7 @@ class PlatController extends FOSRestController
      * @RequestParam(name="nom",nullable=false, description="nom du plat")
      * @RequestParam(name="description",nullable=false, description="description du plat")
      * @RequestParam(name="prix",nullable=false, description="prix du plat")
+     * @RequestParam(name="dureePreparation",nullable=false, description="la durée de preparation du plat")
      * @RequestParam(name="restaurant",nullable=false, description="id du restaurant")
      * @Route("api/plats",name="post_plat", options={"expose"=true})
      * @Method({"POST"})
@@ -244,9 +245,16 @@ class PlatController extends FOSRestController
      */
 
 	public function getPlatAction($id){
-		$operation = $this->get('app.operation');
-		return $operation->get('AppBundle:Plat',$id);
-	}
+        $em = $this->getDoctrine()->getManager();
+        $plat=$em->getRepository('AppBundle:Plat')->findById($id);
+        if(!$plat){
+            return MessageResponse::message('Plat introuvable','danger',400);
+        }
+
+        return $plat;
+
+
+    }
 
 	/**
      * Modifier un plat

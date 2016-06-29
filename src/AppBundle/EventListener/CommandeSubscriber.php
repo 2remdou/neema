@@ -23,6 +23,12 @@ class CommandeSubscriber implements EventSubscriberInterface
         $this->em = $em;
     }
 
+    /**
+     * @param CommandeEnregistreEvent $commandeEnregistreEvent
+     * Crée une livraison en fonction de la commande passée dans $commandeEnregistreEvent
+     * Selectiionne un livreur free
+     *
+     */
     public function onCommandeEnregistre(CommandeEnregistreEvent $commandeEnregistreEvent){
         $livraison = new Livraison();
         $livraison->setCommande($commandeEnregistreEvent->getCommande());
@@ -30,6 +36,7 @@ class CommandeSubscriber implements EventSubscriberInterface
         $livreur = $this->em->getRepository('AppBundle:Livreur')->findFree();
         if($livreur){
             $livraison->setLivreur($livreur);
+            $livreur->setIsFree(false);
         }
 
         $this->em->persist($livraison);

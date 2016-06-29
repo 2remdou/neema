@@ -1,3 +1,7 @@
+
+'use strict';
+
+
 app.factory('localStorageFactory', ['$window', function($window) {
   return {
     set: function(key, value) {

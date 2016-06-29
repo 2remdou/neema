@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -25,6 +26,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class ImageRestaurant
 {
+    use Hydrator;
+
     /**
      * @var int
      *
@@ -65,7 +68,7 @@ class ImageRestaurant
     private $webPath;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Restaurant",inversedBy="images")
+     * @ORM\ManyToOne(targetEntity="Restaurant",inversedBy="imageRestaurants")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="Veuillez fournir un restaurant")
@@ -88,6 +91,15 @@ class ImageRestaurant
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set imageName

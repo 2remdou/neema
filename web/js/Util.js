@@ -1,13 +1,14 @@
 /**
  * Created by mdoutoure on 24/11/2015.
  */
+'use strict';
 
 var displayAlert = function(message,typeAlert,scope){
     var response={};
     response.data = [{texte:message,'typeAlert':typeAlert}];
     successRequest(response,scope);
 
-}
+};
 var successRequest = function(response,scope){
     scope.$emit('showMessage',response.data);
 };
@@ -18,38 +19,43 @@ var log = function(message){
 
 
 var extractId = function(object){
-        if(typeof object != "undefined" && object){
-            if(object.hasOwnProperty('id')){
-                return object.id;
-            }
+    if(typeof object != "undefined" && object){
+        if(object.hasOwnProperty('id')){
+            return object.id;
         }
-        return null;
-    };
-
-    var deleteProperty = function(object,property){
-        if(object.hasOwnProperty(property)){
-            delete  object[property];
-        }
-    };
-
-    var getSizeWindow= function() {
-          var myWidth = 0, myHeight = 0;
-          if( typeof( window.innerWidth ) == 'number' ) {
-            //Non-IE
-            myWidth = window.innerWidth;
-            myHeight = window.innerHeight;
-          } else if( document.documentElement && ( document.documentElement.clientWidth || document.documentElement.clientHeight ) ) {
-            //IE 6+ in 'standards compliant mode'
-            myWidth = document.documentElement.clientWidth;
-            myHeight = document.documentElement.clientHeight;
-          } else if( document.body && ( document.body.clientWidth || document.body.clientHeight ) ) {
-            //IE 4 compatible
-            myWidth = document.body.clientWidth;
-            myHeight = document.body.clientHeight;
-          }
-          var result = {'width': myWidth,'height':myHeight};
-          return result;
-    };
-    var isDefined = function(object){
-        return angular.isDefined(object);
     }
+    return null;
+};
+
+var deleteProperty = function(object,property){
+    if(object.hasOwnProperty(property)){
+        delete  object[property];
+    }
+};
+
+var isDefined = function(object){
+    return angular.isDefined(object);
+};
+
+/**
+ * Mettre la première lettre en majuscule
+ * @returns {string}
+ */
+String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+};
+/**
+ *
+ * @param dateOperation la date de debut de l'operation(en milliseconde)
+ * @param dureeOperation le temps prevu pour l'operation(en milliseconde)
+ *
+ * @return dureeRestant(en milliseconde)
+ */
+var getDureeRestant = function(dateOperation,dureeOperation){
+    var dateActuel = new Date().getTime();
+    var tempsEcoule = dateActuel-dateOperation;
+    var dureeRestant = dureeOperation - tempsEcoule;
+
+    return dureeRestant<0?0:dureeRestant;
+
+};

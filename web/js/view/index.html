@@ -8,7 +8,7 @@
                     <p><strong>Telephone client:</strong> {{commande.telephone}}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Date commande:</strong> {{commande.dateCommande}}</p>
+                    <p><strong>Date commande:</strong> {{commande.dateCommande|date:'dd/MM/yyyy h:mm:ss':'+GMT'}}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Livreur:</strong> {{commande.livraison.livreur.prenom}}  {{commande.livraison.livreur.nom}}</p>
@@ -31,7 +31,11 @@
                             <span>{{detail.plat.nom}}</span>
                         </td>
                         <td>
-                            <span>{{detail.plat.dureePreparation}}</span>
+                            <timer countdown="detail.dureePreparationRestant" max-time-unit="'minute'" interval="1000">
+                                <neema-color-timer minute="mminutes" seconde="sseconds">
+                                    {{mminutes}} minute{{minutesS}}, {{sseconds}} second{{secondsS}}
+                                </neema-color-timer>
+                            </timer>
                         </td>
                         <td class="text-center">
                             <a ng-click="selectedRestaurant(restaurant)">

@@ -2,12 +2,15 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
     JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use AppBundle\Validator\Constraints as NeemaAssert;
+
 
 
 /**
@@ -20,6 +23,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Livreur
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -63,6 +67,7 @@ class Livreur
      * @ORM\Column(name="telephone", type="string", length=255, unique=true)
      * @Expose()
      * @Assert\NotBlank(message="le telephone est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
      */
     private $telephone;
 
@@ -92,6 +97,15 @@ class Livreur
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set nom

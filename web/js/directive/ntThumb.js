@@ -1,6 +1,7 @@
 /**
  * Created by touremamadou on 02/10/2015.
  */
+'use strict';
 
 app.directive('ngThumb', ['$window', function($window) {
     var helper = {

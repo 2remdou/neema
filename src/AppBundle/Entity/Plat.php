@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
@@ -19,6 +20,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Plat
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -48,8 +50,9 @@ class Plat
     /**
      * @ORM\OneToOne(targetEntity="ImagePlat",mappedBy="plat")
      * @Expose()
+     * @SerializedName("images")
      */
-    private $image;
+    private $imagePlat;
     /**
      * @ORM\ManyToOne(targetEntity="Restaurant")
      * @Expose()
@@ -69,7 +72,7 @@ class Plat
 
     /**
      * @var float
-     *
+     * Le temps de preparation du plat en seconde
      * @ORM\Column(name="dureePreparation", type="float")
      * @Expose()
      * @SerializedName("dureePreparation")
@@ -99,6 +102,15 @@ class Plat
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set nom
@@ -149,28 +161,21 @@ class Plat
     }
 
     /**
-     * Set image
-     *
-     * @param \AppBundle\Entity\ImagePlat $image
-     *
-     * @return Plat
+     * @return mixed
      */
-    public function setImage(\AppBundle\Entity\ImagePlat $image)
+    public function getImagePlat()
     {
-        $this->image = $image;
-
-        return $this;
+        return $this->imagePlat;
     }
 
     /**
-     * Get image
-     *
-     * @return \AppBundle\Entity\ImagePlat
+     * @param mixed $imagePlat
      */
-    public function getImage()
+    public function setImagePlat($imagePlat)
     {
-        return $this->image;
+        $this->imagePlat = $imagePlat;
     }
+
 
     /**
      * Set prix

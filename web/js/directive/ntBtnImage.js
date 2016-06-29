@@ -1,6 +1,7 @@
 /**
  * Created by mdoutoure on 30/10/2015.
  */
+'use strict';
 
 app.directive('ntBtnImage',[function(){
    return {
@@ -11,8 +12,8 @@ app.directive('ntBtnImage',[function(){
        },
        link : function(scope,element,attributes){
             element.on('click',function(e){
-                cible = $('#'+attributes.cible);
-                replace = $('#'+attributes.replace);
+                var cible = $('#'+attributes.cible);
+                var replace = $('#'+attributes.replace);
                 $(cible).trigger('click');
                 $(replace).remove();
                 e.preventDefault();

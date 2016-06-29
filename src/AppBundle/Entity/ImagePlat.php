@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -25,6 +26,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  */
 class ImagePlat
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -66,7 +68,7 @@ class ImagePlat
     private $webPath;
 
     /**
-     * @ORM\OneToOne(targetEntity="Plat", inversedBy="image")
+     * @ORM\OneToOne(targetEntity="Plat", inversedBy="imagePlat")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="Veuillez fournir un plat")
@@ -89,6 +91,15 @@ class ImagePlat
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set imageName

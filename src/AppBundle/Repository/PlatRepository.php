@@ -11,36 +11,50 @@ namespace AppBundle\Repository;
 class PlatRepository extends \Doctrine\ORM\EntityRepository
 {
     use UtilForRepository;
-    private function getMainDql(){
-        $dql  = "SELECT p,r,i,q,c
-                  from AppBundle:Plat p
-                  JOIN p.restaurant r
-                  JOIN r.quartier q
-                  JOIN q.commune c
-                  LEFT JOIN p.image i";
-        return $dql;
+
+    private function mainQueryBuilder(){
+        $queryBuilder = $this->createQueryBuilder('p')
+            ->addSelect(['r','ir','q','c','ip'])
+            ->leftJoin('p.restaurant','r')
+            ->leftJoin('r.imageRestaurants','ir')
+            ->leftJoin('r.quartier','q')
+            ->leftJoin('q.commune','c')
+            ->leftJoin('p.imagePlat','ip');
+
+        return $queryBuilder;
     }
     public function findAll(){
-
-        $dql = $this->getMainDql();
-        $query = $this->getEntityManager()
-            ->createQuery($dql);
-        return $query->getArrayResult();
-    }
+        return $this->mainQueryBuilder()
+            ->getQuery()
+            ->getArrayResult();    }
 
     public function findOnMenu(){
-        $dql = $this->getMainDql();
-        $dql = $dql." WHERE p.onMenu=:onMenu";
 
-        return $this->fillParameterAndGetResult($dql,array('onMenu'=>true));
+        return $this->mainQueryBuilder()
+            ->where('p.onMenu=:onMenu')
+            ->setParameter('onMenu',true)
+            ->getQuery()
+            ->getArrayResult();
     }
 
     public function findByRestaurant($idRestaurant=''){
-        $dql = $this->getMainDql();
-        $dql = $dql." WHERE r.id LIKE :idRestaurant";
 
-        return $this->fillParameterAndGetResult($dql,array('idRestaurant'=>$idRestaurant));
+        return $this->mainQueryBuilder()
+            ->where('r.id LIKE :idRestaurant')
+            ->setParameter('idRestaurant',$idRestaurant)
+            ->getQuery()
+            ->getArrayResult();
     }
 
+    public function findById($id){
+
+        $plat = $this->mainQueryBuilder()
+            ->where('p.id LIKE :id')
+            ->setParameter('id',$id)
+            ->getQuery()
+            ->getArrayResult();
+
+        return count($plat)===1?$plat[0]:null;
+    }
 
 }
