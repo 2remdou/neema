@@ -7,26 +7,30 @@ parameters:
 #    databasename:     symfony
 #    databaseuser:     root
 #    databasepassword: ~
-#   You should uncomment this if you want use pdo_sqlite
-#   database_path: "%kernel.root_dir%/data.db3"
-    mailertransport:  smtp
-    mailerhost:       127.0.0.1
-    maileruser:       ~
-    mailerpassword:   ~
+##   You should uncomment this if you want use pdo_sqlite
+##   database_path: "%kernel.root_dir%/data.db3"
+#    mailertransport:  smtp
+#    mailerhost:       127.0.0.1
+#    maileruser:       ~
+#    mailerpassword:   ~
 #
-    jwtprivatekeypath: %kernel.root_dir%/../var/jwt/private.pem   # ssh private key path
-    jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
-    jwttokenttl:        86400
-
-    neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
-    neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
-    defaultpassword : neema
-#    urlimages:	http://127.0.0.1:8000/images
-    jwttokenttl:        86400
-
-
-#   A secret key that's used to generate certain security-related tokens
-    secret:            ThisTokenIsNotSoSecretChangeIt
-    phonenumber: +33644607306
-    majorationTimeLivraison: 600 # 10 minutes
+#    jwtprivatekeypath: %kernel.root_dir%/../var/jwt/private.pem   # ssh private key path
+#    jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
+#    jwttokenttl:        86400
+#    jwtkeypassphrase: ~
+#
+#    neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
+#    neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
+#    defaultpassword : neema
+##    urlimages:	http://127.0.0.1:8000/images
+#    jwttokenttl:        86400
+#
+#
+##   A secret key that's used to generate certain security-related tokens
+#    secret:            ThisTokenIsNotSoSecretChangeIt
+#    phonenumber: +33644607306
+#    majorationTimeLivraison: 600 # 10 minutes
+#
+#    twiliosid:
+#    twilioauthtoken:
 

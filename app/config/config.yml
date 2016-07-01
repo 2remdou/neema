@@ -113,9 +113,9 @@ gesdinet_jwt_refresh_token:
 
 vresh_twilio:
     #(Required) Your Account SID from www.twilio.com/user/account
-    sid: 'AC223fd4ad209a6e42610ad83164daa896'
+    sid: %twiliosid%
     #(Required) Your Auth Token from www.twilio.com/user/account
-    authToken: '73c5d63cc8c129c71ba4575de55e23c7'
+    authToken: %twilioauthtoken%
     #(Optional, default: '2010-04-01') Twilio API version
     version: '2010-04-01'
     #(Optional, default: 1) Number of times to retry failed requests

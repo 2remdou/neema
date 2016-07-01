@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "c666179ee75f3ace4549557989c660df",
-    "content-hash": "76d87b9c1d3b26c42cdcdb44d686c1f6",
+    "hash": "d7913b379d76f2c6ae050ad6d53d8f38",
+    "content-hash": "58913569c2d78fbaf0a26f17760e9784",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -993,6 +993,58 @@
             "time": "2015-12-29 16:02:50"
         },
         {
+            "name": "gesdinet/jwt-refresh-token-bundle",
+            "version": "v0.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gesdinet/JWTRefreshTokenBundle.git",
+                "reference": "22c6ba0ea3dcef07950c23e072bbe1cfd590f7f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gesdinet/JWTRefreshTokenBundle/zipball/22c6ba0ea3dcef07950c23e072bbe1cfd590f7f3",
+                "reference": "22c6ba0ea3dcef07950c23e072bbe1cfd590f7f3",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/doctrine-bundle": "~1.4",
+                "doctrine/orm": "^2.4.8",
+                "lexik/jwt-authentication-bundle": "^1.1|^2.0@dev",
+                "php": ">=5.3.3",
+                "symfony/symfony": "~2.3|~3.0"
+            },
+            "require-dev": {
+                "henrikbjorn/phpspec-code-coverage": "~1.0",
+                "phpspec/phpspec": "~2.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Gesdinet\\JWTRefreshTokenBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marcos Gómez Vilches",
+                    "email": "marcos@gesdinet.com"
+                }
+            ],
+            "description": "Implements a refresh token system over Json Web Tokens in Symfony",
+            "keywords": [
+                "jwt refresh token bundle symfony json web"
+            ],
+            "time": "2016-04-12 09:52:36"
+        },
+        {
             "name": "guzzlehttp/guzzle",
             "version": "6.2.0",
             "source": {
@@ -1579,6 +1631,74 @@
             "time": "2016-03-03 09:36:22"
         },
         {
+            "name": "knplabs/knp-components",
+            "version": "1.3.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/knp-components.git",
+                "reference": "4503275e4f1a0e9667aa65b0ebed842ef2d8d8ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/knp-components/zipball/4503275e4f1a0e9667aa65b0ebed842ef2d8d8ba",
+                "reference": "4503275e4f1a0e9667aa65b0ebed842ef2d8d8ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "doctrine/mongodb-odm": "~1.0@beta",
+                "doctrine/orm": "~2.4",
+                "phpunit/phpunit": "~4.2",
+                "ruflin/elastica": "~1.0",
+                "symfony/event-dispatcher": "~2.5"
+            },
+            "suggest": {
+                "doctrine/common": "to allow usage pagination with Doctrine ArrayCollection",
+                "doctrine/mongodb-odm": "to allow usage pagination with Doctrine ODM MongoDB",
+                "doctrine/orm": "to allow usage pagination with Doctrine ORM",
+                "propel/propel1": "to allow usage pagination with Propel ORM",
+                "ruflin/Elastica": "to allow usage pagination with ElasticSearch Client",
+                "solarium/solarium": "to allow usage pagination with Solarium Client"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Knp\\Component": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KnpLabs Team",
+                    "homepage": "http://knplabs.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://github.com/KnpLabs/knp-components/contributors"
+                }
+            ],
+            "description": "Knplabs component library",
+            "homepage": "http://github.com/KnpLabs/knp-components",
+            "keywords": [
+                "components",
+                "knp",
+                "knplabs",
+                "pager",
+                "paginator"
+            ],
+            "time": "2015-09-01 10:54:53"
+        },
+        {
             "name": "knplabs/knp-gaufrette-bundle",
             "version": "0.3.0",
             "source": {
@@ -1635,6 +1755,67 @@
                 "media"
             ],
             "time": "2016-01-16 00:12:11"
+        },
+        {
+            "name": "knplabs/knp-paginator-bundle",
+            "version": "2.5.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/KnpPaginatorBundle.git",
+                "reference": "c988761005504007c6c87d6a557641281194a0e5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/c988761005504007c6c87d6a557641281194a0e5",
+                "reference": "c988761005504007c6c87d6a557641281194a0e5",
+                "shasum": ""
+            },
+            "require": {
+                "knplabs/knp-components": "~1.2",
+                "php": ">=5.3.3",
+                "symfony/framework-bundle": "~2.3|~3.0",
+                "twig/twig": "~1.12|~2"
+            },
+            "require-dev": {
+                "symfony/expression-language": "~2.4|~3.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Knp\\Bundle\\PaginatorBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KnpLabs Team",
+                    "homepage": "http://knplabs.com"
+                },
+                {
+                    "name": "Symfony2 Community",
+                    "homepage": "http://github.com/KnpLabs/KnpPaginatorBundle/contributors"
+                }
+            ],
+            "description": "Paginator bundle for Symfony2 to automate pagination and simplify sorting and other features",
+            "homepage": "http://github.com/KnpLabs/KnpPaginatorBundle",
+            "keywords": [
+                "Symfony2",
+                "bundle",
+                "knp",
+                "knplabs",
+                "pager",
+                "pagination",
+                "paginator"
+            ],
+            "time": "2016-04-20 11:40:30"
         },
         {
             "name": "lexik/jwt-authentication-bundle",
@@ -3647,187 +3828,6 @@
         }
     ],
     "packages-dev": [
-        {
-            "name": "gesdinet/jwt-refresh-token-bundle",
-            "version": "v0.1.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/gesdinet/JWTRefreshTokenBundle.git",
-                "reference": "22c6ba0ea3dcef07950c23e072bbe1cfd590f7f3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/gesdinet/JWTRefreshTokenBundle/zipball/22c6ba0ea3dcef07950c23e072bbe1cfd590f7f3",
-                "reference": "22c6ba0ea3dcef07950c23e072bbe1cfd590f7f3",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/doctrine-bundle": "~1.4",
-                "doctrine/orm": "^2.4.8",
-                "lexik/jwt-authentication-bundle": "^1.1|^2.0@dev",
-                "php": ">=5.3.3",
-                "symfony/symfony": "~2.3|~3.0"
-            },
-            "require-dev": {
-                "henrikbjorn/phpspec-code-coverage": "~1.0",
-                "phpspec/phpspec": "~2.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Gesdinet\\JWTRefreshTokenBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marcos Gómez Vilches",
-                    "email": "marcos@gesdinet.com"
-                }
-            ],
-            "description": "Implements a refresh token system over Json Web Tokens in Symfony",
-            "keywords": [
-                "jwt refresh token bundle symfony json web"
-            ],
-            "time": "2016-04-12 09:52:36"
-        },
-        {
-            "name": "knplabs/knp-components",
-            "version": "1.3.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/KnpLabs/knp-components.git",
-                "reference": "4503275e4f1a0e9667aa65b0ebed842ef2d8d8ba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/knp-components/zipball/4503275e4f1a0e9667aa65b0ebed842ef2d8d8ba",
-                "reference": "4503275e4f1a0e9667aa65b0ebed842ef2d8d8ba",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.2"
-            },
-            "require-dev": {
-                "doctrine/mongodb-odm": "~1.0@beta",
-                "doctrine/orm": "~2.4",
-                "phpunit/phpunit": "~4.2",
-                "ruflin/elastica": "~1.0",
-                "symfony/event-dispatcher": "~2.5"
-            },
-            "suggest": {
-                "doctrine/common": "to allow usage pagination with Doctrine ArrayCollection",
-                "doctrine/mongodb-odm": "to allow usage pagination with Doctrine ODM MongoDB",
-                "doctrine/orm": "to allow usage pagination with Doctrine ORM",
-                "propel/propel1": "to allow usage pagination with Propel ORM",
-                "ruflin/Elastica": "to allow usage pagination with ElasticSearch Client",
-                "solarium/solarium": "to allow usage pagination with Solarium Client"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.3.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Knp\\Component": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "KnpLabs Team",
-                    "homepage": "http://knplabs.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://github.com/KnpLabs/knp-components/contributors"
-                }
-            ],
-            "description": "Knplabs component library",
-            "homepage": "http://github.com/KnpLabs/knp-components",
-            "keywords": [
-                "components",
-                "knp",
-                "knplabs",
-                "pager",
-                "paginator"
-            ],
-            "time": "2015-09-01 10:54:53"
-        },
-        {
-            "name": "knplabs/knp-paginator-bundle",
-            "version": "2.5.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/KnpLabs/KnpPaginatorBundle.git",
-                "reference": "c988761005504007c6c87d6a557641281194a0e5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/KnpPaginatorBundle/zipball/c988761005504007c6c87d6a557641281194a0e5",
-                "reference": "c988761005504007c6c87d6a557641281194a0e5",
-                "shasum": ""
-            },
-            "require": {
-                "knplabs/knp-components": "~1.2",
-                "php": ">=5.3.3",
-                "symfony/framework-bundle": "~2.3|~3.0",
-                "twig/twig": "~1.12|~2"
-            },
-            "require-dev": {
-                "symfony/expression-language": "~2.4|~3.0"
-            },
-            "type": "symfony-bundle",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.5.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Knp\\Bundle\\PaginatorBundle\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "KnpLabs Team",
-                    "homepage": "http://knplabs.com"
-                },
-                {
-                    "name": "Symfony2 Community",
-                    "homepage": "http://github.com/KnpLabs/KnpPaginatorBundle/contributors"
-                }
-            ],
-            "description": "Paginator bundle for Symfony2 to automate pagination and simplify sorting and other features",
-            "homepage": "http://github.com/KnpLabs/KnpPaginatorBundle",
-            "keywords": [
-                "Symfony2",
-                "bundle",
-                "knp",
-                "knplabs",
-                "pager",
-                "pagination",
-                "paginator"
-            ],
-            "time": "2016-04-20 11:40:30"
-        },
         {
             "name": "sensio/generator-bundle",
             "version": "v3.0.6",
