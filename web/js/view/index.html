@@ -7,8 +7,11 @@
                 <div class="col-md-6">
                     <p><strong>Telephone client:</strong> {{commande.telephone}}</p>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <p><strong>Date commande:</strong> {{commande.dateCommande|date:'dd/MM/yyyy h:mm:ss':'+GMT'}}</p>
+                </div>
+                <div class="col-md-3">
+                    <p><strong>Etat :</strong> {{commande.etatCommande.libelle}}</p>
                 </div>
                 <div class="col-md-6">
                     <p><strong>Livreur:</strong> {{commande.livraison.livreur.prenom}}  {{commande.livraison.livreur.nom}}</p>
@@ -22,7 +25,7 @@
                     <tr>
                         <th>Plat</th>
                         <th>Temps restant</th>
-                        <th>Terminer</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -38,9 +41,12 @@
                             </timer>
                         </td>
                         <td class="text-center">
-                            <a ng-click="selectedRestaurant(restaurant)">
+                            <button ng-hide="detail.finished" ng-click="finishPreparation(detail)">
+                                Terminer
+                            </button>
+                            <p ng-show="detail.finished">
                                 <i class="btn btn-success glyphicon glyphicon-ok"></i>
-                            </a>
+                            </p>
                         </td>
                     </tr>
                     </tbody>

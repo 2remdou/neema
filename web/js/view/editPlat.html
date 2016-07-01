@@ -44,7 +44,7 @@
                     <input type="file" nv-file-select uploader="uploader" id="selectImage" />
                     <button class="btn btn-primary" nt-btn-image cible="selectImage" replace="oldImage">Modifier image</button>
                     <div class="margin-5">
-                        <img id="oldImage" style="height: 100px;width: 100px;" ng-src="{{plat.image.webPath}}/{{plat.image.imageName}}" alt="{{plat.image.imageName}}">
+                        <img id="oldImage" style="height: 100px;width: 100px;" ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{plat.imagePlat.imageName}}">
                     </div>
                     <div ng-show="uploader.isHTML5">
                         <div class="col-sm-4 col-md-2" ng-repeat="item in uploader.queue">

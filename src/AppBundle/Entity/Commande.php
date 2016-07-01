@@ -158,6 +158,15 @@ class Commande
      */
     private $restaurant;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="EtatCommande", inversedBy="commandes")
+     * @ORM\JoinColumn(name="etatCommande",referencedColumnName="code",nullable=false)
+     * @Assert\NotNull(message="L'etat est obligatoire")
+     * @Expose()
+     */
+    private $etatCommande;
+
+
 
 
 
@@ -207,7 +216,8 @@ class Commande
      */
     public function getDateCommande()
     {
-        return $this->dateCommande->getTimestamp();
+        return $this->dateCommande;
+//        return $this->dateCommande->getTimestamp();
     }
 
     /**
@@ -555,5 +565,29 @@ class Commande
     public function getDurationEstimative()
     {
         return $this->durationEstimative;
+    }
+
+    /**
+     * Set etatCommande
+     *
+     * @param \AppBundle\Entity\EtatCommande $etatCommande
+     *
+     * @return Commande
+     */
+    public function setEtatCommande(\AppBundle\Entity\EtatCommande $etatCommande)
+    {
+        $this->etatCommande = $etatCommande;
+
+        return $this;
+    }
+
+    /**
+     * Get etatCommande
+     *
+     * @return \AppBundle\Entity\EtatCommande
+     */
+    public function getEtatCommande()
+    {
+        return $this->etatCommande;
     }
 }

@@ -5,6 +5,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Annotation\RestaurantIsAllow;
 use AppBundle\Entity\DetailCommande;
 use AppBundle\Event\CommandeEnregistreEvent;
 use AppBundle\NeemaEvents;
@@ -19,7 +20,8 @@ use AppBundle\MessageResponse\MessageResponse;
 use JMS\SerializerBundle\JMSSerializerBundle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
 	Sensio\Bundle\FrameworkExtraBundle\Configuration\Security,
-	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request,
 	Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -70,6 +72,7 @@ class CommandeController extends FOSRestController
             return MessageResponse::message('Le restaurant de la commande est inconnu','danger',400);
         }
         $commande = new Commande();
+        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CN1'));
         try{
 
             $commande->setTelephone($paramFetcher->get('telephone'));
@@ -80,6 +83,7 @@ class CommandeController extends FOSRestController
             $commande->setDistance($paramFetcher->get('distance'));
             $commande->setUser($this->getUser());
             $commande->setRestaurant($restaurant);
+            $commande->setEtatCommande($etatCommande);
 
             $duration = new DurationCommande($commande);
 
@@ -170,6 +174,23 @@ class CommandeController extends FOSRestController
         return $commandes;
 	}
 	/**
+     * @Route("api/test/commandes/{id}",name="get_test_commandes", options={"expose"=true})
+     * @Method({"GET"})
+     */
+
+	public function getTestCommandesAction($id){
+        $em = $this->getDoctrine()->getManager();
+        $commande = $em->getRepository('AppBundle:Commande')->findOneBy(array('id'=>$id));
+        if(!$commande)
+            return MessageResponse::message('Commande introuvable','danger',404);
+        $dateActuelle = new \DateTime();
+        $tempsEcoule = $dateActuelle->format('U')-$commande->getDateCommande()->format('U');
+        dump($tempsEcoule);
+
+        return $em->getRepository('AppBundle:Commande')->getDureeRestant($id,$tempsEcoule);
+
+    }
+	/**
      * Lister les commandes d'un restaurant
      *
      * @ApiDoc(
@@ -191,7 +212,7 @@ class CommandeController extends FOSRestController
         if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $operation = $this->get('app.operation');
 
-            $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant();
+            $commandes = $em->getRepository('AppBundle:Commande')->findByTypeDelivered(false);
             return $commandes;
         }
 
@@ -200,7 +221,7 @@ class CommandeController extends FOSRestController
         if(!$userRestaurant){
             return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
         }
-        $commandes = $em->getRepository('AppBundle:Commande')->findByRestaurant($userRestaurant->getRestaurant()->getId());
+        $commandes = $em->getRepository('AppBundle:Commande')->findByTypeDelivered(false,$userRestaurant->getRestaurant()->getId());
         return $commandes;
 	}
 
@@ -264,7 +285,7 @@ class CommandeController extends FOSRestController
      * @Method({"GET"})
      */
 
-	public function getCommandeAction($id){
+	public function getCommandeAction($id,Request $request){
 
         $em = $this->getDoctrine()->getManager();
         $commande=$em->getRepository('AppBundle:Commande')->findById($id);
@@ -322,6 +343,38 @@ class CommandeController extends FOSRestController
 		$operation = $this->get('app.operation');
 		return $operation->put($request,'AppBundle:Commande',$id);
 	}	
+	/**
+     * Marquer la fin de la preparation d'un plat dans une commande
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Marquer la fin de la preparation d'un plat dans une commande",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @Route("api/commandes/details/{id}/finish",name="put_close_detail_commande", options={"expose"=true})
+     * @ParamConverter("detailCommande", class="AppBundle:DetailCommande")
+     * @Method({"PUT"})
+	 * @Security("has_role('ROLE_RESTAURANT')")
+	 */
+	public function putCloseDetailCommandeAction(DetailCommande $detailCommande){
+		$userRestaurant = $this->getUser()->getUserRestaurant();
+        $platRestaurant = $detailCommande->getPlat()->getRestaurant();
+        if($userRestaurant->getRestaurant() !== $platRestaurant){
+            return MessageResponse::message('Vous n\'êtes pas autorisé à modifier cette commande','danger',400);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $detailCommande->setFinished(true);
+        $detailCommande->setDateFinished(new \DateTime());
+
+        $em->flush();
+
+        return MessageResponse::message('Merci, ce plat a été marqué terminé','success',200);
+    }
 	/**
      * Modifier un detail commande
      *

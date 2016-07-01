@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
@@ -19,6 +21,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Commande
 {
+
+    use Hydrator;
     /**
      * @var string
      *
@@ -81,6 +85,7 @@ class Commande
      * @ORM\Column(name="fraisTransport", type="float")
      * @Assert\NotBlank(message="Le transport est obligatoire")
      * @Expose()
+     * @SerializedName("fraisTransport")
      */
     private $fraisTransport;
 
@@ -91,6 +96,7 @@ class Commande
      * @ORM\Column(name="durationLivraison", type="float")
      * @Assert\NotBlank(message="La durée de livraison  est obligatoire")
      * @Expose()
+     * @SerializedName("durationLivraison")
      */
     private $durationLivraison;
 
@@ -102,6 +108,7 @@ class Commande
      * @ORM\Column(name="durationEstimative", type="float")
      * @Assert\NotBlank(message="La durée estimative de livraison  est obligatoire")
      * @Expose()
+     * @SerializedName("durationEstimative")
      */
     private $durationEstimative;
 
@@ -109,7 +116,6 @@ class Commande
      * @var float
      * La durée exacte, obtenue après la livraison
      * @ORM\Column(name="durationExact", type="float", nullable=true)
-     * @Assert\NotBlank(message="La durée exacte après livraison  est obligatoire")
      * @Expose()
      */
     private $durationExact;
@@ -152,6 +158,14 @@ class Commande
      */
     private $restaurant;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="EtatCommande", inversedBy="commandes")
+     * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotNull(message="L'etat est obligatoire")
+     */
+    private $etatCommande;
+
+
 
 
 
@@ -161,6 +175,7 @@ class Commande
         $this->dateCommande = new \DateTime();
         $this->isDelivered = false;
     }
+
     /**
      * Get id
      *
@@ -169,6 +184,14 @@ class Commande
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
 /**
  * CommandeRepository
@@ -20,14 +21,15 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
     private function mainQueryBuilder(){
 
         $queryBuilder = $this->minQueryBuilder()
-            ->addSelect(['l','lr','r','ir','d','p','ip'])
+            ->addSelect(['l','lr','r','ir','d','p','ip','e'])
             ->leftJoin('c.livraison','l')
             ->leftJoin('l.livreur','lr')
             ->leftJoin('c.restaurant','r')
             ->leftJoin('r.imageRestaurants','ir')
             ->leftJoin('c.detailCommandes','d')
             ->leftJoin('d.plat','p')
-            ->leftJoin('p.imagePlat','ip');
+            ->leftJoin('p.imagePlat','ip')
+            ->leftJoin('c.etatCommande','e');
 
         return $queryBuilder;
     }
@@ -38,11 +40,33 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
            ->getArrayResult();
     }
 
-    public function findByRestaurant($idRestaurant=''){
+    public function getDureeRestant($idCommande,$tempsEcoule,$majorationTimeLivraison=0){
+
+//        $dql = "SELECT sum(CASE WHEN p.dureePreparation<0 THEN 0 ELSE p.dureePreparation)+c.durationLivraison+600
+        $dql = "SELECT sum(CASE WHEN p.dureePreparation-:tempsEcoule<=0 THEN 0 ELSE p.dureePreparation-:tempsEcoule END)
+                FROM AppBundle:Commande c
+                LEFT JOIN c.detailCommandes dc
+                JOIN dc.plat p
+                WHERE c.id=:idCommande
+                AND dc.finished=false";
+
+        $duree= $this->getEntityManager()
+            ->createQuery($dql)
+            ->setParameters(array('idCommande'=>$idCommande,'tempsEcoule'=>$tempsEcoule))
+            ->getSingleScalarResult();
+
+        return $duree===null?0:$duree;
+
+    }
+
+    public function findByTypeDelivered($isDelivered=false,$idRestaurant=''){
 
         return $this->mainQueryBuilder()
             ->where('r.id LIKE :idRestaurant')
-            ->setParameter('idRestaurant',$idRestaurant)
+            ->andWhere('c.isDelivered=:isDelivered')
+            ->setParameters(array(
+                'idRestaurant'=>$idRestaurant,
+                'isDelivered'=>$isDelivered))
             ->orderBy('c.dateCommande','DESC')
             ->getQuery()
             ->getArrayResult();

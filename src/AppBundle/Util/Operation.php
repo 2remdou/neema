@@ -38,8 +38,12 @@ class Operation
                         );
     }
 
-    private function exist($repository,$id){
-        $object = $this->em->getRepository($repository)->findOneBy(array('id'=>$id));
+    private function exist($repository,$criteria){
+        if(is_array($criteria)){
+            $object = $this->em->getRepository($repository)->findOneBy($criteria);
+        }else{
+            $object = $this->em->getRepository($repository)->findOneBy(array('id'=>$criteria));
+        }
         return $object;
     }
 
@@ -113,8 +117,8 @@ class Operation
     }
 
 
-    public function get($repository,$id){
-        $object =$this->exist($repository,$id);
+    public function get($repository,$criteria){
+        $object =$this->exist($repository,$criteria);
         if(!$object){
             return MessageResponse::message($this->getClassNameInRepositoryName($repository).' introuvable','info',404);
         }
@@ -122,8 +126,8 @@ class Operation
         return $object;
     }
 
-    public function put(Request $request,$repository,$id){
-        $object = $this->get($repository,$id);
+    public function put(Request $request,$repository,$criteria){
+        $object = $this->get($repository,$criteria);
 
         //objet introuvable
         if($object instanceof View){
@@ -147,8 +151,8 @@ class Operation
 
     }
 
-    public function delete($repository,$id){
-        $object = $this->get($repository,$id);
+    public function delete($repository,$criteria){
+        $object = $this->get($repository,$criteria);
 
         //objet introuvable
         if($object instanceof View){

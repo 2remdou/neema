@@ -17,6 +17,12 @@ app.controller('IndexController',
             usSpinnerService.spin('nt-spinner');
             CommandeService.listByRestaurant();
 
+            $scope.finishPreparation = function(detail){
+                $scope.detail = detail; //afin de pouvoir mettre finished à true dans le listener
+                usSpinnerService.spin('nt-spinner');
+                CommandeService.finishPreparation(detail);
+            };
+
 
 
 
@@ -32,6 +38,11 @@ app.controller('IndexController',
                         detailCommande.dureePreparationRestant = getDureeRestant(new Date(commande.dateCommande).getTime(),detailCommande.plat.dureePreparation*1000)/1000 ;
                    })
                 });
+            });
+            $scope.$on('commande.detail.updated',function(event,args){
+                $scope.detail.finished = true;
+                usSpinnerService.stop('nt-spinner');
+                $scope.$emit('show.message',{alert:args.alert});
             });
 
         }]);

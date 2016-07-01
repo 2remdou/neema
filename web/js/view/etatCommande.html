@@ -1,0 +1,55 @@
+
+<div class="col-md-12 col-xs-12">
+    <div class="col-md-8 col-md-offset-2 mg-top-20">
+        <form class="form-horizontal" name="form" novalidate>
+            <div class="col-md-12 col-xs-12  mg-top-20">
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.code.$invalid && formIsSubmit}">
+                    <input type="text" name="code" tabindex="1" class="form-control"
+                           placeholder="Code de l'etat" ng-model="etatCommande.code" required>
+                    <p ng-show="form.code.$invalid && formIsSubmit" class="help-block">Le code est obligatoire.</p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.commune.$invalid && formIsSubmit}">
+                    <input type="text" name="libelle" id="libelle" tabindex="2" class="form-control"
+                           placeholder="Libelle etat" ng-model="etatCommande.libelle" required>
+                    <p ng-show="form.nom.$invalid && formIsSubmit" class="help-block">Le libelle est obligatoire.</p>
+                </div>
+                <div class="col-sm-4">
+                    <button class="form-control btn btn-success" tabindex="3" ng-click="save(etatCommande)" ng-hide="forUpdate"> Enregistrer</button>
+                    <button class="form-control btn btn-info" tabindex="3" ng-click="update(etatCommande)" ng-show="forUpdate"> Modifer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-3 mg-top-20">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>Libelle</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="etatCommande in etatCommandes">
+                <td>
+                    <span>{{etatCommande.code}}</span>
+                </td>
+                <td>
+                    <span>{{etatCommande.libelle}}</span>
+                </td>
+                <td class="text-center">
+                    <a ng-click="selected(etatCommande)">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a ng-click="delete(etatCommande)">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

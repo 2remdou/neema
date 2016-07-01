@@ -51,6 +51,14 @@ app.service('CommandeService',
 
             };
 
+            this.finishPreparation = function(detail){
+                _commandeService.customPUT(null,'details/'+detail.id+'/finish').then(function(response){
+                    $rootScope.$broadcast('commande.detail.updated',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
             this.update = function(commande){
                 commande.put().then(function(response){
                     $rootScope.$broadcast('commande.updated', {alert:response.data})

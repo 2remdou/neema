@@ -84,11 +84,11 @@ class UserController extends FOSRestController
 
 
     /**
-     * Ajouter un user
+     * Ajouter un user de type client
      *
      * @ApiDoc(
      *   resource = true,
-     *   description = "Ajouter un user",
+     *   description = "Ajouter un user de type client",
      *   statusCodes = {
      *     201 = "Created",
      *   }

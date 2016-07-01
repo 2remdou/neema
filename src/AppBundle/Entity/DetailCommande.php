@@ -50,6 +50,25 @@ class DetailCommande
     private $prix;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="finished", type="boolean", options={"default":false},nullable=true)
+     * @Expose()
+     * @SerializedName("finished")
+     */
+    private $finished;
+
+    /**
+     * La date à la quelle le plat a été closé(en seconde)
+     * @var datetime
+     *
+     * @ORM\Column(name="dateFinished", type="datetime", nullable=true)
+     * @Expose()
+     * @SerializedName("dateFinished")
+     */
+    private $dateFinished;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Commande",inversedBy="detailCommandes")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
@@ -64,6 +83,14 @@ class DetailCommande
      */
     private $plat;
 
+    /**
+     * DetailCommande constructor.
+     * @param bool $finished
+     */
+    public function __construct()
+    {
+        $this->finished = false;
+    }
 
 
     /**
@@ -181,4 +208,38 @@ class DetailCommande
     {
         return $this->plat;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        return $this->finished;
+    }
+
+    /**
+     * @param boolean $finished
+     */
+    public function setFinished($finished)
+    {
+        $this->finished = $finished;
+    }
+
+    /**
+     * @return datetime
+     */
+    public function getDateFinished()
+    {
+        return $this->dateFinished;
+    }
+
+    /**
+     * @param datetime $dateFinished
+     */
+    public function setDateFinished($dateFinished)
+    {
+        $this->dateFinished = $dateFinished;
+    }
+
+
 }

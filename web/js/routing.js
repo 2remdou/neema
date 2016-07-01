@@ -240,6 +240,23 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
            }
 
        })
+       .state('etatCommande',{
+           url:'/etat-commande',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/etatCommande.html',
+                   controller: 'EtatCommandeController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
+           }
+
+       })
 
 
    ;

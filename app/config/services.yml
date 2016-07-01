@@ -37,5 +37,12 @@ services:
     neema.namer:
         class: AppBundle\Naming\Namer
 
+    app.restaurant_is_allow:
+        class: AppBundle\EventListener\RestaurantIsAllowListener
+        arguments: ["@doctrine.orm.entity_manager","@security.token_storage"]
+        tags:
+            - { name: kernel.event_subscriber }
+
+
 
 
