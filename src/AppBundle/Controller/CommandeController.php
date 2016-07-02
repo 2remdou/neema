@@ -174,23 +174,6 @@ class CommandeController extends FOSRestController
         return $commandes;
 	}
 	/**
-     * @Route("api/test/commandes/{id}",name="get_test_commandes", options={"expose"=true})
-     * @Method({"GET"})
-     */
-
-	public function getTestCommandesAction($id){
-        $em = $this->getDoctrine()->getManager();
-        $commande = $em->getRepository('AppBundle:Commande')->findOneBy(array('id'=>$id));
-        if(!$commande)
-            return MessageResponse::message('Commande introuvable','danger',404);
-        $dateActuelle = new \DateTime();
-        $tempsEcoule = $dateActuelle->format('U')-$commande->getDateCommande()->format('U');
-        dump($tempsEcoule);
-
-        return $em->getRepository('AppBundle:Commande')->getDureeRestant($id,$tempsEcoule);
-
-    }
-	/**
      * Lister les commandes d'un restaurant
      *
      * @ApiDoc(

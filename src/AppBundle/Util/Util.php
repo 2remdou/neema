@@ -25,5 +25,11 @@ trait Util
         return strtolower(substr(get_class($object),strrpos(get_class($object),'\\')+1));
     }
 
+    public function addCountryCodeInPhoneNumber($phoneNumber,$code='224'){
+
+        return '+'.$code.substr($phoneNumber,strpos($phoneNumber,'6'));
+
+    }
+
 
 }

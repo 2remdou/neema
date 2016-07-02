@@ -7,6 +7,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\UserRestaurant;
 use AppBundle\Util\FillAttributes;
+use AppBundle\Util\Util;
 use AppBundle\Validator\Constraints\IsGuineanPhone;
 use AppBundle\Validator\Constraints\IsGuineanPhoneValidator;
 use AppBundle\Validator\Validator;
@@ -30,7 +31,10 @@ use AppBundle\Entity\User;
 class UserController extends FOSRestController
 {
     use Validator;
-	private function updatePassword(UserInterface $user)
+    use Util;
+
+
+    private function updatePassword(UserInterface $user)
 	{
 		if (0 !== strlen($password = $user->getPassword())) {
 			$encoder = $this->get('security.password_encoder');
@@ -102,7 +106,9 @@ class UserController extends FOSRestController
      */
 	public function postUserAction(Request $request,ParamFetcher $paramFetcher){
 
-        if(!$this->validatePhoneNumber($paramFetcher->get('username'))){
+        $phoneNumber=  preg_replace('#[.\- ]#','', $paramFetcher->get('username'));
+
+        if(!$this->validatePhoneNumber($phoneNumber)){
             return MessageResponse::message($paramFetcher->get('username').' n\'est pas un numero valide','danger',400);
         }
         $em = $this->getDoctrine()->getManager();
@@ -112,7 +118,7 @@ class UserController extends FOSRestController
         try{
             $user = new User();
 
-            $user->setUsername($paramFetcher->get('username'));
+            $user->setUsername($phoneNumber);
             $user->setPassword($paramFetcher->get('password'));
             $user->setNom($paramFetcher->get('nom'));
             $user->setPrenom($paramFetcher->get('prenom'));
@@ -131,8 +137,6 @@ class UserController extends FOSRestController
                 return MessageResponse::message($messages,'danger',400);
             }
 
-
-
             $em->persist($user);
 
             $em->flush();
@@ -141,12 +145,14 @@ class UserController extends FOSRestController
 
             $message = $twilio->account->messages->sendMessage(
                 $this->getParameter('phonenumber'), // From a Twilio number in your account
-                '+224'.$user->getUsername(), // Text any number
+                $this->addCountryCodeInPhoneNumber($phoneNumber), // Text any number
                 "Hi, c'est l'equipe de neema. Votre code est ".$user->getActivationCode()
             );
 
 
             $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+            $em->getConnection()->commit();
 
             return MessageResponse::message('utilisateur ajouté avec succès','success',201,array('token'=>$jwt));
 
@@ -331,7 +337,7 @@ class UserController extends FOSRestController
 
         $message = $twilio->account->messages->sendMessage(
             $this->getParameter('phonenumber'), // From a Twilio number in your account
-            '+224'.$telephone, // Text any number
+            $this->addCountryCodeInPhoneNumber($telephone), // Text any number
             "Hi, c'est l'equipe neema. Votre code est ".$user->getActivationCode()
         );
 
