@@ -5,7 +5,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="col-md-6">
-                    <p><strong>Telephone client:</strong> {{commande.telephone}}</p>
+                    <p><strong>Telephone client:</strong> {{commande.telephone}}({{commande.user.nom}} {{commande.user.prenom}})</p>
                 </div>
                 <div class="col-md-3">
                     <p><strong>Date commande:</strong> {{commande.dateCommande|date:'dd/MM/yyyy h:mm:ss':'+GMT'}}</p>
