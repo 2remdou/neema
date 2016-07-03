@@ -49,7 +49,7 @@ app.controller('PlatController',
         };
 
         var imageSelected = function(){
-            if(uploader.queue.length===0 && !$scope.plat.image){
+            if(uploader.queue.length===0 && !$scope.plat.imagePlat){
                 return false
             }
             return true;

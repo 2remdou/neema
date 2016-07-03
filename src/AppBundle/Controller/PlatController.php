@@ -104,8 +104,8 @@ class PlatController extends FOSRestController
             return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
         }
 
-        if($plat->getImage()){ //s'il existe une autre image, je le supprime
-            $em->remove($plat->getImage());
+        if($plat->getImagePlat()){ //s'il existe une autre image, je le supprime
+            $em->remove($plat->getImagePlat());
             $em->flush();
         }
 

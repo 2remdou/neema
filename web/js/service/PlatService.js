@@ -79,7 +79,7 @@ app.service('PlatService',
             };
 
             this.update = function(plat){
-                delete plat.image;
+                delete plat.imagePlat;
                 delete plat.restaurant;
                 plat.put().then(function(response){
                     $rootScope.$broadcast('plat.updated', {alert:response.data})

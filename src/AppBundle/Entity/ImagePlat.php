@@ -154,7 +154,7 @@ class ImagePlat
     {
         $this->plat = $plat;
 
-        $this->plat->setImage($this);
+        $this->plat->setImagePlat($this);
 
         return $this;
     }
