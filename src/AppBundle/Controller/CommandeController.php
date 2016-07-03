@@ -87,8 +87,6 @@ class CommandeController extends FOSRestController
 
             $duration = new DurationCommande($commande);
 
-            dump($commande);
-
             $validator = $this->get('validator');
 
             if($messages = MessageResponse::messageAfterValidation($validator->validate($commande))){
