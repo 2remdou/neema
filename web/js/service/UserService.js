@@ -11,11 +11,11 @@ app.service('UserService',
             var that=this;
             var user=null;
 
-            var _loginService = Restangular.all('users');
+            var _userService = Restangular.all('users');
 
 
             this.list = function(){
-                _loginService.getList().then(function(response){
+                _userService.getList().then(function(response){
                     $rootScope.$broadcast('user.list',{users:response});
                 },function(error){
                     log(error);
@@ -23,7 +23,7 @@ app.service('UserService',
             };
 
             this.login = function(user){
-                _loginService.one('token').post('',user).then(function(response){
+                _userService.one('token').post('',user).then(function(response){
                     that.setToken(response.token);
                     that.setRefreshToken(response.refresh_token);
                     $rootScope.userConnnected = that.getUser();
@@ -36,7 +36,7 @@ app.service('UserService',
 
             this.refreshToken = function(){
                 var deffered = $q.defer();
-                _loginService.one('token/refresh').post('',{refresh_token:that.getRefreshToken()}).then(function(response){
+                _userService.one('token/refresh').post('',{refresh_token:that.getRefreshToken()}).then(function(response){
                     that.setToken(response.token);
                     that.setRefreshToken(response.refresh_token);
                     deffered.resolve(response);
@@ -48,16 +48,15 @@ app.service('UserService',
 
             this.inscription = function(user){
                 user.restaurant = extractId(user.restaurant);
-                _loginService.one('userRestaurant').post('',user).then(function(response){
+                _userService.one('userRestaurant').post('',user).then(function(response){
                     $rootScope.$broadcast('user.registred',{alert:response.data});
                 },function(error){
-                    that.clear();
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
             };
 
             this.inscriptionClient = function(user){
-                _loginService.post(user).then(function(response){
+                _userService.post(user).then(function(response){
                     that.setToken(response.data.token);
                     $rootScope.userConnnected = that.getUser();
                     $rootScope.$broadcast('user.registred',{alert:response.data});
@@ -67,8 +66,16 @@ app.service('UserService',
                 });
             };
 
+            this.inscriptionLivreur = function(user){
+                _userService.one('user-livreur').post('',user).then(function(response){
+                    $rootScope.$broadcast('user.registred',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
             this.changePassword = function(user){
-                _loginService.customPUT(user,'changePassword').then(function(response){
+                _userService.customPUT(user,'changePassword').then(function(response){
                     $rootScope.$broadcast('user.password.changed',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -76,7 +83,7 @@ app.service('UserService',
             };
 
             this.newPassword = function(username,newPassword,confirmationPassword){
-                _loginService.customPUT({username:username,newPassword:newPassword,confirmationPassword:confirmationPassword},'newPassword').then(function(response){
+                _userService.customPUT({username:username,newPassword:newPassword,confirmationPassword:confirmationPassword},'newPassword').then(function(response){
                     $rootScope.$broadcast('user.password.changed',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -84,7 +91,7 @@ app.service('UserService',
             };
 
             this.reset = function(user){
-                _loginService.customPUT(user,'reset/'+user.id).then(function(response){
+                _userService.customPUT(user,'reset/'+user.id).then(function(response){
                     $rootScope.$broadcast('user.password.reseted',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -92,7 +99,7 @@ app.service('UserService',
             };
 
             this.resetClient = function(user){
-                _loginService.customPUT(null,'resetClient/'+user.telephone).then(function(response){
+                _userService.customPUT(null,'resetClient/'+user.telephone).then(function(response){
                     $rootScope.$broadcast('user.password.reseted',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -100,7 +107,7 @@ app.service('UserService',
             };
 
             this.enabled = function(code){
-                _loginService.customPUT(code,'enabled').then(function(response){
+                _userService.customPUT(code,'enabled').then(function(response){
                     $rootScope.$broadcast('user.account.enabled',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -108,7 +115,7 @@ app.service('UserService',
             };
 
             this.sendBackCodeActivation = function(telephone){
-                _loginService.customPUT({username:telephone},'sendBackActivationCode').then(function(response){
+                _userService.customPUT({username:telephone},'sendBackActivationCode').then(function(response){
                     $rootScope.$broadcast('user.code.sendback',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -116,7 +123,7 @@ app.service('UserService',
             };
 
             this.checkCode = function(telephone,code){
-                _loginService.customPUT({username:telephone,code:code},'checkCode').then(function(response){
+                _userService.customPUT({username:telephone,code:code},'checkCode').then(function(response){
                     $rootScope.$broadcast('user.code.checked',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -124,11 +131,11 @@ app.service('UserService',
             };
 
             this.get = function(id){
-                return _loginService.get(id);
+                return _userService.get(id);
             };
 
             this.edit = function(user){
-                _loginService.customPUT(user,'edit/'+user.id).then(function(response){
+                _userService.customPUT(user,'edit/'+user.id).then(function(response){
                     that.setToken(response.data.token);
                     var alert = {textAlert:response.data.textAlert,typeAlert:response.data.typeAlert};
                     $rootScope.$broadcast('user.edited',{user:response.data.user,alert:alert});
@@ -170,6 +177,26 @@ app.service('UserService',
             this.getRoles = function(){
                 if(user) return user.roles;
                 return ['ANONYMOUS'];
+            };
+
+            this.initUser = function(){
+                $rootScope.userConnected = that.getUser();
+                $rootScope.isClient = that.isClient();
+                $rootScope.isLivreur = that.isLivreur();
+            };
+
+            this.isClient = function(){
+                return _.findIndex(that.getRoles(),function(role){
+                            return role==='ROLE_CLIENT';
+                        })
+                        ===-1?false:true;
+            };
+
+            this.isLivreur = function(){
+                return _.findIndex(that.getRoles(),function(role){
+                    return role==='ROLE_LIVREUR';
+                })
+                ===-1?false:true;
             };
 
             this.getRefreshToken = function(){

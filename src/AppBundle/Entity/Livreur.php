@@ -37,39 +37,11 @@ class Livreur
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=255)
-     * @Expose()
-     * @Assert\NotBlank(message="le nom est obligatoire")
-     */
-    private $nom;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="prenom", type="string", length=255)
-     * @Expose()
-     * @Assert\NotBlank(message="le prenom est obligatoire")
-     */
-    private $prenom;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="code", type="string", length=255, unique=true)
      * @Expose()
      * @Assert\NotBlank(message="le code est obligatoire")
      */
     private $code;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="telephone", type="string", length=255, unique=true)
-     * @Expose()
-     * @Assert\NotBlank(message="le telephone est obligatoire")
-     * @NeemaAssert\IsGuineanPhone()
-     */
-    private $telephone;
 
     /**
      * @var boolean
@@ -79,6 +51,15 @@ class Livreur
      * @SerializedName("isFree")
      */
     private $isFree;
+
+    /**
+     * @ORM\OneToOne(targetEntity="User")
+     * @ORM\JoinColumn(nullable=false)
+     * @Expose()
+     * @Assert\NotNull(message="Un utilisateur doit être associé à un livreur")
+     */
+    private $user;
+
 
 
 
@@ -104,55 +85,6 @@ class Livreur
     public function setId($id)
     {
         $this->id = $id;
-    }
-
-
-    /**
-     * Set nom
-     *
-     * @param string $nom
-     *
-     * @return Livreur
-     */
-    public function setNom($nom)
-    {
-        $this->nom = $nom;
-
-        return $this;
-    }
-
-    /**
-     * Get nom
-     *
-     * @return string
-     */
-    public function getNom()
-    {
-        return $this->nom;
-    }
-
-    /**
-     * Set prenom
-     *
-     * @param string $prenom
-     *
-     * @return Livreur
-     */
-    public function setPrenom($prenom)
-    {
-        $this->prenom = $prenom;
-
-        return $this;
-    }
-
-    /**
-     * Get prenom
-     *
-     * @return string
-     */
-    public function getPrenom()
-    {
-        return $this->prenom;
     }
 
     /**
@@ -204,26 +136,26 @@ class Livreur
     }
 
     /**
-     * Set telephone
+     * Set user
      *
-     * @param string $telephone
+     * @param \AppBundle\Entity\User $user
      *
      * @return Livreur
      */
-    public function setTelephone($telephone)
+    public function setUser(\AppBundle\Entity\User $user)
     {
-        $this->telephone = $telephone;
+        $this->user = $user;
 
         return $this;
     }
 
     /**
-     * Get telephone
+     * Get user
      *
-     * @return string
+     * @return \AppBundle\Entity\User
      */
-    public function getTelephone()
+    public function getUser()
     {
-        return $this->telephone;
+        return $this->user;
     }
 }

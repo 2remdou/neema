@@ -21,16 +21,18 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
     private function mainQueryBuilder(){
 
         $queryBuilder = $this->minQueryBuilder()
-            ->addSelect(['l','lr','r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom}'])
+            ->addSelect(['l','lr','PARTIAL ul.{id,username,nom,prenom}','r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom}'])
             ->leftJoin('c.livraison','l')
             ->leftJoin('l.livreur','lr')
+            ->leftJoin('lr.user','ul')
             ->leftJoin('c.restaurant','r')
             ->leftJoin('r.imageRestaurants','ir')
             ->leftJoin('c.detailCommandes','d')
             ->leftJoin('d.plat','p')
             ->leftJoin('p.imagePlat','ip')
             ->leftJoin('c.etatCommande','e')
-            ->leftJoin('c.user','u');
+            ->leftJoin('c.user','u')
+        ;
 
         return $queryBuilder;
     }
@@ -60,14 +62,14 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
 
     }
 
-    public function findByTypeDelivered($isDelivered=false,$idRestaurant=''){
+    public function findByTypeDelivered($delivered=false,$idRestaurant=''){
 
         return $this->mainQueryBuilder()
             ->where('r.id LIKE :idRestaurant')
-            ->andWhere('c.isDelivered=:isDelivered')
+            ->andWhere('c.delivered=:delivered')
             ->setParameters(array(
                 'idRestaurant'=>$idRestaurant,
-                'isDelivered'=>$isDelivered))
+                'delivered'=>$delivered))
             ->orderBy('c.dateCommande','DESC')
             ->getQuery()
             ->getArrayResult();
@@ -93,6 +95,39 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getArrayResult();
         return count($commande)===1?$commande[0]:null;
+    }
+
+    /**
+     * Verifie si tous les plats dans la commande sont marqués terminés,
+     * avant que le restaurant ne remette au livreur
+     * @param $idCommande
+     * @return bool
+     */
+    public function allDetailIsFinished($idCommande){
+        $details = $this->minQueryBuilder()
+            ->leftJoin('c.detailCommandes','dc')
+            ->where('c.id=:idCommande')
+            ->andWhere('dc.finished=false')
+            ->setParameter('idCommande',$idCommande)
+            ->getQuery()
+            ->getArrayResult();
+        return count($details)===0?true:false;
+
+    }
+
+    /**
+     * Trouver une commande sans livreur
+     * @return Commande
+     */
+    public function findCommandeWithoutLivreur(){
+        $commandes = $this->minQueryBuilder()
+                    ->leftJoin('c.livraison','livraison')
+                    ->where($this->createQueryBuilder('c')->expr()->isNull('livraison.livreur'))
+                    ->orderBy('c.dateCommande','DESC')
+                    ->getQuery()
+                    ->getResult();
+
+        return count($commandes)!==0?$commandes[0]:null;
 
     }
 

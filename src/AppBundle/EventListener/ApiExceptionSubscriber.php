@@ -12,12 +12,14 @@ namespace AppBundle\EventListener;
 use AppBundle\Exception\AccountEnabledException;
 use AppBundle\Exception\ChangePasswordException;
 use JMS\Serializer\Serializer;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
@@ -50,8 +52,31 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         }
 
         if($e instanceof AccessDeniedHttpException){
-            $response = new JsonResponse('Vous n\'êtes pas autorisé à effectuer cette opération',403);
+            $response = new JsonResponse(array(
+                'textAlert'=>'Vous n\'êtes pas autorisé à effectuer cette opération',
+                'typeAlert'=>'danger'
+            ),403);
+
             $event->setResponse($response);
+        }
+
+        if($e instanceof NotFoundHttpException){
+            //extraction du nom de l'entity
+            preg_match('/(AppBundle):(?P<entity>\w+)/',$e->getMessage(),$matches);
+            $response = new JsonResponse(array(
+                'textAlert'=>$matches['entity'].' introuvable',
+                'typeAlert'=>'danger'
+            ),404);
+            $event->setResponse($response);
+        }
+        if($e instanceof FatalErrorException){
+            $response = $event->getResponse();
+            dump($response);
+/*            $response = new JsonResponse(array(
+                'textAlert'=>'Nous avons cassés quelques choses. Ne vous inquiétez pas, car nous avons presque fini de le régler',
+                'typeAlert'=>'danger'
+            ),500);
+            $event->setResponse($response);*/
         }
 
 

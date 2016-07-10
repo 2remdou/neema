@@ -12,7 +12,6 @@ app.controller('ResetPasswordController',
             UserService.list();
 
             $scope.reset = function(user){
-                log($scope);
                 $scope.formIsSubmit = true;
                 if($scope.form.$invalid) return;
 
@@ -37,7 +36,6 @@ app.controller('ResetPasswordController',
             });
 
             $scope.$on('user.list',function(event,args){
-                log(args);
                 $scope.users = args.users;
                 $scope.nbreLoader--;
             });

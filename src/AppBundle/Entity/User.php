@@ -20,6 +20,7 @@ use AppBundle\Validator\Constraints as NeemaAssert;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity(fields="username", message="Ce username existe déjà.")
+ * @UniqueEntity(fields="telephone", message="Ce numero de telephone existe déjà.")
  * @ExclusionPolicy("all")
  */
 
@@ -74,6 +75,17 @@ class User implements UserInterface
      * @Expose()
      */
     protected $prenom;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="telephone", type="string", length=255, unique=true)
+     * @Expose()
+     * @Assert\NotBlank(message="le telephone est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
+     */
+    private $telephone;
+
 
     /**
      * @var string
@@ -461,5 +473,22 @@ class User implements UserInterface
     {
         return $this->commandes;
     }
+
+    /**
+     * @return string
+     */
+    public function getTelephone()
+    {
+        return $this->telephone;
+    }
+
+    /**
+     * @param string $telephone
+     */
+    public function setTelephone($telephone)
+    {
+        $this->telephone = $telephone;
+    }
+
 
 }

@@ -17,12 +17,47 @@ class LivraisonRepository extends \Doctrine\ORM\EntityRepository
                   JOIN l.livreur li";
         return $dql;
     }
+    private function getMainQueryBuilder(){
+        return $this->createQueryBuilder('l')
+            ->addSelect(['li','c','r','PARTIAL client.{id,username,nom,prenom}'])
+            ->leftJoin('l.livreur','li')
+            ->leftJoin('l.commande','c')
+            ->leftJoin('c.restaurant','r')
+            ->leftJoin('c.user','client')
+            ->leftJoin('li.user','livreur');
+    }
     public function findAll(){
 
         $dql = $this->getMainDql();
         $query = $this->getEntityManager()
             ->createQuery($dql);
         return $query->getArrayResult();
+    }
+
+    /**
+     * Recherche la livraison courante du livreur dont l'id est fournit en parametre.
+     * Une livraison est dites courante si le restaurant a marqué la commande terminée(commande.giveLivreur=false) et
+     * le livreur n'a pas encore livré(livraison.finished=false)
+     * @param $idUser
+     * @return array
+     */
+    public function findByCurrentLivraison($idUser){
+        $query = $this->getMainQueryBuilder()
+            ->addSelect(['q','commune','dc','p'])
+            ->leftJoin('c.detailCommandes','dc')
+            ->leftJoin('dc.plat','p')
+            ->leftJoin('r.quartier','q')
+            ->leftJoin('q.commune','commune')
+            ->where('livreur.id=:idUser')
+            ->andWhere('l.finished=false')
+//            ->andWhere('c.giveLivreur=true')
+            ->setParameter('idUser',$idUser)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery();
+
+        $livraisons = $query->getArrayResult();
+
+        return count($livraisons)!==0?$livraisons[0]:null;
     }
 
 }

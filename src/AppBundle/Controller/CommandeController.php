@@ -8,6 +8,9 @@ namespace AppBundle\Controller;
 use AppBundle\Annotation\RestaurantIsAllow;
 use AppBundle\Entity\DetailCommande;
 use AppBundle\Event\CommandeEnregistreEvent;
+use AppBundle\Event\DetailCommandeEvent;
+use AppBundle\Event\LivraisonEvent;
+use AppBundle\Event\LivreurEvent;
 use AppBundle\NeemaEvents;
 use AppBundle\Service\DurationCommande;
 use AppBundle\Util\FillAttributes;
@@ -31,6 +34,20 @@ use AppBundle\Entity\Commande;
 
 class CommandeController extends FOSRestController
 {
+    /**
+     * @Route("api/commandes/test/{id}",name="commande_test", options={"expose"=true})
+     * @ParamConverter("commande", class="AppBundle:Commande")
+     */
+    public function testCommande(Commande $commande){
+        $em = $this->getDoctrine()->getManager();
+        $this->getCommandeManager()->calculDurationExact($commande);
+        return array();
+    }
+
+
+    private function getCommandeManager(){
+        return $this->get('app.commande.manager');
+    }
 	/**
      * Ajouter une commande
      *
@@ -52,12 +69,13 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="restaurant",nullable=false, description="Le restaurant de la commande")
      * @Route("api/commandes",name="post_commande", options={"expose"=true})
      * @Method({"POST"})
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     * @Security("has_role('ROLE_CLIENT')")
      */
 	public function postCommandeAction(Request $request,ParamFetcher $paramFetcher){
 
         $details = $paramFetcher->get('detailCommandes');
         $operation = $this->get('app.operation');
+        $commandeManager = $this->getCommandeManager();
 
         if(!$details){
             return MessageResponse::message('Une commande ne peut exister sans plat','danger',400);
@@ -85,16 +103,9 @@ class CommandeController extends FOSRestController
             $commande->setRestaurant($restaurant);
             $commande->setEtatCommande($etatCommande);
 
-            $duration = new DurationCommande($commande);
 
             $validator = $this->get('validator');
 
-            if($messages = MessageResponse::messageAfterValidation($validator->validate($commande))){
-                return MessageResponse::message($messages,'danger',400);
-            }
-
-            $em->persist($commande);
-//            $em->flush();
 
             $nbrePlat = 1;
             $restaurantPlat = null;
@@ -120,25 +131,30 @@ class CommandeController extends FOSRestController
                 $detailCommande->setPlat($plat);
                 $detailCommande->setQuantite($detail['quantite']);
 
-                $duration->addDuration($plat->getDureePreparation());
+//                $duration->addDuration($plat->getDureePreparation());
 
                 if($messages = MessageResponse::messageAfterValidation($validator->validate($detailCommande))){
                     return MessageResponse::message($messages,'danger',400);
                 }
 
                 $em->persist($detailCommande);
-//                $em->flush();
 
                 $nbrePlat++;
 
             }
 
-            $duration->addDuration($this->getParameter('majorationTimeLivraison'));
+            $commandeManager->calculDurationEstimative($commande);
+
+            if($messages = MessageResponse::messageAfterValidation($validator->validate($commande))){
+                return MessageResponse::message($messages,'danger',400);
+            }
+
+            $em->persist($commande);
+            $em->flush();
 
             $dispatcher = $this->get('event_dispatcher');
             $dispatcher->dispatch(NeemaEvents::COMMANDE_ENREGISTRE,new CommandeEnregistreEvent($commande));
 
-            $em->flush();
             $em->getConnection()->commit();
 
         }catch (Exception $e){
@@ -146,7 +162,7 @@ class CommandeController extends FOSRestController
             throw $e;
         }
 
-        return MessageResponse::message('La commande a été enrégistré avec succes','success',201,array('commande'=>$commande));
+        return MessageResponse::message('La commande a été enrégistré avec succes','success',201);
 
 
 	}
@@ -270,11 +286,9 @@ class CommandeController extends FOSRestController
 
         $em = $this->getDoctrine()->getManager();
         $commande=$em->getRepository('AppBundle:Commande')->findById($id);
-//        $commande=$em->getRepository('AppBundle:Commande')->findOneBy(array("id"=>$id));
         if(!$commande){
             return MessageResponse::message('Commande introuvable','danger',400);
         }
-//        dump($c);
         return $commande;
 	}
 
@@ -354,8 +368,113 @@ class CommandeController extends FOSRestController
 
         $em->flush();
 
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch(NeemaEvents::DETAIL_COMMANDE_FINISHED,new DetailCommandeEvent($detailCommande));
+
+
         return MessageResponse::message('Merci, ce plat a été marqué terminé','success',200);
     }
+
+	/**
+     * Donner les plats au livreur
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Donner les plats au livreur",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @Route("api/commandes/{id}/give-livreur",name="put_give_livreur", options={"expose"=true})
+     * @ParamConverter("commande", class="AppBundle:Commande")
+     * @Method({"PUT"})
+	 * @Security("has_role('ROLE_RESTAURANT')")
+	 */
+	public function putGiveCommandeToLivreurAction(Commande $commande){
+
+        $em = $this->getDoctrine()->getManager();
+
+        if(!$em->getRepository('AppBundle:Commande')->allDetailIsFinished($commande->getId())){
+            return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de les remettre au livreur','danger',400);
+        }
+
+        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL1'));
+
+
+        $commande->setGiveLivreur(true);
+        $commande->setDateGiveLivreur(new \DateTime());
+        $commande->setEtatCommande($etatCommande);
+        $em->flush();
+
+        $dispatcher = $this->get('event_dispatcher');
+        $dispatcher->dispatch(NeemaEvents::COMMANDE_GIVE_LIVREUR,new CommandeEnregistreEvent($commande));
+
+
+        return MessageResponse::message('Merci, la commande a été marqué terminé','success',200);
+    }
+
+	/**
+     * Marquer une commande comme livrée
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Marquer une commande comme livrée",
+     *   statusCodes = {
+     *     	200 = "Success",
+     *		404 = "Not found"
+     *   }
+     * )
+     * @Route("api/commandes/{id}/delivered",name="put_commande_delivered", options={"expose"=true})
+     * @ParamConverter("commande", class="AppBundle:Commande")
+     * @Method({"PUT"})
+	 * @Security("has_role('ROLE_LIVREUR')")
+	 */
+	public function putDeliveredCommandeAction(Commande $commande){
+
+        $em = $this->getDoctrine()->getManager();
+
+        if(!$commande->isGiveLivreur()){
+            return MessageResponse::message('Le restaurant doit vous remettre la commande, avant que vous ne fassiez la livraison','danger',400);
+        }
+
+        $dispatcher = $this->get('event_dispatcher');
+
+        $em = $this->getDoctrine()->getManager();
+
+        if(!$em->getRepository('AppBundle:Commande')->allDetailIsFinished($commande->getId())){
+            return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de remettre au livreur','info',400);
+        }
+
+        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL2'));
+
+        $commande->setDelivered(true);
+        $commande->setEtatCommande($etatCommande);
+
+        $livraison = $commande->getLivraison();
+        $livraison->setFinished(true);
+        $livraison->setDateLivraison(new \DateTime());
+
+        $livreur = $livraison->getLivreur();
+
+        //S'il existe une commande sans livreur, l'affecter au livreur qui vient de se liberer
+        $commandeWithoutLivreur = $em->getRepository('AppBundle:Commande')->findCommandeWithoutLivreur();
+        if($commandeWithoutLivreur){
+            $commandeWithoutLivreur->getLivraison()->setLivreur($livreur);
+            $livreur->setIsFree(false);
+        }else{
+            $livreur->setIsFree(true);
+        }
+
+
+        $this->getCommandeManager()->calculDurationExact($commande);
+
+        $em->flush();
+
+        return MessageResponse::message('Merci, livraison enregistrée avec succès','success',200);
+    }
+
+
 	/**
      * Modifier un detail commande
      *

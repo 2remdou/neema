@@ -23,6 +23,13 @@
                             <input type="text" class="form-control" placeholder="Prenom"  name="prenom" ng-model="user.prenom">
                         </div>
                     </div>
+                    <div class="form-group" ng-class="{ 'has-error' : form.username.$invalid  && formIsSubmit }">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+                            <input type="text" class="form-control" placeholder="Telephone"  name="telephone" ng-model="user.telephone" required>
+                            <p ng-show="form.telephone.$invalid  && formIsSubmit" class="help-block">N° telephone est obligatoire.</p>
+                        </div>
+                    </div>
                     <div class="form-group" ng-class="{ 'has-error' : form.password.$invalid  && formIsSubmit }">
                         <div class="input-group login-input">
                             <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>

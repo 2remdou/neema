@@ -55,11 +55,11 @@ class Commande
     /**
      * @var boolean
      *
-     * @ORM\Column(name="isDelivered", type="boolean", options={"default":false})
+     * @ORM\Column(name="delivered", type="boolean", options={"default":false})
      * @Expose()
-     * @SerializedName("isDelivered")
+     * @SerializedName("delivered")
      */
-    private $isDelivered;
+    private $delivered;
 
     /**
      * @var string
@@ -166,6 +166,26 @@ class Commande
      */
     private $etatCommande;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="giveLivreur", type="boolean", options={"default":false}, nullable=true)
+     * @Expose()
+     * @SerializedName("giveLivreur")
+     */
+    private $giveLivreur;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateGiveLivreur", type="datetime", nullable=true)
+     * @Expose()
+     * @SerializedName("dateGiveLivreur")
+     */
+    private $dateGiveLivreur;
+
+
+
 
 
 
@@ -174,7 +194,8 @@ class Commande
 
     public function __construct(){
         $this->dateCommande = new \DateTime();
-        $this->isDelivered = false;
+        $this->delivered = false;
+        $this->giveLivreur = false;
     }
 
     /**
@@ -245,30 +266,6 @@ class Commande
     }
 
     /**
-     * Set isDelivered
-     *
-     * @param boolean $isDelivered
-     *
-     * @return Commande
-     */
-    public function setIsDelivered($isDelivered)
-    {
-        $this->isDelivered = $isDelivered;
-
-        return $this;
-    }
-
-    /**
-     * Get isDelivered
-     *
-     * @return boolean
-     */
-    public function getIsDelivered()
-    {
-        return $this->isDelivered;
-    }
-
-    /**
      * Set longitude
      *
      * @param string $longitude
@@ -314,6 +311,22 @@ class Commande
     public function getLatitude()
     {
         return $this->latitude;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDelivered()
+    {
+        return $this->delivered;
+    }
+
+    /**
+     * @param boolean $delivered
+     */
+    public function setDelivered($delivered)
+    {
+        $this->delivered = $delivered;
     }
 
     /**
@@ -590,4 +603,37 @@ class Commande
     {
         return $this->etatCommande;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isGiveLivreur()
+    {
+        return $this->giveLivreur;
+    }
+
+    /**
+     * @param boolean $giveLivreur
+     */
+    public function setGiveLivreur($giveLivreur)
+    {
+        $this->giveLivreur = $giveLivreur;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateGiveLivreur()
+    {
+        return $this->dateGiveLivreur;
+    }
+
+    /**
+     * @param \DateTime $dateGiveLivreur
+     */
+    public function setDateGiveLivreur($dateGiveLivreur)
+    {
+        $this->dateGiveLivreur = $dateGiveLivreur;
+    }
+
 }

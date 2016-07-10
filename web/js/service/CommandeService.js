@@ -59,6 +59,22 @@ app.service('CommandeService',
                 });
             };
 
+            this.giveToLivreur = function(commande){
+                _commandeService.customPUT(null,commande.id+'/give-livreur').then(function(response){
+                    $rootScope.$broadcast('commande.give.livreur',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
+            this.delivered = function(commande){
+                _commandeService.customPUT(null,commande.id+'/delivered').then(function(response){
+                    $rootScope.$broadcast('commande.delivered',{alert:response.data});
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
             this.update = function(commande){
                 commande.put().then(function(response){
                     $rootScope.$broadcast('commande.updated', {alert:response.data})

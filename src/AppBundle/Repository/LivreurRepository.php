@@ -10,27 +10,33 @@ namespace AppBundle\Repository;
  */
 class LivreurRepository extends \Doctrine\ORM\EntityRepository
 {
-    private function getMainDql(){
-        $dql  = "SELECT l
-                  from AppBundle:Livreur l";
-        return $dql;
-    }
-    public function findAll(){
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function mainQueryBuilder(){
+        $queryBuilder = $this->createQueryBuilder('l')
+            ->addSelect(['PARTIAL u.{id,nom,prenom,telephone}'])
+            ->leftJoin('l.user','u');
 
-        $dql = $this->getMainDql();
-        $query = $this->getEntityManager()
-            ->createQuery($dql);
-        return $query->getArrayResult();
+        return $queryBuilder;
     }
+
+    /**
+     * @return array
+     */
+    public function findAll(){
+        return $this->mainQueryBuilder()
+            ->getQuery()
+            ->getArrayResult();
+    }
+
 
     public function findFree(){
-        $dql = "SELECT l from AppBundle:Livreur l WHERE l.isFree=:isFree";
 
-        $query = $this
-            ->getEntityManager()
-            ->createQuery($dql)
-            ->setParameter('isFree',true);
-
-        return $query->setMaxResults(1)->getOneOrNullResult();
+    return  $this->mainQueryBuilder()
+        ->where('l.isFree=true')
+        ->getQuery()
+        ->setMaxResults(1)
+        ->getOneOrNullResult();
     }
 }

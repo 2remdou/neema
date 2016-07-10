@@ -68,6 +68,35 @@ class LivraisonController extends FOSRestController
 	}
 
 	/**
+     * La livraison encours du user connecté
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "La livraison encours du user connecté",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/livraisons/current",name="get_livraisons_current", options={"expose"=true})
+     * @Method({"GET"})
+     * @Security("has_role('ROLE_LIVREUR')")
+     */
+
+	public function getCurrentLivrisonByLivreurConnected(){
+        $user = $this->getUser();
+        if(!$user){
+            return MessageResponse::message('Livreur inconnu','danger',400);
+        }
+
+        $em  = $this->getDoctrine()->getManager();
+
+        $livrason = $em->getRepository('AppBundle:Livraison')->findByCurrentLivraison($user->getId());
+
+        return $livrason;
+	}
+
+	/**
      * retourner une livraison
      *
      * @ApiDoc(

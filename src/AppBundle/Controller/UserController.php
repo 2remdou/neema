@@ -5,6 +5,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Livreur;
 use AppBundle\Entity\UserRestaurant;
 use AppBundle\Util\FillAttributes;
 use AppBundle\Util\Util;
@@ -44,6 +45,7 @@ class UserController extends FOSRestController
 		}
 
 	}
+
     /**
      * Lister les users
      *
@@ -61,9 +63,10 @@ class UserController extends FOSRestController
      */
 
     public function getUsersAction(){
-        $operation = $this->get('app.operation');
-        $users =  $operation->all('AppBundle:User');
-        return $users;
+        $em = $this->getDoctrine()->getManager();
+
+        return $em->getRepository('AppBundle:User')->findUsersRestaurantAndLivreur();
+
     }
     /**
      * Retourne un user
@@ -122,6 +125,7 @@ class UserController extends FOSRestController
             $user->setPassword($paramFetcher->get('password'));
             $user->setNom($paramFetcher->get('nom'));
             $user->setPrenom($paramFetcher->get('prenom'));
+            $user->setTelephone($phoneNumber);
             $user->setIsReseted(false);
             $user->setEnabled(false);
             $user->generateActivationCode();
@@ -177,6 +181,7 @@ class UserController extends FOSRestController
 	 * @RequestParam(name="username",nullable=false, description="username")
 	 * @RequestParam(name="nom",nullable=true, description="nom")
 	 * @RequestParam(name="prenom",nullable=true, description="prenom")
+	 * @RequestParam(name="telephone",nullable=true, description="Numero de telephone")
 	 * @RequestParam(name="restaurant",nullable=false, description="id du restaurant")
 	 * @RequestParam(name="password",nullable=false, description="password")
      * @Route("api/users/userRestaurant",name="post_user_restaurant", options={"expose"=true})
@@ -199,6 +204,7 @@ class UserController extends FOSRestController
             $user->setPassword($paramFetcher->get('password'));
             $user->setNom($paramFetcher->get('nom'));
             $user->setPrenom($paramFetcher->get('prenom'));
+            $user->setTelephone($paramFetcher->get('telephone'));
             $user->setEnabled(true);
             $user->setRoles(array('ROLE_RESTAURANT'));
 
@@ -233,6 +239,78 @@ class UserController extends FOSRestController
 
 		return MessageResponse::message('utilisateur ajouté avec succès','success',201);
 
+
+	}
+
+	/**
+     * Ajouter un livreur
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = " Ajouter un livreur",
+     *   statusCodes = {
+     *     201 = "Created",
+     *     404 = "Not found",
+     *   }
+     * )
+	 * @RequestParam(name="username",nullable=false, description="username")
+	 * @RequestParam(name="nom",nullable=true, description="nom")
+	 * @RequestParam(name="prenom",nullable=true, description="prenom")
+	 * @RequestParam(name="telephone",nullable=true, description="Numero de telephone")
+	 * @RequestParam(name="password",nullable=false, description="password")
+     * @Route("api/users/user-livreur",name="post_user_livreur", options={"expose"=true})
+     * @Method({"POST"})
+     * @Security("has_role('ROLE_ADMIN')")
+     */
+	public function postUserLivreurAction(ParamFetcher $paramFetcher){
+
+        $em = $this->getDoctrine()->getManager();
+
+        try{
+            $user = new User();
+
+            $user->setUsername($paramFetcher->get('username'));
+            $user->setPassword($paramFetcher->get('password'));
+            $user->setNom($paramFetcher->get('nom'));
+            $user->setPrenom($paramFetcher->get('prenom'));
+            $user->setTelephone($paramFetcher->get('telephone'));
+            $user->setEnabled(true);
+            $user->setRoles(array('ROLE_LIVREUR'));
+
+            //pour encoder le password
+            $this->updatePassword($user);
+
+            $validator = $this->get('validator');
+
+            if($messages = MessageResponse::messageAfterValidation($validator->validate($user))){
+                return MessageResponse::message($messages,'danger',400);
+            }
+
+            $em->persist($user);
+            $em->flush();
+
+            $livreur = new Livreur();
+            $livreur->setCode($user->getUsername());
+            $livreur->setUser($user);
+
+            if($messages = MessageResponse::messageAfterValidation($validator->validate($livreur))){
+                return MessageResponse::message($messages,'danger',400);
+            }
+
+
+            $em->persist($livreur);
+
+            $em->flush();
+
+            $em->getConnection()->beginTransaction();
+
+            return MessageResponse::message('Livreur ajouté avec succès','success',201);
+
+        }catch (\Exception $e){
+            $em->getConnection()->rollBack();
+            throw $e;
+
+        }
 
 	}
 

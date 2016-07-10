@@ -18,9 +18,14 @@ app.controller('IndexController',
             CommandeService.listByRestaurant();
 
             $scope.finishPreparation = function(detail){
-                $scope.detail = detail; //afin de pouvoir mettre finished à true dans le listener
+                $scope.detail = detail; //afin de pouvoir mettre finished à true dans le listener, pour faire réagir le code html
                 usSpinnerService.spin('nt-spinner');
                 CommandeService.finishPreparation(detail);
+            };
+
+            $scope.giveToLivreur = function(commande){
+                usSpinnerService.spin('nt-spinner');
+                CommandeService.giveToLivreur(commande);
             };
 
 
@@ -41,6 +46,11 @@ app.controller('IndexController',
             });
             $scope.$on('commande.detail.updated',function(event,args){
                 $scope.detail.finished = true;
+                usSpinnerService.stop('nt-spinner');
+                $scope.$emit('show.message',{alert:args.alert});
+            });
+
+            $scope.$on('commande.give.livreur',function(event,args){
                 usSpinnerService.stop('nt-spinner');
                 $scope.$emit('show.message',{alert:args.alert});
             });

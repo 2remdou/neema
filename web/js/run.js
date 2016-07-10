@@ -21,9 +21,11 @@ app
                 }
                 else if(alert.typeAlert==='info'){
                     Notification.info(opt);
+                    usSpinnerService.stop('nt-spinner');
                 }
                 else if(alert.typeAlert==='warning'){
                     Notification.warning(opt);
+                    usSpinnerService.stop('nt-spinner');
                 }
             });
 

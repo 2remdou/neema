@@ -170,6 +170,7 @@ class DetailCommande
     public function setCommande(\AppBundle\Entity\Commande $commande)
     {
         $this->commande = $commande;
+        $this->commande->addDetailCommande($this);
 
         return $this;
     }

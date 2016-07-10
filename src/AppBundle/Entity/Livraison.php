@@ -57,9 +57,19 @@ class Livraison
      */
     private $livreur;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="finished", type="boolean", options={"default":false})
+     * @Expose()
+     * @SerializedName("finished")
+     */
+    private $finished;
+
 
 
     public function __construct(){
+        $this->finished = false;
     }
 
     /**
@@ -70,6 +80,22 @@ class Livraison
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        return $this->finished;
+    }
+
+    /**
+     * @param boolean $finished
+     */
+    public function setFinished($finished)
+    {
+        $this->finished = $finished;
     }
 
     /**

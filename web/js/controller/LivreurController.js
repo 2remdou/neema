@@ -4,8 +4,8 @@
 'use strict';
 
 app.controller('LivreurController',
-    ['$scope','usSpinnerService','LivreurService','ModalService',
-    function($scope,usSpinnerService,LivreurService,ModalService){
+    ['$scope','usSpinnerService','LivreurService','ModalService','UserService',
+    function($scope,usSpinnerService,LivreurService,ModalService,UserService){
 
         $scope.livreur={};
         LivreurService.list();
@@ -15,48 +15,36 @@ app.controller('LivreurController',
             if($scope.form.$invalid) return;
 
             usSpinnerService.spin('nt-spinner');
-            LivreurService.post(livreur);
-
-            $scope.forUpdate = false;
-
+            var user = {
+                username:livreur.code,
+                nom:livreur.nom,
+                prenom:livreur.prenom,
+                password:livreur.password,
+                telephone:livreur.telephone
+            };
+            UserService.inscriptionLivreur(user);
 
         };
 
-        $scope.selected = function(livreur){
-            $scope.forUpdate = true;
-            $scope.livreur = livreur;
-        };
-
-        $scope.update = function(livreur){
-            $scope.formIsSubmit=true;
-            if($scope.form.$invalid) return;
-
+        $scope.resetPassword = function(livreur){
             usSpinnerService.spin('nt-spinner');
-            LivreurService.update(livreur);
 
-            $scope.forUpdate = false;
-        };
-
-        $scope.delete = function(livreur){
-            ModalService.showModal({
-                templateUrl : 'js/view/modalConfirmation.html',
-                controller: 'ModalConfirmationController',
-                inputs:{
-                    texte : 'Voulez vous supprimer ce livreur'
-                },
-            }).then(function(modal){
-                modal.element.modal();
-                modal.close.then(function(result){
-                    if(!result) return;
-                    usSpinnerService.spin('nt-spinner');
-                    LivreurService.delete(livreur);
-                })
-            });
-
-
+            UserService.reset(livreur.user);
         };
 
 
+
+        $scope.$on('user.registred',function(event,args){
+            $scope.$emit('show.message',{alert:args.alert});
+            LivreurService.list();
+            usSpinnerService.stop('nt-spinner');
+        });
+
+        $scope.$on('user.password.reseted',function(event,args){
+            $scope.$emit('show.message',{alert:args.alert});
+
+            usSpinnerService.stop('nt-spinner');
+        });
 
 
         $scope.$on('livreur.list',function(event,args){
@@ -66,18 +54,4 @@ app.controller('LivreurController',
             $scope.livreur={};
         });
 
-        $scope.$on('livreur.created',function(event,args){
-            $scope.$emit('show.message',{alert:args.alert});
-            LivreurService.list();
-        });
-
-        $scope.$on('livreur.updated',function(event,args){
-            $scope.$emit('show.message',{alert:args.alert});
-            LivreurService.list();
-        });
-
-        $scope.$on('livreur.deleted',function(event,args){
-            $scope.$emit('show.message',{alert:args.alert});
-            LivreurService.list();
-        });
-}]);
+    }]);

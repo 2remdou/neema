@@ -10,51 +10,34 @@ namespace AppBundle\EventListener;
 
 
 use AppBundle\Entity\Livraison;
-use AppBundle\Event\CommandeEnregistreEvent;
+use AppBundle\Event\LivraisonEvent;
 use AppBundle\NeemaEvents;
 use AppBundle\Service\CommandeManager;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class CommandeSubscriber implements EventSubscriberInterface
+class LivraisonSubscriber implements EventSubscriberInterface
 {
     private $em;
     private $commandeManager;
 
+
     public function __construct(EntityManager $em,CommandeManager $commandeManager){
         $this->em = $em;
         $this->commandeManager = $commandeManager;
-    }
-
-    /**
-     * @param CommandeEnregistreEvent $commandeEnregistreEvent
-     * Crée une livraison en fonction de la commande passée dans $commandeEnregistreEvent
-     * Selectiionne un livreur free
-     *
-     */
-    public function onCommandeEnregistre(CommandeEnregistreEvent $commandeEnregistreEvent){
-        $livraison = new Livraison();
-        $livraison->setCommande($commandeEnregistreEvent->getCommande());
-
-        $livreur = $this->em->getRepository('AppBundle:Livreur')->findFree();
-        if($livreur){
-            $livraison->setLivreur($livreur);
-            $livreur->setIsFree(false);
-        }
-
-        $this->em->persist($livraison);
-        $this->em->flush();
-    }
-
-    public function onCommandeLivre(CommandeEnregistreEvent $commandeEnregistreEvent){
-        $commande = $commandeEnregistreEvent->getCommande();
-
-        $etatCommande = $this->em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL2'));
-
-        $commande->setDelivered(true);
-        $commande->setEtatCommande($etatCommande);
 
     }
+
+    public function onLivraisonIsFinished(LivraisonEvent $livraisonEvent){
+        $livraison = $livraisonEvent->getLivraison();
+
+        $livraison->setFinished(true);
+        $livraison->setDateLivraison(new \DateTime());
+
+        $commande = $livraison->getCommande();
+        $this->commandeManager->calculDurationExact($commande);
+    }
+
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
@@ -76,8 +59,7 @@ class CommandeSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            NeemaEvents::COMMANDE_ENREGISTRE => 'onCommandeEnregistre',
-            NeemaEvents::COMMANDE_LIVREE => 'onCommandeLivre',
+            NeemaEvents::LIVRAISON_IS_FINISHED => 'onLivraisonIsFinished',
         );
     }
 }

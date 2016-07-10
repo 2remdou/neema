@@ -38,9 +38,9 @@ gulp.task('concatJs',function () {
 gulp.task('service',function () {
     return gulp.src([
         'web/js/Util.js',
+        'web/js/service/*.js',
         'web/js/filter/*.js',
-        'web/js/directive/*.js',
-        'web/js/service/*.js'
+        'web/js/directive/*.js'
     ])
         .pipe(concat('service.js'))
         .pipe(gulp.dest('web/bundles/'));

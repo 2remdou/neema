@@ -11,19 +11,50 @@ namespace AppBundle\Repository;
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {
     use UtilForRepository;
+
     private function getMainDql(){
-        $dql  = "SELECT PARTIAL u.{id,username,nom,prenom},ur,r,q,c
+        $dql  = "SELECT PARTIAL u.{id,username,nom,prenom,roles},ur,r,q,c
                  FROM AppBundle:User u
                  LEFT JOIN u.userRestaurant ur
                  LEFT JOIN ur.restaurant r
                  LEFT JOIN r.quartier q
-                 LEFT JOIN q.commune c";
+                 LEFT JOIN q.commune c
+                 ORDER BY u.username";
         return $dql;
+    }
+
+    /**
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function getMainQueryBuilder(){
+        return $this->_em->createQueryBuilder('u')
+            ->addSelect(['PARTIAL u.{id,username,nom,prenom,role}','ur','r','q','c'])
+            ->leftJoin('u.userRestaurant','ur')
+            ->leftJoin('ur.restaurant','r')
+            ->leftJoin('r.quartier','q')
+            ->leftJoin('q.commune','c');
+
     }
     public function findAll(){
 
-        $dql = $this->getMainDql();
-        return $this->fillParameterAndGetResult($dql);
+        return $this->getEntityManager()
+                ->createQuery($this->getMainDql())
+                ->getArrayResult();
+    }
+
+    public function findUsersRestaurantAndLivreur(){
+
+        $users= $this->getEntityManager()
+                ->createQuery($this->getMainDql())
+                ->getArrayResult();
+
+        $resultat = array_filter($users,function($user){
+            if(in_array($user['roles'][0],array('ROLE_RESTAURANT','ROLE_LIVREUR'))){
+                return $user;
+            }
+        });
+
+        return array_values($resultat);
     }
 
 }

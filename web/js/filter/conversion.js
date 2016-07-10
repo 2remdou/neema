@@ -5,6 +5,7 @@
 
 app.filter('conversion',function(){
     return function(value,uniteSource,uniteDestination){
+            if(!value) value = 0;
             switch (uniteSource) {
                 case 'second':
                     switch (uniteDestination) {
@@ -29,7 +30,7 @@ app.filter('conversion',function(){
                 case 'metre':
                     switch (uniteDestination) {
                         case 'km':
-                                value = Math.round(value/1000)+' km';
+                                value = value<1000?value+' m':Math.round(value/1000)+' km';
                             break;
                         default:
                             break;

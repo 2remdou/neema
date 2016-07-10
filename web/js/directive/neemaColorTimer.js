@@ -14,6 +14,8 @@ app.directive('neemaColorTimer', [function() {
            $scope.$watch('minute',function(newValue,oldValue){
                if(newValue <= 5){
                    $element.css('color','red');
+               }else{
+                   $element.css('color','black');
                }
            });
         }]

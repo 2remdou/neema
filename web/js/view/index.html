@@ -14,10 +14,10 @@
                     <p><strong>Etat :</strong> {{commande.etatCommande.libelle}}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Livreur:</strong> {{commande.livraison.livreur.prenom}}  {{commande.livraison.livreur.nom}}</p>
+                    <p><strong>Livreur:</strong> {{commande.livraison.livreur.user.prenom}}  {{commande.livraison.livreur.user.nom}}</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Telephone Livreur:</strong> {{commande.livraison.livreur.telephone}}</p>
+                    <p><strong>Telephone Livreur:</strong> {{commande.livraison.livreur.user.telephone}}</p>
                 </div>
 
                 <table class="table table-bordered">
@@ -51,6 +51,10 @@
                     </tr>
                     </tbody>
                 </table>
+                <div ng-hide="commande.giveLivreur" class="col-md-offset-10 col-md-2">
+                    <button ng-click="giveToLivreur(commande)" class="btn btn-primary">Donner au livreur</button>
+                </div>
+
 
             </div>
         </div>
