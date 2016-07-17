@@ -2,43 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="38a9718a-34a0-4cfc-8b05-8dd02b59691a" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Service/CommandeManager.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Service/CommandeManagerInterface.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Event/DetailCommandeEvent.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Event/LivraisonEvent.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/web/js/service/LivraisonService.js" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/EventListener/LivraisonSubscriber.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/Event/LivreurEvent.php" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/AppBundle/EventListener/LivreurSubscriber.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/EventListener/ApiExceptionSubscriber.php" afterPath="$PROJECT_DIR$/src/AppBundle/EventListener/ApiExceptionSubscriber.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Commande.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Commande.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/CommandeController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/CommandeController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/CommandeRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/service/CommandeService.js" afterPath="$PROJECT_DIR$/web/js/service/CommandeService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/EventListener/CommandeSubscriber.php" afterPath="$PROJECT_DIR$/src/AppBundle/EventListener/CommandeSubscriber.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/DetailCommande.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/DetailCommande.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/controller/IndexController.js" afterPath="$PROJECT_DIR$/web/js/controller/IndexController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Livraison.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Livraison.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/LivraisonController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/LivraisonController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/LivraisonRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/LivraisonRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/Livreur.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/Livreur.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/controller/LivreurController.js" afterPath="$PROJECT_DIR$/web/js/controller/LivreurController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/LivreurRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/LivreurRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/NeemaEvents.php" afterPath="$PROJECT_DIR$/src/AppBundle/NeemaEvents.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/controller/ResetPasswordController.js" afterPath="$PROJECT_DIR$/web/js/controller/ResetPasswordController.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Entity/User.php" afterPath="$PROJECT_DIR$/src/AppBundle/Entity/User.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/UserController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/UserController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Repository/UserRepository.php" afterPath="$PROJECT_DIR$/src/AppBundle/Repository/UserRepository.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/service/UserService.js" afterPath="$PROJECT_DIR$/web/js/service/UserService.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/filter/conversion.js" afterPath="$PROJECT_DIR$/web/js/filter/conversion.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/gulpfile.js" afterPath="$PROJECT_DIR$/gulpfile.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/view/index.html" afterPath="$PROJECT_DIR$/web/js/view/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/view/inscription.html" afterPath="$PROJECT_DIR$/web/js/view/inscription.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/view/livreur.html" afterPath="$PROJECT_DIR$/web/js/view/livreur.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/directive/neemaColorTimer.js" afterPath="$PROJECT_DIR$/web/js/directive/neemaColorTimer.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/parameters.yml.dist" afterPath="$PROJECT_DIR$/app/config/parameters.yml.dist" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/web/js/run.js" afterPath="$PROJECT_DIR$/web/js/run.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/config/services.yml" afterPath="$PROJECT_DIR$/app/config/services.yml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="neema.iws" />
@@ -71,20 +34,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CommandeManager.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CommandeManager.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/AppBundle/Service/CommandeManager.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.71363634">
-              <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+            <state vertical-scroll-proportion="-14.333333">
+              <caret line="49" column="5" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="UserService.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="UserService.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/web/js/service/UserService.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
+            <state vertical-scroll-proportion="-0.26077586">
               <caret line="182" column="26" selection-start-line="182" selection-start-column="16" selection-end-line="182" selection-end-column="26" />
               <folding />
             </state>
@@ -99,6 +62,16 @@
               <folding>
                 <marker date="1468148792000" expanded="true" signature="291:421" placeholder="SELECT l,c,l..AppBundle..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="gulpfile.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/gulpfile.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="63" column="72" selection-start-line="63" selection-start-column="6" selection-end-line="63" selection-end-column="72" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -118,16 +91,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="-15.0">
               <caret line="93" column="85" selection-start-line="93" selection-start-column="85" selection-end-line="93" selection-end-column="85" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="LivreurSubscriber.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/AppBundle/EventListener/LivreurSubscriber.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.375">
-              <caret line="36" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -1119,14 +1082,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/gulpfile.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="40" column="20" selection-start-line="40" selection-start-column="20" selection-end-line="40" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/js/app.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1433,14 +1388,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/web/js/service/UserService.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="182" column="26" selection-start-line="182" selection-start-column="16" selection-end-line="182" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/web/js/service/LivraisonService.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1486,8 +1433,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/AppBundle/Service/CommandeManager.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.71363634">
-          <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+        <state vertical-scroll-proportion="-14.333333">
+          <caret line="49" column="5" selection-start-line="49" selection-start-column="5" selection-end-line="49" selection-end-column="5" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gulpfile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="63" column="72" selection-start-line="63" selection-start-column="6" selection-end-line="63" selection-end-column="72" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/web/js/service/UserService.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.26077586">
+          <caret line="182" column="26" selection-start-line="182" selection-start-column="16" selection-end-line="182" selection-end-column="26" />
           <folding />
         </state>
       </provider>
