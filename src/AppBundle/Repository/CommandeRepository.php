@@ -21,10 +21,7 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
     private function mainQueryBuilder(){
 
         $queryBuilder = $this->minQueryBuilder()
-            ->addSelect(['l','lr','PARTIAL ul.{id,username,nom,prenom}','r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom}'])
-            ->leftJoin('c.livraison','l')
-            ->leftJoin('l.livreur','lr')
-            ->leftJoin('lr.user','ul')
+            ->addSelect(['r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom}'])
             ->leftJoin('c.restaurant','r')
             ->leftJoin('r.imageRestaurants','ir')
             ->leftJoin('c.detailCommandes','d')
@@ -80,6 +77,7 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
         $commandes = $this->mainQueryBuilder()
 //            ->leftJoin('c.user','u')
             ->where('u.id LIKE :idUser')
+            ->andWhere('c.delivered=false')
             ->setParameter('idUser',$idUser)
             ->orderBy('c.dateCommande','DESC')
             ->getQuery()

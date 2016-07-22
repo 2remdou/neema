@@ -23,9 +23,18 @@ app.controller('IndexController',
                 CommandeService.finishPreparation(detail);
             };
 
-            $scope.giveToLivreur = function(commande){
+            $scope.giveToClient = function(commande){
+                $scope.commande = commande;
+                angular.forEach($scope.commandes,function(commande){
+                   commande.error=false;
+                });
+                if(!$scope.commande.code){
+                    $scope.commande.error=true;
+                    return;
+                }
+
                 usSpinnerService.spin('nt-spinner');
-                CommandeService.giveToLivreur(commande);
+                CommandeService.delivered($scope.commande);
             };
 
 
@@ -51,6 +60,12 @@ app.controller('IndexController',
             });
 
             $scope.$on('commande.give.livreur',function(event,args){
+                usSpinnerService.stop('nt-spinner');
+                $scope.$emit('show.message',{alert:args.alert});
+            });
+
+            $scope.$on('commande.delivered',function(event,args){
+                $scope.commande.delivered=true;
                 usSpinnerService.stop('nt-spinner');
                 $scope.$emit('show.message',{alert:args.alert});
             });

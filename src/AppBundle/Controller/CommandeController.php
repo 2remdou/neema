@@ -61,11 +61,6 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="dateCommande",nullable=false, description="la date de la commande")
      * @RequestParam(name="telephone",nullable=false, description="le numero de telephone du client")
      * @RequestParam(name="detailCommandes", array=true,nullable=false, description="les details de la commande")
-     * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
-     * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
-     * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
-     * @RequestParam(name="durationLivraison",nullable=false, description="le temps de livraison de la commande en secondes")
-     * @RequestParam(name="distance",nullable=false, description="la distance entre le client et le restaurant en metre")
      * @RequestParam(name="restaurant",nullable=false, description="Le restaurant de la commande")
      * @Route("api/commandes",name="post_commande", options={"expose"=true})
      * @Method({"POST"})
@@ -94,11 +89,6 @@ class CommandeController extends FOSRestController
         try{
 
             $commande->setTelephone($paramFetcher->get('telephone'));
-            $commande->setLatitude($paramFetcher->get('latitude'));
-            $commande->setLongitude($paramFetcher->get('longitude'));
-            $commande->setFraisTransport($paramFetcher->get('fraisTransport'));
-            $commande->setDurationLivraison($paramFetcher->get('durationLivraison'));
-            $commande->setDistance($paramFetcher->get('distance'));
             $commande->setUser($this->getUser());
             $commande->setRestaurant($restaurant);
             $commande->setEtatCommande($etatCommande);
@@ -162,7 +152,7 @@ class CommandeController extends FOSRestController
             throw $e;
         }
 
-        return MessageResponse::message('La commande a été enrégistré avec succes','success',201);
+        return MessageResponse::message('La commande a été enrégistré avec succes','s uccess',201,array('codeCommande'=>$commande->getCodeCommande()));
 
 
 	}
@@ -325,11 +315,6 @@ class CommandeController extends FOSRestController
      * )
      * @RequestParam(name="dateCommande",nullable=false, description="la date de la commande")
      * @RequestParam(name="telephone",nullable=false, description="le numero de telephone du client")
-     * @RequestParam(name="longitude",nullable=false, description="la longitude de la commande")
-     * @RequestParam(name="latitude",nullable=false, description="la latitude de la commande")
-     * @RequestParam(name="fraisTransport",nullable=false, description="les frais de port de la commande")
-     * @RequestParam(name="durationLivraison",nullable=false, description="le temps de livraison de la commande")
-     * @RequestParam(name="distance",nullable=false, description="la distance entre le client et le restaurant")
      * @Route("api/commandes/{id}",name="put_commande", options={"expose"=true})
      * @Method({"PUT"})
 	 * @Security("has_role('ROLE_ADMIN')")
@@ -375,44 +360,6 @@ class CommandeController extends FOSRestController
         return MessageResponse::message('Merci, ce plat a été marqué terminé','success',200);
     }
 
-	/**
-     * Donner les plats au livreur
-     *
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Donner les plats au livreur",
-     *   statusCodes = {
-     *     	200 = "Success",
-     *		404 = "Not found"
-     *   }
-     * )
-     * @Route("api/commandes/{id}/give-livreur",name="put_give_livreur", options={"expose"=true})
-     * @ParamConverter("commande", class="AppBundle:Commande")
-     * @Method({"PUT"})
-	 * @Security("has_role('ROLE_RESTAURANT')")
-	 */
-	public function putGiveCommandeToLivreurAction(Commande $commande){
-
-        $em = $this->getDoctrine()->getManager();
-
-        if(!$em->getRepository('AppBundle:Commande')->allDetailIsFinished($commande->getId())){
-            return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de les remettre au livreur','danger',400);
-        }
-
-        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL1'));
-
-
-        $commande->setGiveLivreur(true);
-        $commande->setDateGiveLivreur(new \DateTime());
-        $commande->setEtatCommande($etatCommande);
-        $em->flush();
-
-        $dispatcher = $this->get('event_dispatcher');
-        $dispatcher->dispatch(NeemaEvents::COMMANDE_GIVE_LIVREUR,new CommandeEnregistreEvent($commande));
-
-
-        return MessageResponse::message('Merci, la commande a été marqué terminé','success',200);
-    }
 
 	/**
      * Marquer une commande comme livrée
@@ -426,16 +373,15 @@ class CommandeController extends FOSRestController
      *   }
      * )
      * @Route("api/commandes/{id}/delivered",name="put_commande_delivered", options={"expose"=true})
+     * @RequestParam(name="code",nullable=false, description="le code secret du client")
      * @ParamConverter("commande", class="AppBundle:Commande")
      * @Method({"PUT"})
-	 * @Security("has_role('ROLE_LIVREUR')")
+	 * @Security("has_role('ROLE_RESTAURANT')")
 	 */
-	public function putDeliveredCommandeAction(Commande $commande){
+	public function putDeliveredCommandeAction(Commande $commande,ParamFetcher $paramFetcher){
 
-        $em = $this->getDoctrine()->getManager();
-
-        if(!$commande->isGiveLivreur()){
-            return MessageResponse::message('Le restaurant doit vous remettre la commande, avant que vous ne fassiez la livraison','danger',400);
+        if($commande->getCodeCommande()!=$paramFetcher->get('code')){
+            return MessageResponse::message('Ce code n\'est pas valide','danger',400);
         }
 
         $dispatcher = $this->get('event_dispatcher');
@@ -443,35 +389,18 @@ class CommandeController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
 
         if(!$em->getRepository('AppBundle:Commande')->allDetailIsFinished($commande->getId())){
-            return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de remettre au livreur','info',400);
+            return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de les remettre au client','info',400);
         }
 
         $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL2'));
 
         $commande->setDelivered(true);
         $commande->setEtatCommande($etatCommande);
-
-        $livraison = $commande->getLivraison();
-        $livraison->setFinished(true);
-        $livraison->setDateLivraison(new \DateTime());
-
-        $livreur = $livraison->getLivreur();
-
-        //S'il existe une commande sans livreur, l'affecter au livreur qui vient de se liberer
-        $commandeWithoutLivreur = $em->getRepository('AppBundle:Commande')->findCommandeWithoutLivreur();
-        if($commandeWithoutLivreur){
-            $commandeWithoutLivreur->getLivraison()->setLivreur($livreur);
-            $livreur->setIsFree(false);
-        }else{
-            $livreur->setIsFree(true);
-        }
-
-
-        $this->getCommandeManager()->calculDurationExact($commande);
+        $commande->setDateDelivered(new \DateTime());
 
         $em->flush();
 
-        return MessageResponse::message('Merci, livraison enregistrée avec succès','success',200);
+        return MessageResponse::message('Merci, la commande est marquée comme livrée','success',200);
     }
 
 

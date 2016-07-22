@@ -44,6 +44,7 @@ class Commande
     private $dateCommande;
 
     /**
+     * Le numero de telephone pour contacter le client
      * @var string
      *
      * @ORM\Column(name="telephone", type="string", length=255)
@@ -53,6 +54,17 @@ class Commande
     private $telephone;
 
     /**
+     * Le code genere, qui permettra au client de recuperer sa commande
+     * @var string
+     *
+     * @ORM\Column(name="codeCommande", type="string", length=255)
+     * @Expose()
+     * @Assert\NotBlank(message="Le code de la commande est obligatoire")
+     */
+    private $codeCommande;
+
+    /**
+     * pour savoir si le client à recuperer la commande
      * @var boolean
      *
      * @ORM\Column(name="delivered", type="boolean", options={"default":false})
@@ -62,43 +74,15 @@ class Commande
     private $delivered;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="longitude", type="string", length=255)
+     * @ORM\Column(name="dateDelivered", type="datetime",nullable=true)
      * @Expose()
-     * @Assert\NotBlank(message="la longitude est obligatoire")
+     * @SerializedName("dateDelivered")
+     * @Assert\NotBlank(message="la date est obligatoire")
      */
-    private $longitude;
+    private $dateDelivered;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="latitude", type="string", length=255)
-     * @Expose()
-     * @Assert\NotBlank(message="la latitude est obligatoire")
-     */
-    private $latitude;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="fraisTransport", type="float")
-     * @Assert\NotBlank(message="Le transport est obligatoire")
-     * @Expose()
-     * @SerializedName("fraisTransport")
-     */
-    private $fraisTransport;
-
-    /**
-     * La durée de livraison entre le client et le restaurant en seconde
-     * @var float
-     *
-     * @ORM\Column(name="durationLivraison", type="float")
-     * @Assert\NotBlank(message="La durée de livraison  est obligatoire")
-     * @Expose()
-     * @SerializedName("durationLivraison")
-     */
-    private $durationLivraison;
 
     /**
      * La somme des différentes durées pour determiner approximativement
@@ -122,27 +106,11 @@ class Commande
 
 
     /**
-     * @var float
-     * en metre
-     * @ORM\Column(name="distance", type="float")
-     * @Assert\NotBlank(message="La distance entre le restaurant et le client  est obligatoire")
-     * @Expose()
-     */
-    private $distance;
-
-
-    /**
      * @ORM\OneToMany(targetEntity="DetailCommande",mappedBy="commande")
      * @Expose()
      * @SerializedName("detailCommandes")
      */
     private $detailCommandes;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Livraison", mappedBy="commande")
-     * @Expose()
-     */
-    private $livraison;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="commandes")
@@ -166,36 +134,13 @@ class Commande
      */
     private $etatCommande;
 
-    /**
-     * @var boolean
-     *
-     * @ORM\Column(name="giveLivreur", type="boolean", options={"default":false}, nullable=true)
-     * @Expose()
-     * @SerializedName("giveLivreur")
-     */
-    private $giveLivreur;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="dateGiveLivreur", type="datetime", nullable=true)
-     * @Expose()
-     * @SerializedName("dateGiveLivreur")
-     */
-    private $dateGiveLivreur;
-
-
-
-
-
-
 
 
 
     public function __construct(){
         $this->dateCommande = new \DateTime();
         $this->delivered = false;
-        $this->giveLivreur = false;
+        $this->codeCommande = strtoupper(substr(uniqid(),1,8));
     }
 
     /**
@@ -265,61 +210,6 @@ class Commande
         return $this->telephone;
     }
 
-    /**
-     * Set longitude
-     *
-     * @param string $longitude
-     *
-     * @return Commande
-     */
-    public function setLongitude($longitude)
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    /**
-     * Get longitude
-     *
-     * @return string
-     */
-    public function getLongitude()
-    {
-        return $this->longitude;
-    }
-
-    /**
-     * Set latitude
-     *
-     * @param string $latitude
-     *
-     * @return Commande
-     */
-    public function setLatitude($latitude)
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    /**
-     * Get latitude
-     *
-     * @return string
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isDelivered()
-    {
-        return $this->delivered;
-    }
 
     /**
      * @param boolean $delivered
@@ -361,55 +251,6 @@ class Commande
     public function getDetailCommandes()
     {
         return $this->detailCommandes;
-    }
-
-
-    /**
-     * Set livraison
-     *
-     * @param \AppBundle\Entity\Livraison $livraison
-     *
-     * @return Commande
-     */
-    public function setLivraison(\AppBundle\Entity\Livraison $livraison = null)
-    {
-        $this->livraison = $livraison;
-
-        return $this;
-    }
-
-    /**
-     * Get livraison
-     *
-     * @return \AppBundle\Entity\Livraison
-     */
-    public function getLivraison()
-    {
-        return $this->livraison;
-    }
-
-    /**
-     * Set fraisTransport
-     *
-     * @param float $fraisTransport
-     *
-     * @return Commande
-     */
-    public function setFraisTransport($fraisTransport)
-    {
-        $this->fraisTransport = $fraisTransport;
-
-        return $this;
-    }
-
-    /**
-     * Get fraisTransport
-     *
-     * @return float
-     */
-    public function getFraisTransport()
-    {
-        return $this->fraisTransport;
     }
 
     /**
@@ -461,54 +302,6 @@ class Commande
     }
 
     /**
-     * Set duration
-     *
-     * @param float $duration
-     *
-     * @return Commande
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return float
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Set distance
-     *
-     * @param float $distance
-     *
-     * @return Commande
-     */
-    public function setDistance($distance)
-    {
-        $this->distance = $distance;
-
-        return $this;
-    }
-
-    /**
-     * Get distance
-     *
-     * @return float
-     */
-    public function getDistance()
-    {
-        return $this->distance;
-    }
-
-    /**
      * Set durationExact
      *
      * @param float $durationExact
@@ -530,30 +323,6 @@ class Commande
     public function getDurationExact()
     {
         return $this->durationExact;
-    }
-
-    /**
-     * Set durationLivraison
-     *
-     * @param float $durationLivraison
-     *
-     * @return Commande
-     */
-    public function setDurationLivraison($durationLivraison)
-    {
-        $this->durationLivraison = $durationLivraison;
-
-        return $this;
-    }
-
-    /**
-     * Get durationLivraison
-     *
-     * @return float
-     */
-    public function getDurationLivraison()
-    {
-        return $this->durationLivraison;
     }
 
     /**
@@ -605,35 +374,36 @@ class Commande
     }
 
     /**
-     * @return boolean
+     * @return string
      */
-    public function isGiveLivreur()
+    public function getCodeCommande()
     {
-        return $this->giveLivreur;
+        return $this->codeCommande;
     }
 
     /**
-     * @param boolean $giveLivreur
+     * @param string $codeCommande
      */
-    public function setGiveLivreur($giveLivreur)
+    public function setCodeCommande($codeCommande)
     {
-        $this->giveLivreur = $giveLivreur;
+        $this->codeCommande = $codeCommande;
     }
 
     /**
      * @return \DateTime
      */
-    public function getDateGiveLivreur()
+    public function getDateDelivered()
     {
-        return $this->dateGiveLivreur;
+        return $this->dateDelivered;
     }
 
     /**
-     * @param \DateTime $dateGiveLivreur
+     * @param \DateTime $dateDelivered
      */
-    public function setDateGiveLivreur($dateGiveLivreur)
+    public function setDateDelivered($dateDelivered)
     {
-        $this->dateGiveLivreur = $dateGiveLivreur;
+        $this->dateDelivered = $dateDelivered;
     }
+
 
 }

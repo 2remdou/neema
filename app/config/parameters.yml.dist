@@ -6,28 +6,28 @@ parameters:
     jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
     jwttokenttl:        86400
     majorationtimelivraison: 600  # 10 minutes
+    secret:            ThisTokenIsNotSoSecretChangeIt
 
-#    databasehost:     127.0.0.1
-#    databaseport:     ~
-#    databasename:     symfony
-#    databaseuser:     root
-#    databasepassword: ~
-#    mailertransport:  smtp
-#    mailerhost:       127.0.0.1
-#    maileruser:       ~
-#    mailerpassword:   ~
-#
-#    jwtkeypassphrase: ~
-#
-#    neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
-#    neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
-#    defaultpassword : neema
-#    urlimages:	http://127.0.0.1:8000/images
-#
-#
-#    secret:            ThisTokenIsNotSoSecretChangeIt
-#    phonenumber: +33644607306
-#
-#    twiliosid:
-#    twilioauthtoken:
+    databasehost:     127.0.0.1
+    databaseport:     ~
+    databasename:     symfony
+    databaseuser:     root
+    databasepassword: ~
+    mailertransport:  smtp
+    mailerhost:       127.0.0.1
+    maileruser:       ~
+    mailerpassword:   ~
+
+    jwtkeypassphrase: ~
+
+    neemauploadplatdirectory : %kernel.root_dir%/../web/images/plats
+    neemauploadrestaurantdirectory : %kernel.root_dir%/../web/images/restaurants
+    defaultpassword : neema
+    urlimages:	http://127.0.0.1:8000/images
+
+
+    phonenumber: +33644607306
+
+    twiliosid:
+    twilioauthtoken:
 

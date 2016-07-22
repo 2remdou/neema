@@ -68,7 +68,7 @@ app.service('CommandeService',
             };
 
             this.delivered = function(commande){
-                _commandeService.customPUT(null,commande.id+'/delivered').then(function(response){
+                _commandeService.customPUT({code:commande.code},commande.id+'/delivered').then(function(response){
                     $rootScope.$broadcast('commande.delivered',{alert:response.data});
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});

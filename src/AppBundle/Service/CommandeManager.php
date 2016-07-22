@@ -38,7 +38,7 @@ class CommandeManager implements CommandeManagerInterface
      * @param Commande $commande
      * @return mixed
      */
-    public function calculDurationEstimative(Commande $commande)
+    public function calculDurationEstimativeWithLivraison(Commande $commande)
     {
         $durationEstimative = $commande->getDurationLivraison()+$this->majorationTimeLivraison;
 
@@ -47,5 +47,16 @@ class CommandeManager implements CommandeManagerInterface
         }
 
         $commande->setDurationEstimative($durationEstimative);
+    }
+
+    public function calculDurationEstimative(Commande $commande){
+        $durationEstimative = $this->majorationTimeLivraison;
+
+        foreach($commande->getDetailCommandes() as $detailCommande){
+            $durationEstimative += $detailCommande->getPlat()->getDureePreparation();
+        }
+
+        $commande->setDurationEstimative($durationEstimative);
+
     }
 }
