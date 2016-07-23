@@ -39,7 +39,7 @@ class Commande
      * @ORM\Column(name="dateCommande", type="datetime")
      * @Expose()
      * @SerializedName("dateCommande")
-     * @Assert\NotBlank(message="la date est obligatoire")
+     * @Assert\NotBlank(message="la date de la commande est obligatoire")
      */
     private $dateCommande;
 
@@ -79,7 +79,6 @@ class Commande
      * @ORM\Column(name="dateDelivered", type="datetime",nullable=true)
      * @Expose()
      * @SerializedName("dateDelivered")
-     * @Assert\NotBlank(message="la date est obligatoire")
      */
     private $dateDelivered;
 
