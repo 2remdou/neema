@@ -21,9 +21,22 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
 
         return $query;
     }
+
+    private function mainQueryBuilder(){
+
+        $queryBuilder = $this->createQueryBuilder('r')
+            ->addSelect(['q','c','ir'])
+            ->leftJoin('r.quartier','q')
+            ->leftJoin('q.commune','c')
+            ->leftJoin('r.imageRestaurants','ir');
+
+        return $queryBuilder;
+    }
+
     public function findAll(){
 
-        $query = $this->getMainQuery();
+        $query = $this->mainQueryBuilder()
+                ->getQuery();
         return $query->getArrayResult();
     }
 

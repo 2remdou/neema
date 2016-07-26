@@ -165,7 +165,10 @@ class PlatController extends FOSRestController
 
         $paginator  = $this->get('knp_paginator');
         $platsPaginate = $paginator->paginate($plats,$request->query->getInt('page', 1),10);
-        return $platsPaginate->getItems();
+        return array('plats'=>$platsPaginate->getItems(),
+            'currentPage'=>$platsPaginate->getCurrentPageNumber(),
+            'pageCount'=>$platsPaginate->getPaginationData()['pageCount'],
+            'itemPerPage'=>$platsPaginate->getPaginationData()['numItemsPerPage']);
 	}
 
     /**
@@ -217,6 +220,7 @@ class PlatController extends FOSRestController
      * )
      * @Route("api/plats/restaurant/{restaurant}",name="get_plats_restaurant", options={"expose"=true})
      * @Method({"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
     public function getPlatsByRestaurantAction($restaurant){
@@ -226,6 +230,36 @@ class PlatController extends FOSRestController
             return MessageResponse::message('Restaurant introuvable','info',400);
         }
         return $em->getRepository('AppBundle:Plat')->findByRestaurant($restaurant->getId());
+    }
+
+    /**
+     * Lister les plats par restaurant avec un paginator
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Lister les plats par restaurant avec un paginator",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @Route("api/plats/by-restaurant/{id}",name="get_plats_by_restaurant", options={"expose"=true})
+     * @Method({"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+     */
+
+    public function getPlatsByRestaurantWithPaginatorAction($id,Request $request){
+        $em = $this->getDoctrine()->getManager();
+        $plats = $em->getRepository('AppBundle:Plat')->findByRestaurant($id);
+
+        $paginator  = $this->get('knp_paginator');
+        $platsPaginate = $paginator->paginate($plats,$request->query->getInt('page', 1),10);
+
+        return array('plats'=>$platsPaginate->getItems(),
+            'currentPage'=>$platsPaginate->getCurrentPageNumber(),
+            'pageCount'=>$platsPaginate->getPaginationData()['pageCount'],
+            'itemPerPage'=>$platsPaginate->getPaginationData()['numItemsPerPage']);
+
     }
 
 

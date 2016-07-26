@@ -126,9 +126,11 @@ class RestaurantController extends FOSRestController
      * @Method({"GET"})
      */
 
-	public function getRestaurantsAction(){
-		$operation = $this->get('app.operation');
-		return $operation->all('AppBundle:Restaurant');
+	public function getRestaurantsAction(Request $request){
+		$em = $this->getDoctrine()->getManager();
+
+        $restaurants = $em->getRepository('AppBundle:Restaurant')->findAll();
+        return $restaurants;
 	}
 
 	/**

@@ -5,10 +5,12 @@
 'use strict';
 
 app.service('RestaurantService',
-    ['$rootScope','Restangular',
-        function($rootScope,Restangular){
+    ['$rootScope','Restangular','$q',
+        function($rootScope,Restangular,$q){
 
             var self=this;
+
+            this.restaurants = [];
 
             var _restaurantService = Restangular.all('restaurants');
 
@@ -23,13 +25,28 @@ app.service('RestaurantService',
                 });
             };
 
+
+
             this.list = function(){
-                _restaurantService.getList().then(function(response){
-                    $rootScope.$broadcast('restaurant.list',{restaurants:response});
-                },function(error){
-                    $rootScope.$broadcast('show.message',{alert:error.data});
-                    log(error);
-                });
+                var deffered = $q.defer();
+                if(self.restaurants.length!==0){
+                    deffered.resolve(self.restaurants);
+                }else{
+                    _restaurantService.getList().then(function(response){
+                        self.restaurants=response;
+                        deffered.resolve(response);
+                        $rootScope.$broadcast('restaurant.list',{restaurants:response});
+                    },function(error){
+                        deffered.reject(error);
+                        $rootScope.$broadcast('show.message',{alert:error.data});
+                        log(error);
+                    });
+                }
+                return deffered.promise;
+            };
+
+            this.getRestaurants = function(){
+                return self.restaurants;
             };
 
             this.get = function(id){
