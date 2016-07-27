@@ -1,7 +1,7 @@
 fos_elastica:
     clients:
         default:
-            url: '%elasticurl%'
+            url: %elasticurl%
     indexes:
         neema:
             settings:
