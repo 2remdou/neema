@@ -50,8 +50,6 @@ class ImagePlat
      *
      * @Vich\UploadableField(mapping="plat_image", fileNameProperty="imageName")
      * @var File
-     * @Expose()
-     * @SerializedName("imageFile")
      * @Assert\Image(
      *      maxSize="3M",
      *      maxSizeMessage="La taille ne peux exceder 3M"

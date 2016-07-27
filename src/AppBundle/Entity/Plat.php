@@ -50,7 +50,7 @@ class Plat
     /**
      * @ORM\OneToOne(targetEntity="ImagePlat",mappedBy="plat")
      * @Expose()
-     * @SerializedName("images")
+     * @SerializedName("imagePlat")
      */
     private $imagePlat;
     /**

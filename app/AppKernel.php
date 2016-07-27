@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new Knp\Bundle\PaginatorBundle\KnpPaginatorBundle(),
             new Gesdinet\JWTRefreshTokenBundle\GesdinetJWTRefreshTokenBundle(),
             new Vresh\TwilioBundle\VreshTwilioBundle(),
+            new FOS\ElasticaBundle\FOSElasticaBundle(),
 
         ];
 

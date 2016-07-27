@@ -63,6 +63,9 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         if($e instanceof NotFoundHttpException){
             //extraction du nom de l'entity
             preg_match('/(AppBundle):(?P<entity>\w+)/',$e->getMessage(),$matches);
+
+            if(!array_key_exists('entity',$matches)) return;
+
             $response = new JsonResponse(array(
                 'textAlert'=>$matches['entity'].' introuvable',
                 'typeAlert'=>'danger'
