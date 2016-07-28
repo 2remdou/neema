@@ -32,7 +32,7 @@ class SearchController extends FOSRestController
      *     404 = "Not Found",
      *   }
      * )
-	 * @Route("api/search",name="post_restaurant", options={"expose"=true})
+	 * @Route("api/search",name="search_restaurant", options={"expose"=true})
      * @Method({"GET"})
 	 * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
