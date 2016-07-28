@@ -10,6 +10,8 @@ use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
     JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use AppBundle\Validator\Constraints as NeemaAssert;
+
 
 
 /**
@@ -50,6 +52,7 @@ class Commande
      * @ORM\Column(name="telephone", type="string", length=255)
      * @Expose()
      * @Assert\NotBlank(message="le numero du client est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
      */
     private $telephone;
 
