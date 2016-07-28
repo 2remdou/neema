@@ -47,22 +47,35 @@ fos_elastica:
                         nom: { analyzer: custom_analyzer_ngram3 }
                         description: ~
                         prix: ~
-                        imagePlat.imageName: ~
-                        imagePlat.webPath: ~
-                        restaurant.id: ~
-                        restaurant.nom: { analyzer: custom_search_analyzer }
-                        restaurant.telephone: ~
-                        restaurant.email: ~
-                        restaurant.siteWeb: ~
-                        restaurant.description: ~
-                        restaurant.quartier.id: ~
-                        restaurant.quartier.nom: { analyzer: custom_search_analyzer }
-                        restaurant.quartier.commune.id: ~
-                        restaurant.quartier.commune.nom: { analyzer: custom_search_analyzer }
+                        imagePlat:
+                            type: "nested"
+                            properties:
+                                id: ~
+                                imageName: ~
+                                webPath: ~
+                        restaurant:
+                            type: "nested"
+                            properties:
+                                id: ~
+                                nom: { analyzer: custom_search_analyzer }
+                                telephone: ~
+                                email: ~
+                                siteWeb: ~
+                                description: ~
+                                quartier:
+                                    type: "nested"
+                                    properties:
+                                        id: ~
+                                        nom: { analyzer: custom_search_analyzer }
+                                        commune:
+                                            type: "nested"
+                                            properties:
+                                                id: ~
+                                                nom: { analyzer: custom_search_analyzer }
                     persistence:
                         driver: orm
                         model: AppBundle\Entity\Plat
-#                        finder: ~
+                        finder: ~
                         provider: ~
                         listener: ~
                         repository: AppBundle\Elastica\Repository\PlatRepository

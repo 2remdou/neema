@@ -30,5 +30,5 @@ parameters:
 #
 #    twiliosid:
 #    twilioauthtoken:
-#	 elasticurl : localhost:9200
+#    elasticaurl : localhost:9200
 

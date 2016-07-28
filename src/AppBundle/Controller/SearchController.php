@@ -39,23 +39,37 @@ class SearchController extends FOSRestController
 	public function searchKeyAction(Request $request){
         $key = $request->query->get('key');
 
-/*        $elasticManager = $this->get('fos_elastica.manager');
-
-        $plats = $elasticManager->getRepository('AppBundle:Plat')->searchKey($key);
-
-        dump($plats);
-
-        return array();*/
 
         if($key){
-            $bool = new \Elastica\Query\BoolQuery();
+            $boolPlat = new \Elastica\Query\BoolQuery();
 
-            $bool->addShould(new \Elastica\Query\Match('nom',$key));
-            $bool->addShould(new \Elastica\Query\Match('restaurant.nom',$key));
-            $bool->addShould(new \Elastica\Query\Match('restaurant.quartier.nom',$key));
-            $bool->addShould(new \Elastica\Query\Match('restaurant.quartier.commune.nom',$key));
+            $boolRestaurant = new \Elastica\Query\BoolQuery();
+            $boolQuartier = new \Elastica\Query\BoolQuery();
+            $boolCommune = new \Elastica\Query\BoolQuery();
 
-            $query = \Elastica\Query::create($bool);
+            $boolRestaurant->addShould(new \Elastica\Query\Match('restaurant.nom',$key));
+            $boolQuartier->addShould(new \Elastica\Query\Match('restaurant.quartier.nom',$key));
+            $boolCommune->addShould(new \Elastica\Query\Match('restaurant.quartier.commune.nom',$key));
+
+            $nestedRestaurant = new \Elastica\Query\Nested();
+            $nestedRestaurant->setPath('restaurant');
+            $nestedRestaurant->setQuery($boolRestaurant);
+
+            $nestedQuartier = new \Elastica\Query\Nested();
+            $nestedQuartier->setPath('restaurant.quartier');
+            $nestedQuartier->setQuery($boolQuartier);
+            $boolRestaurant->addShould($nestedQuartier);
+
+            $nestedCommune = new \Elastica\Query\Nested();
+            $nestedCommune->setPath('restaurant.quartier.commune');
+            $nestedCommune->setQuery($boolCommune);
+            $boolQuartier->addShould($nestedCommune);
+
+
+            $boolPlat->addShould(new \Elastica\Query\Match('nom',$key));
+            $boolPlat->addShould($nestedRestaurant);
+
+            $query = \Elastica\Query::create($boolPlat);
         }
         else{
             $match = new \Elastica\Query\MatchAll();
@@ -69,8 +83,6 @@ class SearchController extends FOSRestController
         foreach($platsElastica->getResults() as $plat){
             $plats[] = $plat->getData();
         }
-        $platHydrate = new Plat();
-        $plats = $platHydrate->hydrate($plats);
         return array('plats'=>$plats);
 
 
