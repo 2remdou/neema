@@ -99,6 +99,7 @@ class CommandeController extends FOSRestController
 
             $nbrePlat = 1;
             $restaurantPlat = null;
+            $montantCommande = 0;
             foreach($details as $detail){
                 $plat = $operation->get('AppBundle:Plat',$detail['plat']);
                 if($nbrePlat===1){
@@ -121,6 +122,9 @@ class CommandeController extends FOSRestController
                 $detailCommande->setPlat($plat);
                 $detailCommande->setQuantite($detail['quantite']);
 
+                $montantCommande += $plat->getPrix()*$detailCommande->getQuantite();
+
+
 //                $duration->addDuration($plat->getDureePreparation());
 
                 if($messages = MessageResponse::messageAfterValidation($validator->validate($detailCommande))){
@@ -132,6 +136,12 @@ class CommandeController extends FOSRestController
                 $nbrePlat++;
 
             }
+
+            $fraisCommande = $montantCommande*$this->getParameter('fraisCommande');
+            $totalCommande = $montantCommande+$fraisCommande;
+            $commande->setMontantCommande($montantCommande);
+            $commande->setFraisCommande($fraisCommande);
+            $commande->setTotalCommande($totalCommande);
 
             $commandeManager->calculDurationEstimative($commande);
 

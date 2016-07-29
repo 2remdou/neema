@@ -136,6 +136,34 @@ class Commande
      */
     private $etatCommande;
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="montantCommande", type="float")
+     * @Assert\NotBlank(message="Le prix est obligatoire")
+     * @Expose()
+     */
+    private $montantCommande;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="fraisCommande", type="float")
+     * @Assert\NotBlank(message="Le prix est obligatoire")
+     * @Expose()
+     */
+    private $fraisCommande;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="totalCommande", type="float")
+     * @Assert\NotBlank(message="Le total de la commande est obligatoire")
+     * @Expose()
+     */
+    private $totalCommande;
+
+
 
 
 
@@ -406,6 +434,56 @@ class Commande
     {
         $this->dateDelivered = $dateDelivered;
     }
+
+    /**
+     * @return float
+     */
+    public function getMontantCommande()
+    {
+        return $this->montantCommande;
+    }
+
+    /**
+     * @param float $montantCommande
+     */
+    public function setMontantCommande($montantCommande)
+    {
+        $this->montantCommande = $montantCommande;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFraisCommande()
+    {
+        return $this->fraisCommande;
+    }
+
+    /**
+     * @param float $fraisCommande
+     */
+    public function setFraisCommande($fraisCommande)
+    {
+        $this->fraisCommande = $fraisCommande;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalCommande()
+    {
+        return $this->totalCommande;
+    }
+
+    /**
+     * @param float $totalCommande
+     */
+    public function setTotalCommande($totalCommande)
+    {
+        $this->totalCommande = $totalCommande;
+    }
+
+
 
 
 }
