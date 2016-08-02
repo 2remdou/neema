@@ -29,11 +29,10 @@
                                 <span>{{detail.plat.nom}}</span>
                             </td>
                             <td>
-                                <timer countdown="detail.dureePreparationRestant" max-time-unit="'minute'" interval="1000">
-                                    <neema-color-timer minute="mminutes" seconde="sseconds">
-                                        {{mminutes}} minute{{minutesS}}, {{sseconds}} second{{secondsS}}
-                                    </neema-color-timer>
-                                </timer>
+                                <neema-timer time="detail.plat.dureePreparation">
+
+                                </neema-timer>
+
                             </td>
                             <td class="text-center">
                                 <button ng-hide="detail.finished" ng-click="finishPreparation(detail)">

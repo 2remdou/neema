@@ -26,7 +26,6 @@ gulp.task('concatJs',function () {
         'web/bundles/angular-sanitize/angular-sanitize.min.js',
         'web/bundles/ui-select/dist/select.min.js',
         'web/bundles/angular-modal-service/dst/angular-modal-service.min.js',
-        'web/bundles/angular-timer/dist/angular-timer.min.js',
         'web/bundles/moment/min/moment.min.js',
         'web/bundles/moment/min/locales.min.js',
         'web/bundles/humanize-duration/humanize-duration.js',

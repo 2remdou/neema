@@ -17,7 +17,6 @@ var app = angular.module('neema',[
     'ngSanitize',
     'angularModalService',
     'permission',
-    'permission.ui',
-    'timer'
+    'permission.ui'
 ])
     .constant('UrlApi',urlApi);

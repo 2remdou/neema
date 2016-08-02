@@ -83,6 +83,7 @@ class DetailCommande
      */
     private $plat;
 
+
     /**
      * DetailCommande constructor.
      * @param bool $finished
@@ -241,6 +242,7 @@ class DetailCommande
     {
         $this->dateFinished = $dateFinished;
     }
+
 
 
 }

@@ -219,6 +219,7 @@ class CommandeController extends FOSRestController
             return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
         }
         $commandes = $em->getRepository('AppBundle:Commande')->findByTypeDelivered(false,$userRestaurant->getRestaurant()->getId());
+
         return $commandes;
 	}
 

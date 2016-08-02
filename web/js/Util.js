@@ -46,14 +46,13 @@ String.prototype.capitalizeFirstLetter = function() {
 };
 /**
  *
- * @param dateOperation la date de debut de l'operation(en milliseconde)
+ * @param dateOperation la date de debut de l'operation
  * @param dureeOperation le temps prevu pour l'operation(en milliseconde)
  *
  * @return dureeRestant(en milliseconde)
  */
 var getDureeRestant = function(dateOperation,dureeOperation){
-    var dateActuel = new Date().getTime();
-    var tempsEcoule = dateActuel-dateOperation;
+    var tempsEcoule = moment().format('x') - moment(dateOperation).format('x');
     var dureeRestant = dureeOperation - tempsEcoule;
 
     return dureeRestant<0?0:dureeRestant;

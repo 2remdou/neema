@@ -49,7 +49,7 @@ app.controller('IndexController',
                 // en fonction de la date de la commande
                 angular.forEach($scope.commandes,function(commande){
                     angular.forEach(commande.detailCommandes,function(detailCommande){
-                        detailCommande.dureePreparationRestant = getDureeRestant(new Date(commande.dateCommande).getTime(),detailCommande.plat.dureePreparation*1000)/1000 ;
+                        detailCommande.plat.dureePreparation = getDureeRestant(commande.dateCommande,detailCommande.plat.dureePreparation*1000);
                    })
                 });
             });
