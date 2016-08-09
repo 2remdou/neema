@@ -74,6 +74,14 @@ app.service('UserService',
                 });
             };
 
+            this.addDeviceToken = function(token,callback){
+                _userService.one('device-token').post('',{token:token}).then(function(response){
+                    callback(response);
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
             this.changePassword = function(user){
                 _userService.customPUT(user,'changePassword').then(function(response){
                     $rootScope.$broadcast('user.password.changed',{alert:response.data});

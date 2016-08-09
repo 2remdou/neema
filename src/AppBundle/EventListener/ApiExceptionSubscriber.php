@@ -74,7 +74,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
         }
         if($e instanceof FatalErrorException){
             $response = $event->getResponse();
-            dump($response);
 /*            $response = new JsonResponse(array(
                 'textAlert'=>'Nous avons cassés quelques choses. Ne vous inquiétez pas, car nous avons presque fini de le régler',
                 'typeAlert'=>'danger'

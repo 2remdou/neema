@@ -5,6 +5,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\DeviceToken;
 use AppBundle\Entity\Livreur;
 use AppBundle\Entity\UserRestaurant;
 use AppBundle\Util\FillAttributes;
@@ -627,5 +628,47 @@ class UserController extends FOSRestController
 
     }
 
+        /**
+         * Ajouter un token d'un device à un user
+         *
+         * @ApiDoc(
+         *   resource = true,
+         *   description = "Ajouter un token d'un device à un user",
+         *   statusCodes = {
+         *     	200 = "Success",
+         *		404 = "Not found"
+         *   }
+         * )
+         * @RequestParam(name="token",nullable=false, description="le token du device")
+         * @Route("api/users/device-token",name="put_new_password", options={"expose"=true})
+         * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
+         * @Method({"POST"})
+         */
 
-}
+        public function addTokenForPush(ParamFetcher $paramFetcher){
+            $em = $this->getDoctrine()->getManager();
+
+            $user = $this->getUser();
+
+            $deviceToken = $em->getRepository('AppBundle:DeviceToken')->findBy(array('user'=>$user,'token'=>$paramFetcher->get('token')));
+            if($deviceToken){
+                return MessageResponse::message('','success',200,array('token'=>$deviceToken->getToken()));
+            }
+
+            $deviceToken = new DeviceToken();
+
+            $deviceToken->setToken($paramFetcher->get('token'));
+            $deviceToken->setUser($user);
+
+            $em->persist($deviceToken);
+
+            $em->flush();
+
+
+            return MessageResponse::message('Token enregistré avec succès','success',200,array('token'=>$deviceToken->getToken()));
+
+        }
+
+
+
+        }
