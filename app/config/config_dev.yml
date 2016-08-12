@@ -71,20 +71,4 @@ vich_uploader:
             delete_on_update:   true
             delete_on_remove:   true
 
-old_sound_rabbit_mq:
-    connections:
-        default:
-            host:     'localhost'
-            port:     5672
-            user:     'guest'
-            password: 'guest'
-            vhost:    '/'
-            lazy:     false
-            connection_timeout: 3
-            read_write_timeout: 3
-    producers:
-        notification:
-            connection:       default
-            exchange_options:
-                name: 'notification'
-                type: direct
+

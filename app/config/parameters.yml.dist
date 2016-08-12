@@ -33,3 +33,7 @@ parameters:
 #    twilioauthtoken:
 #    elasticaurl : localhost:9200
 
+#    rabbituser: guest
+#    rabbitpasswor: guest
+#    rabbithost: localhost
+
