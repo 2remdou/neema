@@ -36,4 +36,5 @@ parameters:
 #    rabbituser: guest
 #    rabbitpasswor: guest
 #    rabbithost: localhost
+#    rabbitvhost: /
 
