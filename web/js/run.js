@@ -92,6 +92,7 @@ app
 
         function checkRole(roleName){
             var roles = UserService.getRoles();
+            if(!roles) return false;
             if(roles.indexOf(roleName) !== -1) return true;
 
             return false;

@@ -43,7 +43,15 @@ class DeviceToken
      * @ORM\Column(name="token", type="string", length=255)
      * @Expose()
      */
+
     private $token;
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="os", type="string", length=255)
+     * @Expose()
+     */
+    private $os;
 
     /**
      * @ORM\ManyToOne(targetEntity="User")
@@ -146,4 +154,21 @@ class DeviceToken
     {
         return $this->user;
     }
+
+    /**
+     * @return string
+     */
+    public function getOs()
+    {
+        return $this->os;
+    }
+
+    /**
+     * @param string $os
+     */
+    public function setOs($os)
+    {
+        $this->os = $os;
+    }
+
 }

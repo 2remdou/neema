@@ -39,7 +39,8 @@
         "gesdinet/jwt-refresh-token-bundle": "^0.1.7",
         "vresh/twilio-bundle": "^1.0",
         "friendsofsymfony/elastica-bundle": "dev-master#6206199",
-        "ruflin/elastica": "3.1.1 as 2.99.0"
+        "ruflin/elastica": "3.1.1 as 2.99.0",
+        "php-amqplib/rabbitmq-bundle": "^1.10"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

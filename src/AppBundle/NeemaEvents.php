@@ -20,6 +20,11 @@ final class NeemaEvents
     const COMMANDE_ENREGISTRE = 'commande.enregistre';
 
     /**
+     * après tous les plats soient ok
+     */
+    const COMMANDE_PRETE = 'commande.prete';
+
+    /**
      * Lorsque le restaurant remet les plats au livreur
      */
     const COMMANDE_GIVE_LIVREUR = 'commande.give.livreur';

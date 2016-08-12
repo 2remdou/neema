@@ -130,6 +130,12 @@ class User implements UserInterface
     private $commandes;
 
     /**
+     * @ORM\OneToMany(targetEntity="DeviceToken",mappedBy="user")
+     * @Expose()
+     */
+    private $deviceTokens;
+
+    /**
      * @ORM\OneToOne(targetEntity="UserRestaurant",mappedBy="user")
      * @Expose()
      * @SerializedName("userRestaurant")
@@ -491,4 +497,38 @@ class User implements UserInterface
     }
 
 
+
+    /**
+     * Add deviceToken
+     *
+     * @param \AppBundle\Entity\DeviceToken $deviceToken
+     *
+     * @return User
+     */
+    public function addDeviceToken(\AppBundle\Entity\DeviceToken $deviceToken)
+    {
+        $this->deviceTokens[] = $deviceToken;
+
+        return $this;
+    }
+
+    /**
+     * Remove deviceToken
+     *
+     * @param \AppBundle\Entity\DeviceToken $deviceToken
+     */
+    public function removeDeviceToken(\AppBundle\Entity\DeviceToken $deviceToken)
+    {
+        $this->deviceTokens->removeElement($deviceToken);
+    }
+
+    /**
+     * Get deviceTokens
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDeviceTokens()
+    {
+        return $this->deviceTokens;
+    }
 }

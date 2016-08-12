@@ -24,7 +24,7 @@ services:
 
     app.commande.subscriber:
         class: AppBundle\EventListener\CommandeSubscriber
-        arguments: ["@doctrine.orm.entity_manager","@app.commande.manager"]
+        arguments: ["@doctrine.orm.entity_manager","@app.commande.manager","@old_sound_rabbit_mq.notification_producer"]
         tags:
             - { name: kernel.event_subscriber }
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -9,6 +10,8 @@ use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
     JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use AppBundle\Validator\Constraints as NeemaAssert;
+
 
 
 /**
@@ -17,11 +20,13 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="user")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @UniqueEntity(fields="username", message="Ce username existe déjà.")
+ * @UniqueEntity(fields="telephone", message="Ce numero de telephone existe déjà.")
  * @ExclusionPolicy("all")
  */
 
 class User implements UserInterface
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -74,6 +79,17 @@ class User implements UserInterface
     /**
      * @var string
      *
+     * @ORM\Column(name="telephone", type="string", length=255, unique=true)
+     * @Expose()
+     * @Assert\NotBlank(message="le telephone est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
+     */
+    private $telephone;
+
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="isReseted", type="boolean", options={"default":false})
      * @Expose()
      * @SerializedName("isReseted")
@@ -114,8 +130,15 @@ class User implements UserInterface
     private $commandes;
 
     /**
+     * @ORM\OneToMany(targetEntity="DeviceToken",mappedBy="user")
+     * @Expose()
+     */
+    private $deviceTokens;
+
+    /**
      * @ORM\OneToOne(targetEntity="UserRestaurant",mappedBy="user")
      * @Expose()
+     * @SerializedName("userRestaurant")
      */
     private $userRestaurant;
 
@@ -136,6 +159,15 @@ class User implements UserInterface
     {
         return $this->id;
     }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
 
     /**
      * Set username
@@ -447,5 +479,22 @@ class User implements UserInterface
     {
         return $this->commandes;
     }
+
+    /**
+     * @return string
+     */
+    public function getTelephone()
+    {
+        return $this->telephone;
+    }
+
+    /**
+     * @param string $telephone
+     */
+    public function setTelephone($telephone)
+    {
+        $this->telephone = $telephone;
+    }
+
 
 }

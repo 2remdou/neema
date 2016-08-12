@@ -28,6 +28,7 @@ class AppKernel extends Kernel
             new Gesdinet\JWTRefreshTokenBundle\GesdinetJWTRefreshTokenBundle(),
             new Vresh\TwilioBundle\VreshTwilioBundle(),
             new FOS\ElasticaBundle\FOSElasticaBundle(),
+            new OldSound\RabbitMqBundle\OldSoundRabbitMqBundle(),
 
         ];
 

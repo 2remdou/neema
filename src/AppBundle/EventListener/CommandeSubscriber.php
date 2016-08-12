@@ -14,16 +14,19 @@ use AppBundle\Event\CommandeEnregistreEvent;
 use AppBundle\NeemaEvents;
 use AppBundle\Service\CommandeManager;
 use Doctrine\ORM\EntityManager;
+use OldSound\RabbitMqBundle\RabbitMq\Producer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CommandeSubscriber implements EventSubscriberInterface
 {
     private $em;
     private $commandeManager;
+    private $producer;
 
-    public function __construct(EntityManager $em,CommandeManager $commandeManager){
+    public function __construct(EntityManager $em,CommandeManager $commandeManager,Producer $producer){
         $this->em = $em;
         $this->commandeManager = $commandeManager;
+        $this->producer = $producer;
     }
 
     /**
@@ -44,6 +47,29 @@ class CommandeSubscriber implements EventSubscriberInterface
 
         $this->em->persist($livraison);
         $this->em->flush();
+    }
+
+    /**
+     * Envoyer un message à rabbit
+     * @param CommandeEnregistreEvent $commandeEnregistreEvent
+     *
+     * Declenché dans
+     *  - CommandeController:putCloseDetailCommandeAction
+     */
+    public function onCommandePrete(CommandeEnregistreEvent $commandeEnregistreEvent){
+        $commande = $commandeEnregistreEvent->getCommande();
+        $deviceTokens = $commande->getUser()->getDeviceTokens();
+        $tokens = array();
+        foreach($deviceTokens as $deviceToken){
+            $tokens[] = array('token'=>$deviceToken->getToken(),'os'=>$deviceToken->getOs()) ;
+        }
+
+        if($deviceTokens){
+            $this->producer->setContentType('application/json');
+            $message = array('devices'=>$tokens,
+                'message'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId());
+            $this->producer->publish(json_encode($message),'ios');
+        }
     }
 
     public function onCommandeLivre(CommandeEnregistreEvent $commandeEnregistreEvent){
@@ -78,6 +104,7 @@ class CommandeSubscriber implements EventSubscriberInterface
         return array(
             NeemaEvents::COMMANDE_ENREGISTRE => 'onCommandeEnregistre',
             NeemaEvents::COMMANDE_LIVREE => 'onCommandeLivre',
+            NeemaEvents::COMMANDE_PRETE => 'onCommandePrete',
         );
     }
 }

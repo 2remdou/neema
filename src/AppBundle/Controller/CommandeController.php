@@ -363,10 +363,22 @@ class CommandeController extends FOSRestController
         $detailCommande->setDateFinished(new \DateTime());
 
         $em->flush();
-
         $dispatcher = $this->get('event_dispatcher');
         $dispatcher->dispatch(NeemaEvents::DETAIL_COMMANDE_FINISHED,new DetailCommandeEvent($detailCommande));
 
+
+        //pour verifier si la commande est prête(tous les plats sont finis)
+        $details = $detailCommande->getCommande()->getDetailCommandes();
+        $commandeIsReady = true;
+        foreach($details as $detailCommande){
+            if(!$detailCommande->isFinished()){
+                $commandeIsReady = false;
+                break;
+            }
+        }
+        if($commandeIsReady){
+            $dispatcher->dispatch(NeemaEvents::COMMANDE_PRETE,new CommandeEnregistreEvent($detailCommande->getCommande()));
+        }
 
         return MessageResponse::message('Merci, ce plat a été marqué terminé','success',200);
     }
