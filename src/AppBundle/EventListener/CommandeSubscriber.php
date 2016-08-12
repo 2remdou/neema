@@ -36,7 +36,7 @@ class CommandeSubscriber implements EventSubscriberInterface
      *
      */
     public function onCommandeEnregistre(CommandeEnregistreEvent $commandeEnregistreEvent){
-        $livraison = new Livraison();
+/*        $livraison = new Livraison();
         $livraison->setCommande($commandeEnregistreEvent->getCommande());
 
         $livreur = $this->em->getRepository('AppBundle:Livreur')->findFree();
@@ -46,7 +46,8 @@ class CommandeSubscriber implements EventSubscriberInterface
         }
 
         $this->em->persist($livraison);
-        $this->em->flush();
+        $this->em->flush();*/
+        null;
     }
 
     /**
