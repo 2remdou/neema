@@ -56,7 +56,7 @@ class DeviceToken
     private $os;
 
     /**
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User",inversedBy="deviceTokens")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="La user est obligatoire")

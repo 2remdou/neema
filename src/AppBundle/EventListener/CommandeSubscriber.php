@@ -60,16 +60,12 @@ class CommandeSubscriber implements EventSubscriberInterface
     public function onCommandePrete(CommandeEnregistreEvent $commandeEnregistreEvent){
         $commande = $commandeEnregistreEvent->getCommande();
         $deviceTokens = $commande->getUser()->getDeviceTokens();
-        $tokens = array();
-        foreach($deviceTokens as $deviceToken){
-            $tokens[] = array('token'=>$deviceToken->getToken(),'os'=>$deviceToken->getOs()) ;
-        }
+        $this->producer->setContentType('application/json');
 
-        if($deviceTokens){
-            $this->producer->setContentType('application/json');
-            $message = array('devices'=>$tokens,
+        foreach($deviceTokens as $deviceToken){
+            $message = array('token'=>$deviceToken->getToken(),
                 'message'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId());
-            $this->producer->publish(json_encode($message),'ios');
+            $this->producer->publish(json_encode($message),$deviceToken->getOs());
         }
     }
 
