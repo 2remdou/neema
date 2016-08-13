@@ -640,7 +640,8 @@ class UserController extends FOSRestController
          *   }
          * )
          * @RequestParam(name="token",nullable=false, description="le token du device")
-         * @Route("api/users/device-token",name="put_new_password", options={"expose"=true})
+         * @RequestParam(name="os",nullable=false, description="l'os du device")
+         * @Route("api/users/device-token",name="put_device_token", options={"expose"=true})
          * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
          * @Method({"POST"})
          */
@@ -651,6 +652,7 @@ class UserController extends FOSRestController
             $user = $this->getUser();
 
             $deviceToken = $em->getRepository('AppBundle:DeviceToken')->findBy(array('user'=>$user,'token'=>$paramFetcher->get('token')));
+
             if($deviceToken){
                 return MessageResponse::message('','success',200,array('token'=>$deviceToken->getToken()));
             }
@@ -659,6 +661,14 @@ class UserController extends FOSRestController
 
             $deviceToken->setToken($paramFetcher->get('token'));
             $deviceToken->setUser($user);
+            $deviceToken->setOs($paramFetcher->get('os'));
+
+            $validator = $this->get('validator');
+
+            if($messages = MessageResponse::messageAfterValidation($validator->validate($deviceToken))){
+                return MessageResponse::message($messages,'danger',400);
+            }
+
 
             $em->persist($deviceToken);
 

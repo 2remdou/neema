@@ -73,9 +73,13 @@ app.service('UserService',
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
             };
-
-            this.addDeviceToken = function(token,callback){
-                _userService.one('device-token').post('',{token:token}).then(function(response){
+            /**
+             *
+             * @param data {token,os}
+             * @param callback
+             */
+            this.addDeviceToken = function(data,callback){
+                _userService.one('device-token').post('',{token:data.token,os:data.os}).then(function(response){
                     callback(response);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});

@@ -42,6 +42,7 @@ class DeviceToken
      *
      * @ORM\Column(name="token", type="string", length=255)
      * @Expose()
+     * @Assert\NotBlank(message="le token est obligatoire")
      */
 
     private $token;
@@ -50,6 +51,7 @@ class DeviceToken
      *
      * @ORM\Column(name="os", type="string", length=255)
      * @Expose()
+     * @Assert\NotBlank(message="l'os du device est obligatoire")
      */
     private $os;
 
