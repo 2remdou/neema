@@ -651,8 +651,7 @@ class UserController extends FOSRestController
 
             $user = $this->getUser();
 
-            $deviceToken = $em->getRepository('AppBundle:DeviceToken')->findBy(array('user'=>$user,'token'=>$paramFetcher->get('token')));
-
+            $deviceToken = $em->getRepository('AppBundle:DeviceToken')->findOneBy(array('user'=>$user,'token'=>$paramFetcher->get('token')));
             if($deviceToken){
                 return MessageResponse::message('','success',200,array('token'=>$deviceToken->getToken()));
             }
