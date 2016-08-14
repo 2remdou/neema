@@ -64,7 +64,7 @@ class CommandeSubscriber implements EventSubscriberInterface
 
         foreach($deviceTokens as $deviceToken){
             $message = array('token'=>$deviceToken->getToken(),
-                'message'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId());
+                'content'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId());
             $this->producer->publish(json_encode($message),$deviceToken->getOs());
         }
     }
