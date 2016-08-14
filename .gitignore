@@ -1,45 +1,64 @@
+## ************** neema-server *******************
+
 # Cache and logs (Symfony2)
-/app/cache/*
-/app/logs/*
-!app/cache/.gitkeep
-!app/logs/.gitkeep
+/neema-server/app/cache/*
+/neema-server/app/logs/*
+!/neema-server/app/cache/.gitkeep
+!/app/logs/.gitkeep
 
 # Cache and logs (Symfony3)
-/var/cache/*
-/var/logs/*
-!var/cache/.gitkeep
-!var/logs/.gitkeep
+/neema-server/var/cache/*
+/neema-server/var/logs/*
+!neema-server/var/cache/.gitkeep
+!neema-server/var/logs/.gitkeep
 
 # Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
+/neema-server/app/config/parameters.yml
+/neema-server/app/config/parameters.ini
 
 # Managed by Composer
-/app/bootstrap.php.cache
-/var/bootstrap.php.cache
-/bin/*
-!bin/console
-!bin/symfony_requirements
-/vendor/
+/neema-server/app/bootstrap.php.cache
+/neema-server/var/bootstrap.php.cache
+/neema-server/bin/*
+!/neema-serverbin/console
+!/neema-serverbin/symfony_requirements
+/neema-server/vendor/
 
 # Assets and user uploads
-/web/bundles/
-/web/uploads/
+/neema-server/web/bundles/
+/neema-server/web/uploads/
 
 # Assets managed by Bower
-/web/assets/vendor/
+/neema-server/web/assets/vendor/
 
 # PHPUnit
-/app/phpunit.xml
-/phpunit.xml
+/neema-server/app/phpunit.xml
+/neema-server/phpunit.xml
 
 # Build data
-/build/
+/neema-server/build/
 
 # Composer PHAR
-/composer.phar
+/neema-server/composer.phar
 
-/.idea
-/node_modules
-/var/sessions
-/web/images
+/neema-server/.idea
+/neema-server/node_modules
+/neema-server/var/sessions
+/neema-server/web/images
+
+## ************** neema-client*******************
+/neema-client/.idea
+/neema-client*.iml
+!/neema-clientwww/lib/service.js
+/neema-client/platforms/android
+/neema-client/platforms/ios
+/neema-client/www/lib
+/neema-client/out
+/neema-client/gen
+/neema-client/node_modules
+=# Created by .ignore support plugin (hsz.mobi)
+
+
+##***************** neema-nodejs********************
+
+/neema-nodejs/node_modules
