@@ -1,0 +1,47 @@
+
+<div class="col-md-12 col-xs-12">
+    <div class="col-md-8 col-md-offset-2 mg-top-20">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Nom Restaurant</th>
+                <th>Telephone</th>
+                <th>Email</th>
+                <th>Site web</th>
+                <th>Latitude,Longitude</th>
+                <th>Quartier</th>
+                <th>Modifier</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="restaurant in restaurants">
+                <td>
+                    <span>{{restaurant.nom}}</span>
+                </td>
+                <td>
+                    <span>{{restaurant.telephone}}</span>
+                </td>
+                <td>
+                    <span>{{restaurant.email}}</span>
+                </td>
+                <td>
+                    <span>{{restaurant.siteWeb}}</span>
+                </td>
+                <td>
+                    <span>{{restaurant.latitude}},{{restaurant.longitude}}</span>
+                </td>
+                <td>
+                    <span>{{restaurant.quartier.commune.nom}}-{{restaurant.quartier.nom}}</span>
+                </td>
+
+                <td class="text-center">
+                    <a ng-click="selectedRestaurant(restaurant)">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>

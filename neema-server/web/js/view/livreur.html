@@ -1,0 +1,77 @@
+
+<div class="col-md-12 col-xs-12">
+    <div class="col-md-8 col-md-offset-2 mg-top-20">
+        <form class="form-horizontal" name="form" novalidate>
+            <div class="col-md-12 col-xs-12  mg-top-20">
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.code.$invalid && formIsSubmit}">
+                    <label for="code" class="text-primary control-label">Code livreur</label>
+                    <input type="text" name="code" id="code" tabindex="1" class="form-control"
+                           placeholder="Code du livreur" ng-model="livreur.code" required>
+                    <p ng-show="form.code.$invalid && formIsSubmit" class="help-block">Le code est obligatoire.</p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.nom.$invalid && formIsSubmit}">
+                    <label for="nom" class="text-primary control-label">Nom livreur</label>
+                    <input type="text" name="nom" id="nom" tabindex="2" class="form-control"
+                           placeholder="Nom du livreur" ng-model="livreur.nom" required>
+                    <p ng-show="form.nom.$invalid && formIsSubmit" class="help-block">Le nom est obligatoire.</p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.prenom.$invalid && formIsSubmit}">
+                    <label for="prenom" class="text-primary control-label">Prenom livreur</label>
+                    <input type="text" name="prenom" id="prenom" tabindex="3" class="form-control"
+                           placeholder="Prenom du livreur" ng-model="livreur.prenom" required>
+                    <p ng-show="form.prenom.$invalid && formIsSubmit" class="help-block">Le prenom est obligatoire.</p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.password.$invalid && formIsSubmit}">
+                    <label for="password" class="text-primary control-label">Mot de passe</label>
+                    <input type="password" name="telephone" id="password" tabindex="4" class="form-control"
+                           placeholder="Mot de passe" ng-model="livreur.password" required>
+                    <p ng-show="form.password.$invalid && formIsSubmit" class="help-block">Le Mot de passe est obligatoire.</p>
+                </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.telephone.$invalid && formIsSubmit}">
+                    <label for="telephone" class="text-primary control-label">N° Telephone livreur</label>
+                    <input type="text" name="telephone" id="telephone" tabindex="5" class="form-control"
+                           placeholder="N° Telephone du livreur" ng-model="livreur.telephone" required>
+                    <p ng-show="form.telephone.$invalid && formIsSubmit" class="help-block">Le telephone est obligatoire.</p>
+                </div>
+            </div>
+            <div class="col-sm-offset-3 col-sm-3 mg-top-20">
+                <button class="form-control btn btn-success" tabindex="6" ng-click="save(livreur)"> Enregistrer</button>
+            </div>
+
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-3 mg-top-20">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Code</th>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>Telephone</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="livreur in livreurs">
+                <td>
+                    <span>{{livreur.code}}</span>
+                </td>
+                <td>
+                    <span>{{livreur.user.nom}}</span>
+                </td>
+                <td>
+                    <span>{{livreur.user.prenom}}</span>
+                </td>
+                <td>
+                    <span>{{livreur.user.telephone}}</span>
+                </td>
+                <td class="text-center">
+                    <a class="btn btn-default" ng-click="resetPassword(livreur)">
+                        Réinitialiser mot de passe
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

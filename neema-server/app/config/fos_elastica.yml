@@ -1,0 +1,81 @@
+fos_elastica:
+    clients:
+        default:
+            url: %elasticaurl%
+    indexes:
+        neema:
+            settings:
+                index:
+                    analysis:
+                        tokenizer:
+                            nGram3:
+                                type:     nGram
+                                min_gram: 3
+                                max_gram: 3
+                            nGram5:
+                                type:     nGram
+                                min_gram: 5
+                                max_gram: 5
+                        analyzer:
+                            custom_analyzer_ngram3 :
+                                type     :    custom
+                                tokenizer:    nGram3
+                                filter   :    [stop, asciifolding ,lowercase, snowball, elision, worddelimiter]
+                            custom_analyzer_ngram5 :
+                                type     :    custom
+                                tokenizer:    nGram5
+                                filter   :    [stop, asciifolding ,lowercase, snowball, elision, worddelimiter]
+                            custom_search_analyzer :
+                                type     :    custom
+                                tokenizer:    standard
+                                filter   :    [stop, asciifolding ,lowercase, snowball, elision, worddelimiter]
+                        filter:
+                            snowball:
+                                type:     snowball
+                            elision:
+                                type:     elision
+                                articles: [l, m, t, qu, n, s, j, d]
+                            stopwords:
+                                type:      stop
+                                ignore_case : true
+                            worddelimiter :
+                                type:      word_delimiter
+            types:
+                plat:
+                    mappings:
+                        id: ~
+                        nom: { analyzer: custom_analyzer_ngram3 }
+                        description: ~
+                        prix: ~
+                        imagePlat:
+                            type: "nested"
+                            properties:
+                                id: ~
+                                imageName: ~
+                                webPath: ~
+                        restaurant:
+                            type: "nested"
+                            properties:
+                                id: ~
+                                nom: { analyzer: custom_search_analyzer }
+                                telephone: ~
+                                email: ~
+                                siteWeb: ~
+                                description: ~
+                                quartier:
+                                    type: "nested"
+                                    properties:
+                                        id: ~
+                                        nom: { analyzer: custom_search_analyzer }
+                                        commune:
+                                            type: "nested"
+                                            properties:
+                                                id: ~
+                                                nom: { analyzer: custom_search_analyzer }
+                    persistence:
+                        driver: orm
+                        model: AppBundle\Entity\Plat
+                        finder: ~
+                        provider: ~
+                        listener: ~
+                        repository: AppBundle\Elastica\Repository\PlatRepository

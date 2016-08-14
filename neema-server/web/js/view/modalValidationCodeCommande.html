@@ -1,0 +1,25 @@
+<div class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content col-lg-6">
+      <div class="modal-header">
+        <button type="button" class="close" ng-click="close(false)" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">Entrez le code de la commande</h4>
+      </div>
+      <div class="modal-body">
+          <form class="form-horizontal" role="form">
+              <div class="form-group">
+                  <label for="codeCommande" class="col-sm-2 control-label">Code</label>
+                  <div class="col-sm-10">
+                      <input type="text" class="form-control" id="codeCommande" placeholder="Code de la commande" ng-model="codeCommande">
+                  </div>
+              </div>
+          </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" ng-click="close(false)" class="btn btn-default" data-dismiss="modal">No</button>
+        <button type="button" ng-click="close(true)" class="btn btn-primary" data-dismiss="modal">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+

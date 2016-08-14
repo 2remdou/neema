@@ -1,0 +1,46 @@
+
+<div class="col-md-12 col-xs-12">
+    <div class="col-md-6 col-md-offset-3 mg-top-20">
+        <form class="form-horizontal" name="form" novalidate>
+            <div class="col-md-12 col-xs-12  mg-top-20">
+                <div class="col-sm-8" ng-class="{ 'has-error' : form.nom.$invalid && formIsSubmit}">
+                    <input type="text" name="nom" id="nom" tabindex="1" class="form-control"
+                           placeholder="Nom de la commune" ng-model="commune.nom" required>
+                    <p ng-show="form.nom.$invalid && formIsSubmit" class="help-block">Le nom est obligatoire.</p>
+                </div>
+                <div class="col-sm-4">
+                    <button class="form-control btn btn-success" ng-click="save(commune)" ng-hide="forUpdate"> Enregistrer</button>
+                    <button class="form-control btn btn-info" ng-click="update(commune)" ng-show="forUpdate"> Modifer</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-3 mg-top-20">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Nom Commune</th>
+                <th>Modifier</th>
+                <th>Supprimer</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="commune in communes">
+                <td>
+                    <span>{{commune.nom}}</span>
+                </td>
+                <td class="text-center">
+                    <a ng-click="selected(commune)">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a ng-click="delete(commune)">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

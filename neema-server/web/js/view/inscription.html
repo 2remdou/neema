@@ -1,0 +1,59 @@
+<div class="container">
+    <div class="center-block login-form">
+        <div class="panel panel-default">
+            <div class="panel-heading">Connexion</div>
+            <div class="panel-body">
+                <form role="form" name="form">
+                    <div class="form-group" ng-class="{ 'has-error' : form.username.$invalid  && formIsSubmit }">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" placeholder="username"  name="username" ng-model="user.username" required>
+                            <p ng-show="form.username.$invalid  && formIsSubmit" class="help-block">Adresse email obligatoire.</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" placeholder="Nom"  name="nom" ng-model="user.nom">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" class="form-control" placeholder="Prenom"  name="prenom" ng-model="user.prenom">
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error' : form.username.$invalid  && formIsSubmit }">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-earphone"></i></span>
+                            <input type="text" class="form-control" placeholder="Telephone"  name="telephone" ng-model="user.telephone" required>
+                            <p ng-show="form.telephone.$invalid  && formIsSubmit" class="help-block">N° telephone est obligatoire.</p>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error' : form.password.$invalid  && formIsSubmit }">
+                        <div class="input-group login-input">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" class="form-control" placeholder="Password" ng-model="user.password" name="password" required>
+                            <p ng-show="form.password.$invalid  && formIsSubmit" class="help-block">Mot de passe obligatoire.</p>
+                        </div>
+                    </div>
+                    <div class="form-group" ng-class="{ 'has-error' : form.restaurant.$invalid  && formIsSubmit }">
+                        <ui-select tabindex="2" ng-model="user.restaurant" theme="bootstrap" name="restaurant" id="restaurant" required>
+                            <ui-select-match placeholder="Selectionner un restaurant">{{$select.selected.nom}}</ui-select-match>
+                            <ui-select-choices repeat="restaurant in restaurants|filter:$select.search">
+                                <div ng-bind-html="restaurant.nom | highlight: $select.search"></div>
+                            </ui-select-choices>
+                            <p ng-show="form.restaurant.$invalid && formIsSubmit" class="help-block">Le restaurant est obligatoire.</p>
+                        </ui-select>
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-sm btn-primary" ng-click="inscription(user)"><i class="fa fa-long-arrow-right"></i> Inscrire</button>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

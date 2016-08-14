@@ -1,0 +1,65 @@
+
+<div class="col-md-offset-0 col-md-12 col-xs-offset-0 col-xs-12">
+    <div class="col-md-12 col-xs-12  mg-top-20">
+        <form class="form-horizontal" name="form" novalidate>
+            <div class="col-md-12 col-xs-12  mg-top-20">
+
+                <div class="col-md-6 col-xs-12  mg-top-20">
+                    <!--nom-->
+                    <div class="form-group">
+                        <label for="nom" class="text-primary control-label col-md-4">Nom Plat :</label>
+                        <div class="col-md-7">
+                            <input id="nom" name="nom" ng-model="plat.nom" tabindex="0" placeholder="Nom du plat" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="prix" class="text-primary control-label col-md-4">Prix Plat :</label>
+                        <div class="col-md-7">
+                            <input id="prix" name="prix" ng-model="plat.prix" tabindex="0" placeholder="Prix du plat" class="form-control" required type="number" min="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="onMenu" class="text-primary control-label col-md-4">Afficher sur le menu :</label>
+                        <div class="col-md-7">
+                            <input id="onMenu" name="onMenu" ng-model="plat.onMenu" tabindex="0" placeholder="Prix du plat" class="form-control" required type="checkbox">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="prix" class="text-primary control-label col-md-4">Temps de cuisson(mn) :</label>
+                        <div class="col-md-7">
+                            <input id="dureePreparation" name="prix" ng-model="plat.dureePreparation" tabindex="0" placeholder="Temps de cuisson(en minutes)" class="form-control" required type="number" min="0">
+                        </div>
+                    </div>
+
+                    <!--description-->
+                    <div class="form-group">
+                        <label for="description" class="text-primary control-label col-md-4">Description :</label>
+                        <div class="col-md-7">
+                            <textarea class="form-control" cols="20" id="description" ng-model="plat.description" name="description" placeholder="Description du plat" rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xs-12  mg-top-20">
+                    <input type="file" nv-file-select uploader="uploader" id="selectImage" />
+                    <button class="btn btn-primary" nt-btn-image cible="selectImage" replace="oldImage">Modifier image</button>
+                    <div class="margin-5">
+                        <img id="oldImage" style="height: 100px;width: 100px;" ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{plat.imagePlat.imageName}}">
+                    </div>
+                    <div ng-show="uploader.isHTML5">
+                        <div class="col-sm-4 col-md-2" ng-repeat="item in uploader.queue">
+                            <div ng-thumb="{ file: item._file, height: 100 }"></div>
+                            <div class="progress" style="margin-bottom: 0;">
+                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': image.progress + '%' }"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-offset-6 col-md-6">
+                    <button class="btn btn-info" ng-click="edit(plat)">Modifier</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,91 @@
+    <header>
+        <div class="container">
+            <div class="row">
+
+                <!-- Logo -->
+                <div class="col-lg-3 col-md-2 col-xs-12 col-sm-2">
+                    <div class="well logo">
+                        <a ui-sref="neema">
+                                 <span>Neema</span>
+                        </a>
+                        <div>La nourriture du restaurant à la maison</div>
+                    </div>
+                </div>
+                <!-- End Logo -->
+
+                <div class="col-lg-6 col-md-8 col-xs-12 col-sm-8  ">
+                    <nav class="navbar navbar-inverse" role="navigation">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <!-- text logo on mobile view -->
+                                <span class="mouse-pointer navbar-brand visible-xs" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">Compte</span>
+                            </div>
+                            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                                   <ul class="userMenu">
+                                        <li>
+                                            <a ui-sref="plat">Plat</a>
+                                        </li>
+                                        <li>
+                                            <a ui-sref="menu">Menu</a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-toggle hidden-xs" data-toggle="dropdown">
+                                                <i class="glyphicon glyphicon-cog"></i>   Parametre<span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li ><a ui-sref="inscription">Ajouter Gerant Restaurant</a></li>
+                                                <li ><a ui-sref="livreur">Ajouter un Livreur</a></li>
+                                                <li ><a ui-sref="restaurant">Ajouter Restaurant</a></li>
+                                                <li ><a ui-sref="listRestaurant">Liste Restaurant</a></li>
+                                                <li><a ui-sref="commune">Commune</a></li>
+                                                <li><a ui-sref="quartier">Quartier</a></li>
+                                                <li><a ui-sref="menu">Menu</a></li>
+                                                <li><a ui-sref="plat">Plat</a></li>
+                                                <li><a ui-sref="etatCommande">Etat Commande</a></li>
+                                            </ul>
+
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-toggle hidden-xs" data-toggle="dropdown">
+                                                <i class="glyphicon glyphicon-cog"></i>   Administration<span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li ><a ui-sref="inscription">Ajouter Gerant Restaurant</a></li>
+                                                <li ><a ui-sref="resetPassword">Reinitialiser password</a></li>
+                                            </ul>
+
+                                        </li>
+                                  </ul>
+                            </div>
+
+                    </nav>
+                </div>
+
+                <div class="col-lg-3 col-md-2 col-xs-12 col-sm-2">
+                    <div class="well userMenu">
+                        <ul>
+                            <li ng-show="!userConnnected">
+                                <a ui-sref="login">Connexion</a>
+                            </li>
+                            <li ng-show="userConnnected" class="nav-dropdown">
+                                <a class="dropdown-toggle hidden-xs" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-user"></i>  {{userConnnected.username|uppercase}}<span class="caret"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a ui-sref="profil">Profil</a></li>
+                                    <li><a ng-click="logout()">Deconnexion</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </header>

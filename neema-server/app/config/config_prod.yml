@@ -1,0 +1,88 @@
+imports:
+    - { resource: services_prod.yml }
+    - { resource: config.yml }
+
+#framework:
+#    validation:
+#        cache: validator.mapping.cache.doctrine.apc
+#    serializer:
+#        cache: serializer.mapping.cache.doctrine.apc
+
+#doctrine:
+#    orm:
+#        metadata_cache_driver: apc
+#        result_cache_driver: apc
+#        query_cache_driver: apc
+
+monolog:
+    handlers:
+        main:
+            type:         fingers_crossed
+            action_level: error
+            handler:      nested
+        nested:
+            type:  stream
+            path:  'php://stderr'
+#            path:  "%kernel.logs_dir%/%kernel.environment%.log"
+            level: debug
+        console:
+            type:  console
+
+knp_gaufrette:
+    stream_wrapper: ~
+
+    adapters:
+        neema_plat_storage_s3:
+            aws_s3:
+                service_id: neema.aws_s3.client
+                bucket_name: '%awss3bucketname%'
+                options:
+                    directory: images/plats
+                    create: true
+        neema_restaurant_storage_s3:
+            aws_s3:
+                service_id: neema.aws_s3.client
+                bucket_name: '%awss3bucketname%'
+                options:
+                    directory: images/restaurants
+                    create: true
+    filesystems:
+        neema_plat_storage_s3:
+            adapter: neema_plat_storage_s3
+            alias: neema_plat_storage_s3_filesystem
+        neema_restaurant_storage_s3:
+            adapter: neema_restaurant_storage_s3
+            alias: neema_restaurant_storage_s3_filesystem
+
+
+aws:
+    version: latest
+    region: '%awss3region%'
+    credentials:
+        key: '%awss3key%'
+        secret: '%awss3secretkey%'
+    S3:
+        version: '2006-03-01'
+
+vich_uploader:
+    db_driver: orm
+    storage:   gaufrette
+
+    mappings:
+        plat_image:
+            uri_prefix: '%awss3baseurl%'
+            upload_destination: neema_plat_storage_s3
+            namer: neema.namer
+
+            inject_on_load:     true
+            delete_on_update:   true
+            delete_on_remove:   true
+
+        restaurant_image:
+            uri_prefix: '%awss3baseurl%'
+            upload_destination: neema_restaurant_storage_s3
+            namer: neema.namer
+
+            inject_on_load:     true
+            delete_on_update:   true
+            delete_on_remove:   true

@@ -1,0 +1,161 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use JMS\Serializer\Annotation\ExclusionPolicy,
+    JMS\Serializer\Annotation\Expose,
+    JMS\Serializer\Annotation\SerializedName;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+
+/**
+ * Livraison
+ *
+ * @ORM\Table(name="livraison")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\LivraisonRepository")
+ * @ExclusionPolicy("all")
+ * @UniqueEntity(fields="commande", message="Les informations de livraison déjà enrégistrées pour cette commande.")
+ */
+class Livraison
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="guid")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="UUID")
+     * @Expose()
+     */
+    private $id;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateLivraison", type="datetime")
+     * @Expose()
+     * @SerializedName("dateLivraison")
+     */
+    private $dateLivraison;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="longitude", type="string", length=255)
+     * @Expose()
+     * @Assert\NotBlank(message="la longitude est obligatoire")
+     */
+    private $longitude;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="latitude", type="string", length=255)
+     * @Expose()
+     * @Assert\NotBlank(message="la latitude est obligatoire")
+     */
+    private $latitude;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Commande")
+     * @ORM\JoinColumn(nullable=false)
+     * @Expose()
+     * @Assert\NotNull(message="La commande est obligatoire")
+     */
+    private $commande;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Livreur")
+     * @ORM\JoinColumn(nullable=false)
+     * @Expose()
+     * @Assert\NotNull(message="Le livreur est obligatoire")
+     */
+    private $livreur;
+
+
+
+
+    /**
+     * Get id
+     *
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set dateLivraison
+     *
+     * @param \DateTime $dateLivraison
+     *
+     * @return Livraison
+     */
+    public function setDateLivraison($dateLivraison)
+    {
+        $this->dateLivraison = $dateLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get dateLivraison
+     *
+     * @return \DateTime
+     */
+    public function getDateLivraison()
+    {
+        return $this->dateLivraison;
+    }
+
+    /**
+     * Set longitude
+     *
+     * @param string $longitude
+     *
+     * @return Livraison
+     */
+    public function setLongitude($longitude)
+    {
+        $this->longitude = $longitude;
+
+        return $this;
+    }
+
+    /**
+     * Get longitude
+     *
+     * @return string
+     */
+    public function getLongitude()
+    {
+        return $this->longitude;
+    }
+
+    /**
+     * Set latitude
+     *
+     * @param string $latitude
+     *
+     * @return Livraison
+     */
+    public function setLatitude($latitude)
+    {
+        $this->latitude = $latitude;
+
+        return $this;
+    }
+
+    /**
+     * Get latitude
+     *
+     * @return string
+     */
+    public function getLatitude()
+    {
+        return $this->latitude;
+    }
+}
+
