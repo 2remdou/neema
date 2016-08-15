@@ -50,8 +50,7 @@
 /neema-client/.idea
 /neema-client/*.iml
 !/neema-client/www/lib/service.js
-/neema-client/platforms/android
-/neema-client/platforms/ios
+/neema-client/platforms
 /neema-client/www/lib
 /neema-client/out
 /neema-client/gen
@@ -70,8 +69,7 @@
 /neema-restaurant/.idea
 /neema-restaurant/*.iml
 !/neema-restaurant/www/lib/service.js
-/neema-restaurant/platforms/android
-/neema-restaurant/platforms/ios
+/neema-restaurant/platforms
 /neema-restaurant/www/lib
 /neema-restaurant/out
 /neema-restaurant/gen
