@@ -1,0 +1,30 @@
+<ion-view view-title="Neema">
+    <ion-header-bar class="bar bar-subheader padding-2">		 
+         <div class="item item-input-inset no-border padding-2">		
+             <label class="item-input-wrapper">		
+                <input type="text" class="col col-90" align="center" ng-model="key" placeholder="Qu'est ce que vous voulez manger">		
+             </label>		
+             <button ng-click="search(key)" class="button button-calm button-small"><i class="ionicons ion-search"></i></button>		
+         </div>		
+ 		
+     </ion-header-bar>
+    <ion-content scroll="true" padding="true">
+        <div class="list card" ng-repeat="plat in plats" ui-sref="plat({idPlat:plat.id})">
+            <div class="item item-avatar">
+                <h2>{{plat.nom}}</h2>
+                <p>{{plat.restaurant.nom}}-{{plat.restaurant.quartier.nom}}</p>
+            </div>
+            <div class="item item-image">
+                <img ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{plat.imagePlat.imageName}}">
+            </div>
+            <a class="item item-icon-left assertive" href="#">
+                {{plat.prix|montant}}
+            </a>
+        </div>
+        <ion-infinite-scroll
+        on-infinite="loadMore()"
+        icon="ion-loading-c"
+        distance="5%">
+        </ion-infinite-scroll>
+    </ion-content>
+</ion-view>

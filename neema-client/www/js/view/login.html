@@ -1,0 +1,34 @@
+<ion-view>
+    <ion-content>
+        <div class="bar header bar-positive">
+            <h1 class="title">Connexion</h1>
+        </div>
+        <div class="content has-header">
+            <form name="form">
+                <div class="list">
+                    <label class="item item-input">
+                        <span class="input-label">N° Telephone</span>
+                        <input type="text" ng-model="user.username" name="username" required>
+                    </label>
+                    <div ng-messages="form.username.$error" ng-show="form.$submitted" role="alert">
+                        <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                    </div>
+
+                    <label class="item item-input">
+                        <span class="input-label">Mot de passe</span>
+                        <input type="password" ng-model="user.password" name="password" required>
+                    </label>
+                    <div ng-messages="form.password.$error" ng-show="form.$submitted" role="alert">
+                        <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                    </div>
+                <p class="margin-5"><a ui-sref="forgotPassword">J'ai oublié mon mot de passe</a></p>
+                <div class="row">
+                    <a  ui-sref="inscription" class="button button-small button-energized col col-40">Inscription</a>
+                    <button ng-click="login(form)" class="button button-small button-balanced col col-offset-20 col-40">Connexion</button>
+
+                </div>
+            </form>
+
+        </div>
+    </ion-content>
+</ion-view>

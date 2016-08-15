@@ -1,0 +1,22 @@
+<ion-view>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Commande
+                </div>
+                <select name="commande" ng-model="$selected"
+                        ng-change="selectCommande($selected)">
+                    <option value="" selected>Selectionner une commande</option>
+                    <option ng-repeat="commande in commandes track by commande.id|filter:orderBy:commande.dateCommande "
+                            value="{{commande.id}}">{{commande.restaurant.nom}}({{commande.dateCommande|date:'dd/MM/yyyy h:mm:ss':'+GMT'}})</option>
+                </select>
+            </label>
+            <p ng-show="distanceMatrixIsDefined" class="item item-icon-left" >
+                    <i class="icon ion-clock"></i>
+                    Livraison dans : {{duration}} {{distance}}
+            </p>
+        </div>
+        <div id="map" data-tap-disabled="true"></div>
+    </ion-content>
+</ion-view>

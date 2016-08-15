@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\User;
 use AppBundle\MessageResponse\MessageResponse;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Request\ParamFetcher,
@@ -30,11 +31,11 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
 class TokenController extends FOSRestController
 {
     /**
-     * Generer un token
+     * Se connecter et Generer un token avec le role client
      *
      * @ApiDoc(
      *   resource = true,
-     *   description = "Generer un token",
+     *   description = "Se connecter et Generer un token avec le role client",
      *   statusCodes = {
      *     200 = "Created",
      *     400 = "Bad credentiel",
@@ -42,11 +43,11 @@ class TokenController extends FOSRestController
      * )
      * @RequestParam(name="username",nullable=false, description="username")
      * @RequestParam(name="password",nullable=false, description="password")
-     * @Route("api/users/token",name="get_token", options={"expose"=true})
+     * @Route("api/users/login-client",name="login_client", options={"expose"=true})
      * @Method({"POST"})
      */
 
-    public function newTokenAction(Request $request, ParamFetcher $paramFetcher){
+    public function loginClientAction(Request $request, ParamFetcher $paramFetcher){
         $user = $this->getDoctrine()->getRepository('AppBundle:User')
                      ->findOneBy(['username'=>$paramFetcher->get('username')]);
 
@@ -61,6 +62,10 @@ class TokenController extends FOSRestController
             return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
         }
 
+        if(!$user->hasRole('ROLE_CLIENT')){
+            return MessageResponse::message("Vous n'êtes autorisé à acceder à cette application",'danger',400);
+        }
+
         $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
 
         $response = new JsonResponse();
@@ -71,13 +76,57 @@ class TokenController extends FOSRestController
         $dispatcher->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
         $response->setData($event->getData());
 
+        return $response;
 
-//        $token = $this->get('lexik_jwt_authentication.encoder')
-//                      ->encode(['username' => $user->getUsername()]);
+
+    }
+    /**
+     * Se connecter et Generer un token avec le role restaurant
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Se connecter et Generer un token avec le role restaurant",
+     *   statusCodes = {
+     *     200 = "Created",
+     *     400 = "Bad credentiel",
+     *   }
+     * )
+     * @RequestParam(name="username",nullable=false, description="username")
+     * @RequestParam(name="password",nullable=false, description="password")
+     * @Route("api/users/login-restaurant",name="login_restaurant", options={"expose"=true})
+     * @Method({"POST"})
+     */
+
+    public function loginRestaurantAction(Request $request, ParamFetcher $paramFetcher){
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')
+                     ->findOneBy(['username'=>$paramFetcher->get('username')]);
+
+        if(!$user){
+            return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
+        }
+
+        $isValid = $this->get('security.password_encoder')
+                        ->isPasswordValid($user,$paramFetcher->get('password'));
+
+        if(!$isValid){
+            return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
+        }
+
+        if(!$user->hasRole('ROLE_RESTAURANT')){
+            return MessageResponse::message("Vous n'êtes autorisé à acceder à cette application",'danger',400);
+        }
+
+        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+        $response = new JsonResponse();
+        $event    = new AuthenticationSuccessEvent(['token' => $jwt], $user, $request, $response);
+
+        $dispatcher = $this->get('event_dispatcher');
+
+        $dispatcher->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
+        $response->setData($event->getData());
 
         return $response;
-//        return $this->view(array('token'=>$token,'user'=>$user),200);
-
 
 
     }

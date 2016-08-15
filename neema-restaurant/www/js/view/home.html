@@ -1,0 +1,54 @@
+<ion-view view-title="Commandes">
+    <ion-content scroll="true" padding="true">
+        <form name="form" novalidate>
+            <div class="card" ng-repeat="commande in commandes">
+                <div class="item item-divider">
+                    <div class="table row">
+                        <div class="col">Telephone</div>
+                        <div class="col">Date Commande</div>
+                        <div class="col">Etat</div>
+                    </div>
+                    <div class="table row">
+                        <div class="col">{{commande.telephone}}({{commande.user.nom}} {{commande.user.prenom}})</div>
+                        <div class="col">{{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}}</div>
+                        <div class="col">{{commande.etatCommande.libelle}}</div>
+                    </div>
+                </div>
+                <div class="item item-text-wrap">
+                    <div class="row table header">
+                        <div class="table col">Plat</div>
+                        <div class="table col">Temps Restant</div>
+                        <div class="table col">Terminer</div>
+                    </div>
+                    <div class="table row" ng-repeat="detail in commande.detailCommandes">
+                        <div class="table col">{{detail.plat.nom}}</div>
+                        <div class="table col">
+                            <neema-timer time="detail.plat.dureePreparation"></neema-timer>
+                        </div>
+                        <div class="table col">
+                            <ion-checkbox ng-model="detail.finished" ng-click="finishPreparation(detail)"></ion-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="item item-divider">
+                        <div ng-hide="commande.delivered">
+                            <div class="row">
+                                <div class="col col-25">
+                                    <label class="item item-input">
+                                        <span class="input-label">Entrez le code</span>
+                                        <input type="text" ng-model="commande.code" name="code" required>
+                                    </label>
+                                    <div ng-messages="form.code.$error" ng-show="commande.error" role="alert">
+                                        <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                                    </div>
+                                </div>
+                                <div class="col col-25">
+                                    <button ng-click="giveToClient(commande)" class="button button-balanced col-offset-25 col-50">Valider</button>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

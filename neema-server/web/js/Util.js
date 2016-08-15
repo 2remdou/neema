@@ -41,8 +41,9 @@ var isDefined = function(object){
  * Mettre la première lettre en majuscule
  * @returns {string}
  */
-String.prototype.capitalizeFirstLetter = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
+var capitalizeFirstLetter = function(texte) {
+    if(!texte) return;
+    return texte.charAt(0).toUpperCase() + texte.slice(1);
 };
 /**
  *

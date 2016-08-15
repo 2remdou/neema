@@ -1,0 +1,74 @@
+<ion-view>
+    <ion-content class="has-footer">
+        <div>
+            <div ng-show="livraison.commande.giveLivreur">
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-clock"></i>
+                        Il vous reste :
+                            <timer countdown="1" max-time-unit="'minute'" interval="1000">  
+                                <neema-color-timer minute="mminutes" seconde="sseconds">
+                                   {{mminutes}} min {{sseconds}} s 
+                                </neema-color-timer>
+                            </timer>
+                        <!--{{commande.distance|conversion:'metre':'km'}})-->
+                </p>
+
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-bicycle"></i>
+                        Vous êtes à :
+                        {{distanceRestante|conversion:'metre':'km'}} 
+                </p>
+            </div>
+            <div ng-hide="livraison.commande.giveLivreur">
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-clock"></i>
+                        La commande sera prête dans :
+                            <timer countdown="1" max-time-unit="'minute'" interval="1000">  
+                                <neema-color-timer minute="mminutes" seconde="sseconds">
+                                   {{mminutes}} min {{sseconds}} s 
+                                </neema-color-timer>
+                            </timer>
+                        <!--{{commande.distance|conversion:'metre':'km'}})-->
+                </p>
+
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-bicycle"></i>
+                        Le restaurant est à :
+                        {{distanceRestante|conversion:'metre':'km'}} 
+                </p>
+            </div>
+            <div>
+                <h5 class="text-center">Info du Restaurant</h5>
+                <p class="item item-icon-left" > 
+                    <i class="icon ion-android-restaurant"></i>
+                    <span >{{livraison.commande.restaurant.nom}} ({{livraison.commande.restaurant.quartier.commune.nom}} - {{livraison.commande.restaurant.quartier.nom}} )</span>
+                </p>
+                <p class="item item-icon-left" > 
+                    <i class="icon ion-iphone"></i>
+                    <span >{{livraison.commande.restaurant.telephone}}</span>
+                </p>
+
+                <h5 class="text-center">Info du client</h5>
+                <p class="item item-icon-left" > 
+                    <i class="icon ion-person"></i>
+                    <span >{{livraison.commande.user.nom}}  {{livraison.commande.user.prenom}}</span>
+                </p>
+                <p class="item item-icon-left" > 
+                    <i class="icon ion-iphone"></i>
+                    <span >{{livraison.commande.telephone}}</span>
+                </p>
+
+                <button ng-show="livraison.commande.giveLivreur" class="button button-block button-balanced" ng-disabled="form.$invalid" ng-click="delivered(livraison)">Commande Livrée</button>
+
+
+            </div>
+
+        </div>
+    </ion-content>
+    <ion-footer-bar class="bar-positive margin-5">
+        <button class="button button-full margin-5" ng-disabled="form.$invalid" ng-click="showMap(livraison)">
+            <i class="icon ion-map"></i>
+            Afficher la carte
+        </button>
+    </ion-footer-bar>
+</ion-view>

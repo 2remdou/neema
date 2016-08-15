@@ -1,0 +1,105 @@
+/* Empty. Add your own CSS if you like */
+/*.bar-subheader
+{
+    height: 20px !important;
+    border: none;
+
+}*/
+
+.has-subheader {
+    top: 90px !important;
+}
+
+.no-border{
+    border: none !important;
+}
+
+.padding-5 {
+    padding: 5px !important;
+}
+.padding-2 {
+    padding: 2px !important;
+}
+.margin-5{
+    margin: 5px !important;
+}
+
+.montant{
+    position: absolute;
+    right: 0px;
+}
+
+.has-error {
+    color: #a94442;
+}
+
+.cursor-pointer{
+    cursor: pointer;
+}
+.spinner svg {
+    width: 19% !important;
+    height: 40px !important;
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    height: 85px;
+    text-align: center;
+    z-index: 100;
+}
+
+.scroll {
+    height: 100%;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+}
+
+.form-error{
+    color: red;
+}
+
+.popup-body{
+    text-align: center;
+}
+.popupDanger .popup-buttons .button{
+    border-color: #e42112;
+    background-color: #ef473a;
+    background-image: linear-gradient(0deg, #e42112, #e42112 50%, transparent 50%);
+    color: #fff;
+}
+.popupSuccess .popup-buttons .button{
+    border-color: #28a54c;
+    background-color: #33cd5f;
+    background-image: linear-gradient(0deg, #28a54c, #28a54c 50%, transparent 50%);
+    color: #fff;
+}
+.popupWarning .popup-buttons .button{
+    border-color: #e6b500;
+    background-color: #ffc900;
+    background-image: linear-gradient(0deg, #e6b500, #e6b500 50%, transparent 50%);
+    color: #fff;
+}
+.popupDanger .popup-buttons .button .activated{
+    border-color: #e42112;
+    background-color: #ef473a;
+    background-image: linear-gradient(0deg, #e42112, #e42112 50%, transparent 50%);
+    color: #fff;
+}
+.popupSuccess .popup-buttons .button .activated{
+    border-color: #28a54c;
+    background-color: #33cd5f;
+    background-image: linear-gradient(0deg, #28a54c, #28a54c 50%, transparent 50%);
+    color: #fff;
+}
+.popupWarning .popup-buttons .button .activated{
+    border-color: #e6b500;
+    background-color: #ffc900;
+    background-image: linear-gradient(0deg, #e6b500, #e6b500 50%, transparent 50%);
+    color: #fff;
+}
+.sizeZero{ 
+    width: 0px;
+    height: 0px;
+}

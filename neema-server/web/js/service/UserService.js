@@ -23,11 +23,22 @@ app.service('UserService',
             };
 
             this.login = function(user){
-                _userService.one('token').post('',user).then(function(response){
+                _userService.one('login-client').post('',user).then(function(response){
                     that.setToken(response.token);
                     that.setRefreshToken(response.refresh_token);
                     $rootScope.userConnnected = that.getUser();
                     $rootScope.$broadcast('user.connected',{token:response.token});
+                },function(error){
+                    that.clear();
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+            this.loginRestaurant = function(user,callback){
+                _userService.one('login-restaurant').post('',user).then(function(response){
+                    that.setToken(response.token);
+                    that.setRefreshToken(response.refresh_token);
+                    $rootScope.userConnnected = that.getUser();
+                    callback(response.token);
                 },function(error){
                     that.clear();
                     $rootScope.$broadcast('show.message',{alert:error.data});

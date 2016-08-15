@@ -1,0 +1,36 @@
+<ion-view>
+    <ion-content>
+        <div class="center">
+            <div class="col-offset-25 col-50">
+                <div class="content">
+                    <div class="bar bar-positive header-form">
+                        <h1 class="title">Connexion</h1>
+                    </div>
+                    <form name="form ">
+                        <div class="list">
+                            <label class="item item-input">
+                                <span class="input-label">Login</span>
+                                <input type="text" ng-model="user.username" name="username" required>
+                            </label>
+                            <div ng-messages="form.username.$error" ng-show="form.$submitted" role="alert">
+                                <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                            </div>
+
+                            <label class="item item-input">
+                                <span class="input-label">Mot de passe</span>
+                                <input type="password" ng-model="user.password" name="password" required>
+                            </label>
+                            <div ng-messages="form.password.$error" ng-show="form.$submitted" role="alert">
+                                <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button ng-click="login(form)" class="button button-small button-balanced col-offset-25 col-50">Connexion</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

@@ -1,0 +1,35 @@
+<ion-view view-title="Menu">
+    <ion-content scroll="true" padding="true">
+        <div>
+            <div>
+            </div>
+
+            <form name="form" novalidate>
+                <ion-list>
+                    <ion-item class="item-thumbnail-left card" ng-repeat="plat in plats">
+                        <div class="row">
+                            <div class="col">
+                                <img  ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{image.imageName}}"/>
+                            </div>
+                            <div class="col col-center">
+                                <h1>{{plat.nom}}</h1>
+                                <h1 class="assertive">{{plat.prix|montant}}</h1>
+                                <div class="item item-checkbox">
+                                    <label class="checkbox checkbox-balanced">
+                                        <input type="checkbox" ng-model="plat.onMenu" ng-click="onMenu(plat)">
+                                    </label>
+                                    Afficher
+                                </div>
+                            </div>
+                        </div>
+                    </ion-item>
+                    
+                </ion-list>
+            </form>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <button ng-click="valider()" class="button button-balanced col-offset-25 col-50">Mettre à jour le menu</button>
+  </ion-footer-bar>
+
+</ion-view>

@@ -261,6 +261,10 @@ class User implements UserInterface
         return $this->roles;
     }
 
+
+    public function hasRole($role){
+        return in_array($role,$this->roles);
+    }
     /**
      * Set salt
      *

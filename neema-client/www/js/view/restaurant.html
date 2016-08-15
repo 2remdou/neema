@@ -1,0 +1,19 @@
+<ion-view view-title="Neema">
+    <ion-content scroll="true" padding="true">
+        <div class="list card" ng-repeat="restaurant in restaurants" ui-sref="listPlatsByRestaurant({idRestaurant:restaurant.id})">
+            <div class="item item-avatar">
+                <h2>{{restaurant.nom}}</h2>
+                <p>{{restaurant.quartier.nom}}-{{restaurant.quartier.commune.nom}}</p>
+            </div>
+            <div class="item item-image">
+                <ion-slide-box>
+                    <ion-slide ng-repeat="image in restaurant.imageRestaurants">
+                        <img class="full-image" ng-src="{{image.webPath}}/{{image.imageName}}" alt=""/>
+                    </ion-slide>
+                </ion-slide-box>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
+
+

@@ -1,0 +1,30 @@
+<div class="bar bar-subheader">
+    <button ng-hide="isFirst" ng-click="previewPlat()" class="button icon ion-arrow-left-a"></button>
+    <h3 class="title">{{plat.nom}}</h3>
+    <button ng-hide="isLast" ng-click="nextPlat()" class="button icon ion-arrow-right-a"></button>
+</div>
+<ion-view>
+    <ion-content scroll="true" class="padding has-header">
+        <div class="list card">
+            <div class="item item-avatar">
+                <img ng-src="{{plat.restaurant.imageRestaurants[0].webPath}}/{{plat.restaurant.imageRestaurants[0].imageName}}">
+                <p>{{plat.restaurant.nom}}-{{plat.restaurant.quartier.nom}}</p>
+                <a class="item balanced padding-5 montant" href="#">
+                    {{plat.prix|montant}}
+                </a>
+            </div>
+
+            <div class="item item-body">
+                <img class="full-image" ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}">
+                <p>
+                    {{plat.description}}
+                </p>
+                <button class="button button-block button-balanced" ng-click="addInPanier(plat)" ng-disabled="inPanier(plat)">Ajouter à la commande</button>
+                <button class="button button-block button-assertive" ng-click="removeInPanier(plat)" ng-show="inPanier(plat)">Retirer de la commande</button>
+            </div>
+
+        </div>
+    </ion-content>
+</ion-view>
+
+

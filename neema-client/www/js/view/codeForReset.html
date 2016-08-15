@@ -1,0 +1,29 @@
+<ion-view>
+    <ion-content>
+        <div class="bar header bar-positive">
+            <h1 class="title">Activation Compte</h1>
+        </div>
+        <div class="content has-header">
+            <p class="text-center">Entrez le code que vous avez reçu par sms</p>
+
+            <form name="form" novalidate>
+                <div class="list">
+                    <label class="item item-input">
+                        <span class="input-label">Code</span>
+                        <input type="text" ng-model="user.code" name="code" required>
+                    </label>
+                    <div ng-messages="form.code.$error" ng-show="form.$submitted" role="alert">
+                        <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <a ng-click="sendBackCode()" class="button button-small button-energized col col-40">Renvoyer le code</a>
+                    <button ng-click="valider(form)" class="button button-small button-balanced col col-offset-20 col-40">Valider</button>
+                </div>
+
+            </form>
+
+        </div>
+    </ion-content>
+</ion-view>

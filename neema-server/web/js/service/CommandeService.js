@@ -22,9 +22,10 @@ app.service('CommandeService',
                 });
             };
 
-            this.list = function(){
+            this.list = function(callback){
                 _commandeService.getList().then(function(response){
                     $rootScope.$broadcast('commande.list',{commandes:response.commandes});
+                    callback(response.commandes);
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -32,9 +33,10 @@ app.service('CommandeService',
                 });
             };
 
-            this.listByRestaurant = function(){
+            this.listByRestaurant = function(callback){
                 _commandeService.one('restaurantConnected').customGET().then(function(response){
                     $rootScope.$broadcast('commande.list',{commandes:response});
+                    callback(response);
                 },function(error){
                     log(error)
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -51,9 +53,11 @@ app.service('CommandeService',
 
             };
 
-            this.finishPreparation = function(detail){
+            this.finishPreparation = function(detail,callback){
                 _commandeService.customPUT(null,'details/'+detail.id+'/finish').then(function(response){
-                    $rootScope.$broadcast('commande.detail.updated',{alert:response.data});
+                    var alert = response.data;
+                    $rootScope.$broadcast('commande.detail.updated',{alert:alert});
+                    callback(alert)
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
@@ -67,9 +71,11 @@ app.service('CommandeService',
                 });
             };
 
-            this.delivered = function(commande){
+            this.delivered = function(commande,callback){
                 _commandeService.customPUT({code:commande.code},commande.id+'/delivered').then(function(response){
-                    $rootScope.$broadcast('commande.delivered',{alert:response.data});
+                    var alert = response.data;
+                    $rootScope.$broadcast('commande.delivered',{alert:alert});
+                    callback(alert);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });

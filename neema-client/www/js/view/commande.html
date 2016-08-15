@@ -1,0 +1,34 @@
+<ion-view>
+    <ion-content scroll="true" class="padding has-header">
+        <div class="row" ng-repeat="plat in plats track by plat.id|orderBy:plat.prix:false">
+            <p> <i class="icon ion-android-restaurant"></i>  {{plat.nom}}</p>
+            <p class="montant">{{plat.prix|montant}} <a ng-click="removeInPanier(plat)" class=" cursor-pointer icon ion-android-cancel assertive"></a></p>
+        </div>
+        <div class="row">
+            <p> <i class="icon ion-ios-cart"></i>  Frais commande</p>
+            <p class="montant">{{commande.fraisCommande|montant}} <a ng-click="removeInPanier(plat)" class=" cursor-pointer icon ion-android-cancel assertive"></a></p>
+        </div>
+
+        <hr>
+        <div class="row item">
+            <h2>TOTAL</h2>
+            <strong class="montant">{{commande.totalCommande|montant}}</strong>
+        </div>
+        <br>
+        <div class="list">
+            <form name="form" novalidate>
+                <div ng-class="{ 'has-error' : form.telephone.$invalid && !form.telephone.$pristine}">
+                    N° telephone
+                    <label class="item item-input"> 
+                        <input type="text" placeholder="Tapez votre numero telephone" name="telephone" ng-model="commande.telephone" required>
+                    </label>
+                    <p ng-show="form.telephone.$invalid && !form.telephone.$pristine" class="help-block">Le numero telephone est obligatoire.</p>
+                </div>
+            </form>
+            <button class="button button-block button-balanced" ng-disabled="form.$invalid" ng-click="valider(commande)">Valider</button>
+        </div>
+        <button class="button button-block button-assertive" ng-click="clearPanier()">Vider le panier</button>
+    </ion-content>
+</ion-view>
+
+

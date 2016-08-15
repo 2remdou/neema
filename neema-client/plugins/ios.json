@@ -1,0 +1,41 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "ionic-plugin-keyboard": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "phonegap-plugin-push": {
+            "SENDER_ID": "842997542833",
+            "PACKAGE_NAME": "com.neema.gn"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.neema.gn"
+        }
+    }
+}

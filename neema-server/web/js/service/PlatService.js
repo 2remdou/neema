@@ -110,19 +110,21 @@ app.service('PlatService',
                 });
             };
 
-            this.listByRestaurantByUserConnected = function(){
+            this.listByRestaurantByUserConnected = function(callback){
                 _platService.one('restaurant/userConnected').getList().then(function(response){
                     $rootScope.$broadcast('plat.list',{plats:response});
+                    callback(response);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error);
                 });
             };
 
-            this.updateMenu = function(menu){
+            this.updateMenu = function(menu,callback){
                 Restangular.one('updateMenu').customPUT({plats:menu}).then(function(response){
                     var alert = {textAlert:response.data.textAlert,typeAlert:response.data.typeAlert};
                     $rootScope.$broadcast('menu.updated',{alert:alert,fail:response.data.fail});
+                    callback({alert:alert,fail:response.data.fail})
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:alert});
