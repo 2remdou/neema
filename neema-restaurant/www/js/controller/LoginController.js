@@ -9,7 +9,7 @@ app
         function($scope,UserService,SpinnerService,$rootScope,$state){
 
             $scope.user = {};
-
+            
             $scope.login = function(form){
                 form.$submitted = true;
                 if(form.$invalid) return;

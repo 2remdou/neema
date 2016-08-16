@@ -6,14 +6,14 @@
 
             <form name="form" novalidate>
                 <ion-list>
-                    <ion-item class="item-thumbnail-left card" ng-repeat="plat in plats">
+                    <ion-item class=" card" ng-repeat="plat in plats">
                         <div class="row">
-                            <div class="col">
-                                <img  ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{image.imageName}}"/>
+                            <div class="col col-25 item-thumbnail-left">
+                                <img style="height: 100px;width: 100px;"  ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{image.imageName}}"/>
                             </div>
-                            <div class="col col-center">
-                                <h1>{{plat.nom}}</h1>
-                                <h1 class="assertive">{{plat.prix|montant}}</h1>
+                            <div class="col col-offset-10 col-50 col-center">
+                                <p>{{plat.nom}}</p>
+                                <h3 class="assertive">{{plat.prix|montant}}</h3>
                                 <div class="item item-checkbox">
                                     <label class="checkbox checkbox-balanced">
                                         <input type="checkbox" ng-model="plat.onMenu" ng-click="onMenu(plat)">
@@ -21,6 +21,10 @@
                                     Afficher
                                 </div>
                             </div>
+                            <div class="col col-10">
+                                <button ui-sref="editPlat({idPlat:plat.id})" class="button button-block button-positive icon ion-edit"></button>
+                            </div>
+
                         </div>
                     </ion-item>
                     
@@ -30,6 +34,6 @@
     </ion-content>
     <ion-footer-bar>
         <button ng-click="valider()" class="button button-balanced col-offset-25 col-50">Mettre à jour le menu</button>
-  </ion-footer-bar>
+    </ion-footer-bar>
 
 </ion-view>

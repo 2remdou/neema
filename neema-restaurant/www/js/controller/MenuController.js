@@ -41,7 +41,7 @@ app.controller('MenuController',
                 SpinnerService.stop();
 
             });
-        }
+        };
 
     }
 

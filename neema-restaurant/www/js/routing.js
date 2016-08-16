@@ -30,6 +30,12 @@ app
                 templateUrl: 'js/view/addPlat.html',
                 controller:'AddPlatController'
             })
+            .state('editPlat', {
+                url: '/edit-plat/:idPlat',
+                cache: enabledCache,
+                templateUrl: 'js/view/editPlat.html',
+                controller:'EditPlatController'
+            })
             .state('login', {
                 url: '/login',
                 cache: enabledCache,

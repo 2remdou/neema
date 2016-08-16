@@ -34,6 +34,12 @@
         },
         "cordova-plugin-camera": {
             "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.neema.gn"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.neema.gn"
         }
     },
     "dependent_plugins": {

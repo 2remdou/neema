@@ -48,6 +48,7 @@ app
         function(PopupService,$rootScope,SpinnerService){
 
             $rootScope.$on('show.message',function(event,args){
+                log(args);
                 SpinnerService.stop();
                 if(!args.alert){
                     args.alert = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'}

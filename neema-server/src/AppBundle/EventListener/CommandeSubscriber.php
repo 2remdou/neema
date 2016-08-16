@@ -36,18 +36,17 @@ class CommandeSubscriber implements EventSubscriberInterface
      *
      */
     public function onCommandeEnregistre(CommandeEnregistreEvent $commandeEnregistreEvent){
-/*        $livraison = new Livraison();
-        $livraison->setCommande($commandeEnregistreEvent->getCommande());
+        $commande = $commandeEnregistreEvent->getCommande();
+        $this->producer->setContentType('application/json');
 
-        $livreur = $this->em->getRepository('AppBundle:Livreur')->findFree();
-        if($livreur){
-            $livraison->setLivreur($livreur);
-            $livreur->setIsFree(false);
-        }
+        $message = array('event'=>NeemaEvents::COMMANDE_ENREGISTRE,
+            'commande'=>$commande->getId(),
+            'dateMessage'=> new \DateTime()
+        );
+        $this->producer->publish(json_encode($message),$deviceToken->getOs());
 
-        $this->em->persist($livraison);
-        $this->em->flush();*/
-        null;
+
+
     }
 
     /**
@@ -64,7 +63,9 @@ class CommandeSubscriber implements EventSubscriberInterface
 
         foreach($deviceTokens as $deviceToken){
             $message = array('token'=>$deviceToken->getToken(),
-                'content'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId());
+                'content'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId(),
+                'dateMessage'=> new \DateTime()
+            );
             $this->producer->publish(json_encode($message),$deviceToken->getOs());
         }
     }

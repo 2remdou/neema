@@ -147,7 +147,7 @@ class Operation
         $this->em->flush();
 
         return MessageResponse::message('Modification effectuée','success',200,
-            array($this->getClassName($object) =>$object));
+            array($this->getClassName($object) =>$this->em->getRepository($repository)->findById($object->getId())));
 
     }
 

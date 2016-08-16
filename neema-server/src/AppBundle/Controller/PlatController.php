@@ -15,7 +15,8 @@ use FOS\RestBundle\Controller\FOSRestController,
 use AppBundle\MessageResponse\MessageResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
 	Sensio\Bundle\FrameworkExtraBundle\Configuration\Security,
-	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request,
 	Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,6 +55,7 @@ class PlatController extends FOSRestController
 
         $em = $this->getDoctrine()->getManager();
         $operation = $this->get('app.operation');
+
         $plat = new Plat();
         $plat = $operation->fill($request->request,$plat);
         if($plat instanceof View){
@@ -71,12 +73,10 @@ class PlatController extends FOSRestController
             return MessageResponse::message($messages,'danger',400);
         }
 
-        $em = $this->getDoctrine()->getManager();
-
         $em->persist($plat);
         $em->flush();
 
-        return MessageResponse::message('Enregistrement effectué','success',201, array('plat' =>$plat));
+        return MessageResponse::message('Enregistrement effectué','success',201, array('idPlat' =>$plat->getId()));
 
 
     }
@@ -91,23 +91,24 @@ class PlatController extends FOSRestController
      *     201 = "Created",
      *   }
      * )
-     * @RequestParam(name="plat",nullable=false, description="id du plat")
-     * @Route("api/plats/image",name="post_image_plat", options={"expose"=true})
+     * @Route("api/plats/{id}/image",name="post_image_plat", options={"expose"=true})
+     * @ParamConverter("plat", class="AppBundle:Plat")
      * @Method({"POST"})
 	 * @Security("has_role('ROLE_RESTAURANT')")
 	 */
-    public function postPlatImageAction(Request $request,ParamFetcher $paramFetcher){
+    public function postPlatImageAction(Plat $plat,Request $request){
         $em = $this->getDoctrine()->getManager();
 
-        $plat = $em->getRepository('AppBundle:Plat')->find($paramFetcher->get('plat'));
+/*        $plat = $em->getRepository('AppBundle:Plat')->find($paramFetcher->get('plat'));
         if(!$plat){
             return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
-        }
+        }*/
 
         if($plat->getImagePlat()){ //s'il existe une autre image, je le supprime
             $em->remove($plat->getImagePlat());
             $em->flush();
         }
+
 
         $file = $request->files->get('file');
         $image = new ImagePlat();

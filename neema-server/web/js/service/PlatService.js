@@ -18,9 +18,11 @@ app.service('PlatService',
 
             var _platService = Restangular.all('plats');
 
-            this.post = function(plat){
+            this.post = function(plat,callback){
                 _platService.post(plat).then(function(response){
-                    $rootScope.$broadcast('plat.created',{plat:response.data.plat});
+                    var idPlat = response.data.idPlat;
+                    $rootScope.$broadcast('plat.created',{idPlat:idPlat});
+                    callback(idPlat);
                 },function(error){
                     log(error);
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -29,6 +31,17 @@ app.service('PlatService',
 
             this.get = function(id){
                 return _platService.get(id);
+            };
+
+            this.getWithCallback = function(id,callback){
+                 _platService.get(id).then(function(response){
+                     var plat = response;
+                     plat.dureePreparation = Math.floor(plat.dureePreparation/60);
+                     callback(plat);
+                 },function(error){
+                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
+                     $rootScope.$broadcast('show.message',{alert:alert});
+                 });
             };
 
 /*
@@ -132,11 +145,13 @@ app.service('PlatService',
                 });
             };
 
-            this.update = function(plat){
+            this.update = function(plat,callback){
                 delete plat.imagePlat;
                 delete plat.restaurant;
                 plat.put().then(function(response){
-                    $rootScope.$broadcast('plat.updated', {alert:response.data})
+                    var alert = response.data;
+                    $rootScope.$broadcast('plat.updated', {alert:alert})
+                    callback(alert);
                 },function(error){
                     log(error);
                     $rootScope.$broadcast('show.message', {alert:error.data});

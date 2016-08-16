@@ -1,0 +1,59 @@
+<ion-view>
+    <ion-content scroll="true" class="padding has-header">
+        <form name="form" novalidate>
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">Plat</span>
+                    <input type="text" name="nom" ng-model="plat.nom" required>
+                </label>
+                <div ng-messages="form.nom.$error" ng-show="form.$submitted" role="alert">
+                    <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                </div>
+
+                <label class="item item-input">
+                    <span class="input-label">Prix</span>
+                    <input type="number" name="prix" ng-model="plat.prix" required type="number" min="0">
+                </label>
+                <div ng-messages="form.prix.$error" ng-show="form.$submitted" role="alert">
+                    <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                </div>
+
+                <label class="item item-input">
+                    <span class="input-label">Temps de cuisson (minute)</span>
+                    <input type="number" ng-model="plat.dureePreparation" name="dureePreparation" required min="0">
+                </label>
+                <div ng-messages="form.dureePreparation.$error" ng-show="form.$submitted" role="alert">
+                    <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                </div>
+
+                <div class="item item-checkbox">
+                    <span class="input-label">Afficher sur le menu</span>
+                    <label class="checkbox checkbox-balanced">
+                        <input type="checkbox" ng-model="plat.onMenu" ng-click="onMenu(plat)">
+                    </label>
+                </div>
+                <label class="item item-input">
+                    <textarea rows="5" ng-model="plat.description" placeholder="Donner une description sur le plat"></textarea>
+                </label>
+            </div>
+        </form>
+
+        <hr>
+        <div class="row responsive-lg flex-wrap">
+            <div class="col col-25 list card">
+                <div class="item">
+                    <button ng-click="selectImage()" class="button button-full button-stable icon ion-upload"></button>
+                </div>
+                <div class="item item-image">
+                    <img ng-src="{{imageSelected.src}}">
+                </div>
+            </div>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <button ng-click="updatePlat(plat)" class="button button-balanced col-offset-25 col-50">Modifier</button>
+    </ion-footer-bar>
+
+</ion-view>
+
+
