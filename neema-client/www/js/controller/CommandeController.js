@@ -1,7 +1,6 @@
 /**
  * Created by touremamadou on 16/05/2016.
  */
-'use strict';
 app
     .controller('CommandeController',
         ['$scope','PlatService','PanierService','$state',
@@ -17,7 +16,7 @@ app
                 $scope.commande.total=0;
                 $scope.plats = PanierService.getPanier();
                 $scope.commande.restaurant = $scope.plats[0].restaurant;//car tous les plats viennent du même restaurant
-                $scope.commande.telephone = $scope.userConnected.username;
+                $scope.commande.telephone = $scope.userConnected.telephone;
 
                 var refreshCommande = function(){
                     $scope.commande.total = 0;

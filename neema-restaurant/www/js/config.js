@@ -10,15 +10,15 @@ app
     }])
     .config(['$httpProvider','jwtInterceptorProvider',function Config($httpProvider, jwtInterceptorProvider) {
         var requestForRefreshAlreadySend = false;
-        jwtInterceptorProvider.tokenGetter = ['jwtHelper','UserService', function(jwtHelper,UserService) {
+        jwtInterceptorProvider.tokenGetter = ['jwtHelper','UserService','$state', function(jwtHelper,UserService,$state) {
 
             var token = UserService.getToken();
             //var refreshToken = UserService.getRefreshToken();
             //
             if(requestForRefreshAlreadySend) return;
             //
-            if(!token) return;
-
+            if(!token) return;  
+ 
             if (jwtHelper.isTokenExpired(token)) {
                 requestForRefreshAlreadySend=true;
                 UserService.refreshToken().then(function(response){

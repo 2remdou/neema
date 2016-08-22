@@ -60,7 +60,7 @@
                     <h1 class="title" ng-hide="userConnected">Neema</h1>
 
                     <h3 class="title" ng-show="userConnected" menu-close="">
-                        <span ng-show="isLivreur">{{userConnected.username}} - </span>{{userConnected.nom}} 
+                        {{userConnected.restaurant.nom}} - {{userConnected.nom}} 
                     </h3>
                 </ion-header-bar>
                 <ion-content>

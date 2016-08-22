@@ -59,6 +59,8 @@ gulp.task('app',function () {
         'www/lib/moment/min/moment.min.js',
         'www/lib/moment/min/locales.min.js',
         'www/lib/humanize-duration/humanize-duration.js',
+        'www/lib/socket.io-client/socket.io.js',
+        'www/lib/angular-socket-io/socket.min.js',
         'www/js/**/*.js',
         'www/lib/service'
     ])

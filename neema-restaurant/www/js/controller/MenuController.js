@@ -7,6 +7,7 @@ app.controller('MenuController',
     function($scope,PlatService,SpinnerService,PopupService,$filter){
         SpinnerService.start();
 
+
         PlatService.listByRestaurantByUserConnected(function(plats){
             $scope.plats = plats;
             $scope.menuInitial = $filter('filter')($scope.plats,{onMenu:true});

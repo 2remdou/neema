@@ -38,6 +38,16 @@ app.service('CommandeService',
                     $rootScope.$broadcast('commande.list',{commandes:response});
                     callback(response);
                 },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+
+            };
+            this.refreshListByRestaurant = function(from,callback,callbackError){
+                _commandeService.customPOST({from:from},'refresh').then(function(response){
+                    $rootScope.$broadcast('commande.list',{commandes:response});
+                    callback(response);
+                },function(error){
+                    callbackError(error);
                     log(error)
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });

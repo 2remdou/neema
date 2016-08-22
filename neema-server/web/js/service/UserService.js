@@ -190,6 +190,7 @@ app.service('UserService',
                         nom:tokenDecoded.nom,
                         prenom:tokenDecoded.prenom,
                         username:tokenDecoded.username,
+                        telephone:tokenDecoded.telephone,
                         roles : tokenDecoded.roles,
                         restaurant : tokenDecoded.restaurant
                     };

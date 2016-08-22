@@ -85,6 +85,21 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
         return $commandes;
     }
 
+    public function refreshMenu($idRestaurant = null,\DateTime $from,\DateTime $to){
+
+        return $this->mainQueryBuilder()
+            ->where('r.id LIKE :idRestaurant')
+            ->andWhere('c.delivered=false')
+            ->andWhere('c.dateCommande BETWEEN :from and :to')
+            ->setParameters(array(
+                'idRestaurant'=>$idRestaurant,
+                'from'=>$from,
+                'to'=>$to))
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+    }
+
     public function findById($id){
 
         $commande = $this->mainQueryBuilder()

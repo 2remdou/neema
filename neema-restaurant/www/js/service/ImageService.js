@@ -1,4 +1,3 @@
-'use strict';
 
 app.factory('ImageService',[
     '$cordovaCamera','$cordovaFileTransfer','UrlApi','UserService','$rootScope',

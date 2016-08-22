@@ -1,5 +1,8 @@
 <ion-view view-title="Commandes">
     <ion-content scroll="true" padding="true">
+        <div ng-show="newCommande" class="new-commande-bar cursor-pointer" ng-click="refreshListCommande()">
+            {{countNewCommande}} {{textNewCommande}}
+        </div>
         <form name="form" novalidate>
             <div class="card" ng-repeat="commande in commandes">
                 <div class="item item-divider">

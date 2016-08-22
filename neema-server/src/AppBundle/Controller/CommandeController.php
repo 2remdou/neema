@@ -30,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request,
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use AppBundle\Entity\Commande;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 
 class CommandeController extends FOSRestController
@@ -219,6 +220,48 @@ class CommandeController extends FOSRestController
             return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
         }
         $commandes = $em->getRepository('AppBundle:Commande')->findByTypeDelivered(false,$userRestaurant->getRestaurant()->getId());
+
+        return $commandes;
+	}
+	/**
+     * Rafraichir les commandes d'un restaurant en fonction d'un interval de temps
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Rafraichir les commandes d'un restaurant en fonction d'un interval de temps",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @RequestParam(name="from",nullable=false, description="la date de debut")
+     * @Route("api/commandes/refresh",name="get_refresh_commandes_by_restaurant", options={"expose"=true})
+     * @Method({"POST"})
+     * @Security("has_role('ROLE_RESTAURANT')")
+     */
+
+	public function getRefreshCommandesFrom(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $from = $request->request->get('from');
+        if(!$from){
+            return MessageResponse::message('Le parametre from est obligatoire','danger',400);
+        }
+        dump($from);
+        $from = new \DateTime($from,new \DateTimeZone("UTC"));
+        if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
+            $operation = $this->get('app.operation');
+
+            $commandes = $em->getRepository('AppBundle:Commande')->refreshMenu(null,$from,new \DateTime());
+            return $commandes;
+        }
+
+        $user = $this->getUser();
+        $userRestaurant = $em->getRepository('AppBundle:UserRestaurant')->findOneBy(array('user'=>$user->getId()));
+        if(!$userRestaurant){
+            return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
+        }
+        $commandes = $em->getRepository('AppBundle:Commande')->refreshMenu($userRestaurant->getRestaurant()->getId(),$from,new \DateTime());
 
         return $commandes;
 	}

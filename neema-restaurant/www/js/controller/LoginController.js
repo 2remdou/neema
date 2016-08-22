@@ -2,7 +2,6 @@
  * Created by touremamadou on 16/05/2016.
  */
 
-'use strict';
 app
     .controller('LoginController',
         ['$scope','UserService','SpinnerService','$rootScope','$state',

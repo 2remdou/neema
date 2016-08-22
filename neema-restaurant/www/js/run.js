@@ -48,12 +48,15 @@ app
         function(PopupService,$rootScope,SpinnerService){
 
             $rootScope.$on('show.message',function(event,args){
-                log(args);
                 SpinnerService.stop();
+                var defaultMessage = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'};
                 if(!args.alert){
-                    args.alert = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'}
+                    args.alert = defaultMessage;
+                }else{
+                    if(!args.alert.textAlert) args.alert = defaultMessage;
                 }
-                var alert = args.alert;
+
+                var alert = args.alert; 
                 var popup = {
                     title:'Neema',
                     message:alert.textAlert,
@@ -67,9 +70,9 @@ app
     ['Restangular','$state','SpinnerService','$rootScope',
         function(Restangular,$state,SpinnerService,$rootScope){
             Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
-
-                if(response.status === 401) {
+                if(response.status === 401 && !$rootScope.userConnected) {
                     $state.go('login');
+                    return;
                 }
 
                 if(response.status === 409) {

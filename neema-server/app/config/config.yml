@@ -137,6 +137,6 @@ old_sound_rabbit_mq:
         notification:
             connection:       default
             exchange_options:
-                name: 'notification'
-                type: direct
+                name: 'neema.exchange'
+                type: topic
 

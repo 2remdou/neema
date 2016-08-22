@@ -23,6 +23,7 @@ class CommandeSubscriber implements EventSubscriberInterface
     private $commandeManager;
     private $producer;
 
+
     public function __construct(EntityManager $em,CommandeManager $commandeManager,Producer $producer){
         $this->em = $em;
         $this->commandeManager = $commandeManager;
@@ -36,17 +37,16 @@ class CommandeSubscriber implements EventSubscriberInterface
      *
      */
     public function onCommandeEnregistre(CommandeEnregistreEvent $commandeEnregistreEvent){
+
         $commande = $commandeEnregistreEvent->getCommande();
         $this->producer->setContentType('application/json');
 
         $message = array('event'=>NeemaEvents::COMMANDE_ENREGISTRE,
             'commande'=>$commande->getId(),
+            'restaurant' => array('id'=>$commande->getRestaurant()->getId()),
             'dateMessage'=> new \DateTime()
         );
-        $this->producer->publish(json_encode($message),$deviceToken->getOs());
-
-
-
+        $this->producer->publish(json_encode($message),'commande.enregistre');
     }
 
     /**
@@ -66,7 +66,7 @@ class CommandeSubscriber implements EventSubscriberInterface
                 'content'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId(),
                 'dateMessage'=> new \DateTime()
             );
-            $this->producer->publish(json_encode($message),$deviceToken->getOs());
+            $this->producer->publish(json_encode($message),'notification.'.$deviceToken->getOs());
         }
     }
 

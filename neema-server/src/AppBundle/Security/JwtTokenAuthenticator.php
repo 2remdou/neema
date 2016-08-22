@@ -10,6 +10,7 @@ namespace AppBundle\Security;
 
 
 use AppBundle\Exception\ChangePasswordException;
+use AppBundle\MessageResponse\MessageResponse;
 use Doctrine\ORM\EntityManager;
 use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\TokenExtractor\AuthorizationHeaderTokenExtractor;
@@ -198,8 +199,9 @@ class JwtTokenAuthenticator extends AbstractGuardAuthenticator
      */
     public function start(Request $request, AuthenticationException $authException = null)
     {
-        return new JsonResponse([
-            'error' => 'Vous devez vous authentifier pour acceder à cette page'
-        ], 401);
+        return new JsonResponse(['textAlert'=>'Vous devez vous authentifier pour acceder à cette page',
+                    'typeAlert' => 'danger'
+                ]
+        , 401);
     }
 }

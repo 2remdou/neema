@@ -2,8 +2,6 @@
  * Created by touremamadou on 16/05/2016.
  */
 
-'use strict';
-
 app
     .controller('AddPlatController',
         ['$scope','ImageService','SpinnerService','PopupService','PlatService','$state',
@@ -56,7 +54,9 @@ app
                 SpinnerService.start();
                 PlatService.getWithCallback($stateParams.idPlat,function(plat){
                     $scope.plat = plat;
-                    $scope.imageSelected = {src:plat.imagePlat.webPath+'/'+plat.imagePlat.imageName};
+                    if(plat.imagePlat){
+                        $scope.imageSelected = {src:plat.imagePlat.webPath+'/'+plat.imagePlat.imageName};
+                    } 
                     SpinnerService.stop();
                 });
 

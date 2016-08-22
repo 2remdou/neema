@@ -22,6 +22,11 @@ class MessageResponse {
         return View::create(array('data'=>array_merge($message,is_array($data)?$data:array())),$codeStatus);
     }
 
+    public static function messageJson($textAlert='',$typeAlert='success',$codeStatus=200,$data=null){
+
+        return self::message($textAlert,$typeAlert,$codeStatus,$data)->getResponse();
+    }
+
     public static function messageAfterValidation($errors){
 
         if(count($errors)>0){

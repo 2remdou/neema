@@ -35,12 +35,16 @@ class JWTSubscriber implements EventSubscriberInterface
         $payload['id'] = $user->getId();
         $payload['nom'] = $user->getNom();
         $payload['prenom'] = $user->getPrenom();
+        $payload['telephone'] = $user->getTelephone();
         $payload['roles'] = $user->getRoles();
-        if($this->authorizationChecker->isGranted('ROLE_RESTAURANT')){
+
+//        if($this->authorizationChecker->isGranted('ROLE_RESTAURANT')){
+        if($user->hasRole('ROLE_RESTAURANT')){
             $payload['restaurant'] = array(
                                         'id'=>$user->getUserRestaurant()->getRestaurant()->getId(),
                                         'nom' => $user->getUserRestaurant()->getRestaurant()->getNom()
                                          ) ;
+
         }
 
         $event->setData($payload);
