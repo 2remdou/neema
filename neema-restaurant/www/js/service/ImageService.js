@@ -17,7 +17,6 @@ app.factory('ImageService',[
                 $cordovaCamera.getPicture(options).then(
                     function(imageData) {
                         window.resolveLocalFileSystemURL(imageData,function(fileEntry){
-                            log(fileEntry);
                             var nativePath = fileEntry.toURL();
                             callback({nativePath:nativePath,fileData:fileEntry});
                         },error);
@@ -29,24 +28,26 @@ app.factory('ImageService',[
         };
 
         function uploadImagePlat(pathImage,idPlat,callback){
-            ionic.Platform.ready(function(){
                 var server = UrlApi+'/plats/'+idPlat+'/image';
-                var options = new FileUploadOptions();
-                options.fileKey = "file";
-                fileName = pathImage.substr(pathImage.lastIndexOf('/') + 1);
-                options.mimeType = "image/jpeg";
-                options.headers = {'Authorization':'Bearer '+UserService.getToken()}
-                $cordovaFileTransfer.upload(server,pathImage,options).then(function(response){
+                     var options = {
+                        fileKey: "file",
+                        fileName: pathImage.substr(pathImage.lastIndexOf('/') + 1),
+                        chunkedMode: true,
+                        mimeType: "image/jpeg",
+                        headers: {
+                            "Authorization": 'Bearer '+UserService.getToken()
+                        }
+                    };
+                $cordovaFileTransfer.upload(server,pathImage,options,true).then(function(response){
                     log(response);
                     callback(response);
                 },function(err){
                     error(err);
                 })
-            });
-
         };
 
         function error(err){
+            log(err);
             var alert = {textAlert:"Erreur lors du choix de l'image",typeAlert:'danger'};
             $rootScope.$broadcast('show.message',{alert:alert});
             log(err);

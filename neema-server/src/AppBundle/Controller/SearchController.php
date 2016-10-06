@@ -34,7 +34,6 @@ class SearchController extends FOSRestController
      * )
 	 * @Route("api/search",name="search_restaurant", options={"expose"=true})
      * @Method({"GET"})
-	 * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 	public function searchKeyAction(Request $request){
         $key = $request->query->get('key');

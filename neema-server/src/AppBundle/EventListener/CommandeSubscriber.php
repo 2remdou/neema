@@ -10,15 +10,18 @@ namespace AppBundle\EventListener;
 
 
 use AppBundle\Entity\Livraison;
+use AppBundle\Entity\Notification;
 use AppBundle\Event\CommandeEnregistreEvent;
 use AppBundle\NeemaEvents;
 use AppBundle\Service\CommandeManager;
+use AppBundle\Util\Util;
 use Doctrine\ORM\EntityManager;
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class CommandeSubscriber implements EventSubscriberInterface
 {
+    use Util;
     private $em;
     private $commandeManager;
     private $producer;
@@ -59,12 +62,35 @@ class CommandeSubscriber implements EventSubscriberInterface
     public function onCommandePrete(CommandeEnregistreEvent $commandeEnregistreEvent){
         $commande = $commandeEnregistreEvent->getCommande();
         $deviceTokens = $commande->getUser()->getDeviceTokens();
+        $telephone = $commande->getTelephone();
         $this->producer->setContentType('application/json');
+
+        $notification = new Notification();
+        $notification->setTitle('Commande prête');
+        $notification->setType('commande');
+        $notification->setIdType($commande->getId());
+        $notification->setMessage('Votre commande au restaurant '.$commande->getRestaurant()->getNom().' est prête');
+        $notification->setUser($commande->getUser());
+
+        $this->em->persist($notification);
+        $this->em->flush();
+
+        // notification par sms
+
+        $message = array(
+            'telephone' => $this->addCountryCodeInPhoneNumber($telephone),
+            'content'=>$notification->getMessage(),
+            'commande'=>$commande->getId(),
+            'dateMessage'=> new \DateTime(),
+        );
+        $this->producer->publish(json_encode($message),'notification.sms');
+
+        //notification par push
 
         foreach($deviceTokens as $deviceToken){
             $message = array('token'=>$deviceToken->getToken(),
                 'content'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId(),
-                'dateMessage'=> new \DateTime()
+                'dateMessage'=> new \DateTime(),
             );
             $this->producer->publish(json_encode($message),'notification.'.$deviceToken->getOs());
         }

@@ -8,7 +8,7 @@ app.service('RestaurantService',
     ['$rootScope','Restangular','$q',
         function($rootScope,Restangular,$q){
 
-            var self=this;
+            var that=this;
 
             this.restaurants = [];
 
@@ -27,26 +27,20 @@ app.service('RestaurantService',
 
 
 
-            this.list = function(){
-                var deffered = $q.defer();
-                if(self.restaurants.length!==0){
-                    deffered.resolve(self.restaurants);
-                }else{
-                    _restaurantService.getList().then(function(response){
-                        self.restaurants=response;
-                        deffered.resolve(response);
-                        $rootScope.$broadcast('restaurant.list',{restaurants:response});
-                    },function(error){
-                        deffered.reject(error);
-                        $rootScope.$broadcast('show.message',{alert:error.data});
-                        log(error);
-                    });
-                }
-                return deffered.promise;
+            this.list = function(callback,callbackError){
+                _restaurantService.getList().then(function(response){
+                    $rootScope.$broadcast('restaurant.list',{restaurants:response});
+                    that.restaurants = response;
+                    if(typeof callback == 'function')
+                        callback(response);
+                },function(error){
+                    callbackError(error);
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
             };
 
             this.getRestaurants = function(){
-                return self.restaurants;
+                return that.restaurants;
             };
 
             this.get = function(id){

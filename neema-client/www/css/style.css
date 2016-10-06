@@ -23,6 +23,9 @@
 .margin-5{
     margin: 5px !important;
 }
+.margin-10{
+    margin: 5px !important;
+}
 
 .montant{
     position: absolute;
@@ -102,4 +105,21 @@
 .sizeZero{ 
     width: 0px;
     height: 0px;
+}
+
+ .button-qty {
+    font-size: 1em; 
+}
+.button-close {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+.neema-left{
+    position: absolute;
+    left: 0px;
+}
+.neema-right{
+    position: absolute;
+    right: 0px;
 }

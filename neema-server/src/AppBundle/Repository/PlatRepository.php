@@ -45,6 +45,16 @@ class PlatRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getArrayResult();
     }
+    public function findByRestaurantOnMenu($idRestaurant){
+
+        return $this->mainQueryBuilder()
+            ->where('r.id LIKE :idRestaurant')
+            ->setParameter('idRestaurant',$idRestaurant)
+            ->andWhere('p.onMenu=:onMenu')
+            ->setParameter('onMenu',true)
+            ->getQuery()
+            ->getArrayResult();
+    }
 
     public function findById($id){
 

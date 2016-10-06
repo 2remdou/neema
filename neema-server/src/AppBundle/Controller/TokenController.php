@@ -131,4 +131,55 @@ class TokenController extends FOSRestController
 
     }
 
+    /**
+     * Se connecter et Generer un token avec le role admin
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Se connecter et Generer un token avec le role admin",
+     *   statusCodes = {
+     *     200 = "Created",
+     *     400 = "Bad credentiel",
+     *   }
+     * )
+     * @RequestParam(name="username",nullable=false, description="username")
+     * @RequestParam(name="password",nullable=false, description="password")
+     * @Route("api/users/login-admin",name="login_admin", options={"expose"=true})
+     * @Method({"POST"})
+     */
+
+    public function loginAdminAction(Request $request, ParamFetcher $paramFetcher){
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')
+                     ->findOneBy(['username'=>$paramFetcher->get('username')]);
+
+        if(!$user){
+            return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
+        }
+
+        $isValid = $this->get('security.password_encoder')
+                        ->isPasswordValid($user,$paramFetcher->get('password'));
+
+        if(!$isValid){
+            return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
+        }
+
+        if(!$user->hasRole('ROLE_ADMIN') && !$user->hasRole('ROLE_SUPER_ADMIN')){
+            return MessageResponse::message("Vous n'êtes autorisé à acceder à cette application",'danger',400);
+        }
+
+        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+        $response = new JsonResponse();
+        $event    = new AuthenticationSuccessEvent(['token' => $jwt], $user, $request, $response);
+
+        $dispatcher = $this->get('event_dispatcher');
+
+        $dispatcher->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
+        $response->setData($event->getData());
+
+        return $response;
+
+
+    }
+
 }

@@ -14,7 +14,8 @@ use FOS\RestBundle\Controller\FOSRestController,
 use AppBundle\MessageResponse\MessageResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route,
 	Sensio\Bundle\FrameworkExtraBundle\Configuration\Security,
-	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+	Sensio\Bundle\FrameworkExtraBundle\Configuration\Method,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request,
 	Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -101,12 +102,18 @@ class EtatCommandeController extends FOSRestController
      * @RequestParam(name="code",nullable=false, description="le code de l'etat de la commande")
      * @RequestParam(name="libelle",nullable=false, description="le libelle de l'etat de la commande")
      * @Route("api/etat-commandes/{code}",name="put_etatcommande", options={"expose"=true})
+     * @ParamConverter("etatCommande", class="AppBundle:EtatCommande")
      * @Method({"PUT"})
 	 * @Security("has_role('ROLE_ADMIN')")
 	 */
-	public function putEtatcommandeAction($code,Request $request,ParamFetcher $paramFetcher){
-        $operation = $this->get('app.operation');
-        return $operation->put($request,'AppBundle:EtatCommande',array('code'=>$code));
+	public function putEtatcommandeAction(Etatcommande $etatcommande,ParamFetcher $paramFetcher){
+        $em = $this->getDoctrine()->getManager();
+        $etatcommande->setCode($paramFetcher->get('code'));
+        $etatcommande->setLibelle($paramFetcher->get('libelle'));
+        $em->flush();
+        return MessageResponse::message('Modification effectuée','success',200,
+            array($etatcommande));
+
     }
 
 	/**

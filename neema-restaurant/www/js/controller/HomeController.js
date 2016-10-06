@@ -38,11 +38,14 @@ app.controller('HomeController',
                     $scope.countNewCommande = 0;
                     $scope.newCommande = false;
                     SpinnerService.stop();
-
+                    $scope.$broadcast('scroll.refreshComplete');
                 },function(error){
                     loading = false;
-                    SpinnerService.stop();                    
+                    SpinnerService.stop(); 
+                    $scope.$broadcast('scroll.refreshComplete');                   
                 });
+            }else{
+                $scope.$broadcast('scroll.refreshComplete');
             }
         };
 
@@ -61,7 +64,7 @@ app.controller('HomeController',
         function calculTempsPreparationRestant(commandes){
             angular.forEach(commandes,function(commande){
                 angular.forEach(commande.detailCommandes,function(detailCommande){
-                    detailCommande.plat.dureePreparation = getDureeRestant(commande.dateCommande,detailCommande.plat.dureePreparation*1000);
+                    detailCommande.plat.dureePreparation = getDureeRestant(commande.dateCommande,detailCommande.plat.dureePreparation*1000)*detailCommande.quantite;
                 })
             });
         };
@@ -107,6 +110,8 @@ app.controller('HomeController',
             CommandeService.delivered($scope.commande,function(alert){
                 SpinnerService.stop();
                 $scope.$emit('show.message',{alert:alert});
+                var index = _.findIndex($scope.commandes,function(c){return c.id==$scope.commande.id});
+                $scope.commandes.splice(index,1);
             });
         };
 
@@ -117,6 +122,22 @@ app.controller('HomeController',
                 $scope.textNewCommande = 'nouvelles commandes';
 
         });
+
+        $scope.doRefresh = function(){
+            if(!CommandeDataService.lastTimeToLoad) return;
+            CommandeService.refreshListByClient(CommandeDataService.lastTimeToLoad,function(commandes){
+                CommandeService.defineDureeRestante(commandes);               
+                if(commandes.length!==0){
+                    angular.forEach(commandes,function(commande){
+                        CommandeDataService.data.list.unshift(commande);
+                    });
+                } 
+                CommandeDataService.lastTimeToLoad = new Date();
+                $scope.$broadcast('scroll.refreshComplete');
+            },function(err){
+                log(err);
+            });
+        };
 
     }
 

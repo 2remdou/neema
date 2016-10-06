@@ -43,7 +43,7 @@ class CommandeManager implements CommandeManagerInterface
         $durationEstimative = $commande->getDurationLivraison()+$this->majorationTimeLivraison;
 
         foreach($commande->getDetailCommandes() as $detailCommande){
-            $durationEstimative += $detailCommande->getPlat()->getDureePreparation();
+            $durationEstimative += $detailCommande->getPlat()->getDureePreparation()*$detailCommande->getQuantite();
         }
 
         $commande->setDurationEstimative($durationEstimative);
@@ -53,7 +53,7 @@ class CommandeManager implements CommandeManagerInterface
         $durationEstimative = $this->majorationTimeLivraison;
 
         foreach($commande->getDetailCommandes() as $detailCommande){
-            $durationEstimative += $detailCommande->getPlat()->getDureePreparation();
+            $durationEstimative += $detailCommande->getPlat()->getDureePreparation()*$detailCommande->getQuantite();
         }
 
         $commande->setDurationEstimative($durationEstimative);

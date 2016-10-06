@@ -4,9 +4,9 @@
 parameters:
     jwtprivatekeypath: %kernel.root_dir%/../var/jwt/private.pem   # ssh private key path
     jwtpublickeypath:  %kernel.root_dir%/../var/jwt/public.pem    # ssh public key path
-    jwttokenttl:        86400
+    jwttokenttl:        2592000 # 30 jours
     majorationTimeLivraison: 600  # 10 minutes
-    fraisCommande: 0.1  # 10% du montant de la commande
+    fraisCommande: 0  # 0% du montant de la commande
 
 #    databasehost:     127.0.0.1
 #    databaseport:     ~

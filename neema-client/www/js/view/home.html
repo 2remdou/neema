@@ -17,14 +17,15 @@
             <div class="item item-image">
                 <img ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt="{{plat.imagePlat.imageName}}">
             </div>
-            <a class="item item-icon-left assertive" href="#">
-                {{plat.prix|montant}}
-            </a>
+            <div class="row assertive">
+                <div class="col text-left">{{plat.prix|montant}}</div>
+                <div class="col text-right">{{plat.dureePreparation*1000|humanizeTime}}</div>
+            </div>       
         </div>
         <ion-infinite-scroll
         on-infinite="loadMore()"
         icon="ion-loading-c"
-        distance="5%">
+        distance="1%">
         </ion-infinite-scroll>
     </ion-content>
 </ion-view>

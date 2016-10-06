@@ -9,12 +9,14 @@
             <div class="item item-avatar">
                 <img ng-src="{{plat.restaurant.imageRestaurants[0].webPath}}/{{plat.restaurant.imageRestaurants[0].imageName}}">
                 <p>{{plat.restaurant.nom}}-{{plat.restaurant.quartier.nom}}</p>
-                <a class="item balanced padding-5 montant" href="#">
-                    {{plat.prix|montant}}
-                </a>
             </div>
 
             <div class="item item-body">
+                <div class="row balanced">
+                    <div class="col text-left">{{plat.prix|montant}}</div>
+                    <div class="col text-right">{{plat.dureePreparation*1000|humanizeTime}}</div>
+                </div>       
+                <hr>        
                 <img class="full-image" ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}">
                 <p>
                     {{plat.description}}

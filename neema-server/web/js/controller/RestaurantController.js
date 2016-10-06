@@ -77,7 +77,7 @@ app
                 $scope.formIsSubmit=true;
                 if($scope.form.$invalid) return;
 
-                if(uploader.queue.length===0 && $scope.restaurant.images.length === 0){
+                if(uploader.queue.length===0 && $scope.restaurant.imageRestaurants.length === 0){
                     var alert = {textAlert:'Selectionner au moins une image',typeAlert:'info'};
                     $scope.$emit('show.message',{alert:alert});
                     return;
@@ -177,7 +177,7 @@ app
             });
             $scope.$on('restaurant.image.deleted',function(event,args){
                 $scope.$emit('show.message',{alert:args.alert});
-                $scope.restaurant.images.splice(args.image.$index,1);
+                $scope.restaurant.imageRestaurants.splice(args.image.$index,1);
                 usSpinnerService.stop('nt-spinner');
             });
 
@@ -188,7 +188,12 @@ app
 
             $scope.nbreLoader = 1;
             usSpinnerService.spin('nt-spinner');
-            RestaurantService.list();
+            RestaurantService.list(function (restaurants) {
+                $scope.restaurants = restaurants;
+                $scope.nbreLoader--;
+            },function(error){
+                $scope.$emit('show.message',{alert:error.data});
+            });
             $scope.edit = function($restaurant){
 
             };
@@ -196,13 +201,6 @@ app
             $scope.selectedRestaurant = function(restaurant){
                 $state.go('editRestaurant',{idRestaurant:restaurant.id});
             };
-
-
-
-            $scope.$on('restaurant.list',function(event,args){
-                $scope.restaurants = args.restaurants;
-                $scope.nbreLoader--;
-            });
 
             $scope.$watch('nbreLoader', function(newValue, oldValue, scope) {
                 if($scope.nbreLoader<=0) usSpinnerService.stop('nt-spinner');

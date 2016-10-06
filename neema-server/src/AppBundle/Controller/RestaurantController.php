@@ -149,8 +149,9 @@ class RestaurantController extends FOSRestController
      */
 
 	public function getRestaurantAction($id){
-		$operation = $this->get('app.operation');
-		return $operation->get('AppBundle:Restaurant',$id);
+        $em = $this->getDoctrine()->getManager();
+        $plat = $em->getRepository('AppBundle:Restaurant')->findById($id);
+		return $plat;
 	}
 
 	/**

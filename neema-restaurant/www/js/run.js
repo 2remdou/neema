@@ -1,8 +1,8 @@
 'use strict'
 app
     .run(
-    ['$ionicPlatform','$state','$location',
-    function($ionicPlatform,$state,$location) {
+    ['$ionicPlatform','$state','$location','$rootScope',
+    function($ionicPlatform,$state,$location,$rootScope) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -17,7 +17,11 @@ app
             if(window.StatusBar) {
                 StatusBar.styleDefault();
             }
-             // $state.go('suivi');
+            if($rootScope.userConnected){
+                $state.go('home');
+            }else{
+                $state.go('login');
+            }
         });
 
 
@@ -27,8 +31,6 @@ app
         function($rootScope,UserService,SpinnerService,$state,Restangular){
 
             UserService.initUser();
-
-            if(!$rootScope.userConnected) $state.go('login');
 
             $rootScope.search = function(key){
                 SpinnerService.start();
@@ -50,6 +52,11 @@ app
             $rootScope.$on('show.message',function(event,args){
                 SpinnerService.stop();
                 var defaultMessage = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'};
+/*                
+                ionic.Platform.ready(function(){
+                    defaultMessage = {textAlert:'Vous devez être connecter à internet',typeAlert:'danger'};
+                });
+*/
                 if(!args.alert){
                     args.alert = defaultMessage;
                 }else{
@@ -70,19 +77,12 @@ app
     ['Restangular','$state','SpinnerService','$rootScope',
         function(Restangular,$state,SpinnerService,$rootScope){
             Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
-                if(response.status === 401 && !$rootScope.userConnected) {
+                SpinnerService.stop();
+
+                if(response.status === 401) {
                     $state.go('login');
                     return;
                 }
-
-                if(response.status === 409) {
-                    if($rootScope.isClient)
-                        $state.go('codeForActivation');
-                    else if($rootScope.isLivreur)
-                        $state.go('changePassword');
-                }
-
-                SpinnerService.stop();
 
             });
 
@@ -146,6 +146,16 @@ app
 
                 });
     }]) 
+/*    .run(['$rootScope','ConnectivityMonitor',
+    function($rootScope,ConnectivityMonitor){ 
+        $rootScope.$on("$stateChangeStart", function(event, toState, toParams, fromState, fromParams) {
+            if(toState.name !== ''){
+                if(!ConnectivityMonitor.checkConnectivity()) event.preventDefault();
+            }
+    });
+    }
+    ])
+*/
    ;
 
 

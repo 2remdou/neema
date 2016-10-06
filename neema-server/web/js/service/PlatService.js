@@ -29,6 +29,20 @@ app.service('PlatService',
                 });
             };
 
+            this.postImage = function(formData,idPlat,callback){
+                log('formData');
+                log(formData);
+                _platService
+                    //.withHttpConfig({transformRequest: angular.identity})
+                    .customPOST(formData, idPlat+'/image', undefined).then(function(response){
+                        log(response);
+                        callback(response);
+                    },function(error){
+                        log(error);
+                        $rootScope.$broadcast('show.message',{alert:error.data});
+                    });
+            };
+
             this.get = function(id){
                 return _platService.get(id);
             };
@@ -44,39 +58,6 @@ app.service('PlatService',
                  });
             };
 
-/*
-            this.getPlats = function(){
-                log(self.plats);
-                if(self.plats.typePlat==='onMenu')
-                    return self.getPlatsOnMenu();
-                else if(self.plats.typePlat==='byRestaurant')
-                    return self.getPlatsOther();
-            };
-
-            this.getPlatsOnMenu = function(){
-                return self.plats.onMenu;
-            };
-
-            this.getPlatsOther = function(){
-                return self.plats.other;
-            };
-
-            this.resetPlatsOther = function(){
-                self.plats.other = [];
-            };
-
-            this.addPlatsOnMenu = function(newPlats){
-                self.plats.typePlat = 'onMenu';
-                self.plats.onMenu.length===0?self.plats.onMenu=newPlats:self.plats.onMenu.concat(newPlats);
-            };
-
-            this.addPlatsOther = function(newPlats){
-                self.plats.typePlat = 'other';
-                //self.plats.other=newPlats;
-                self.plats.other.length===0?self.plats.other=newPlats:self.plats.other.concat(newPlats);
-            };
-
-*/
 
             this.list = function(){
                 _platService.getList().then(function(response){
@@ -86,18 +67,16 @@ app.service('PlatService',
                 });
             };
 
-            this.listOnMenu = function(page){
-                var deffered = $q.defer();
+            this.listOnMenu = function(page,callback,callbackError){
 
                 _platService.one('onMenu').customGET(null,{page:page}).then(function(response){
                     $rootScope.$broadcast('plat.list',{plats:response.plats});
-                    deffered.resolve({plats:response.plats,currentPage:response.currentPage,pageCount:response.pageCount});
+                    if(typeof  callback === 'function')
+                        callback(response.plats,response.currentPage,response.pageCount);
                 },function(error){
-                    deffered.reject(error);
                     log(error);
+                    callbackError(error);
                 });
-
-                return deffered.promise;
             };
 
             this.listByRestaurantWithPaginator = function(idRestaurant,page){
@@ -126,6 +105,7 @@ app.service('PlatService',
             this.listByRestaurantByUserConnected = function(callback){
                 _platService.one('restaurant/userConnected').getList().then(function(response){
                     $rootScope.$broadcast('plat.list',{plats:response});
+                    if(typeof  callback === 'function')
                     callback(response);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -137,7 +117,8 @@ app.service('PlatService',
                 Restangular.one('updateMenu').customPUT({plats:menu}).then(function(response){
                     var alert = {textAlert:response.data.textAlert,typeAlert:response.data.typeAlert};
                     $rootScope.$broadcast('menu.updated',{alert:alert,fail:response.data.fail});
-                    callback({alert:alert,fail:response.data.fail})
+                    if(typeof  callback === 'function')
+                        callback({alert:alert,fail:response.data.fail})
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:alert});
@@ -150,8 +131,9 @@ app.service('PlatService',
                 delete plat.restaurant;
                 plat.put().then(function(response){
                     var alert = response.data;
-                    $rootScope.$broadcast('plat.updated', {alert:alert})
-                    callback(alert);
+                    $rootScope.$broadcast('plat.updated', {alert:alert});
+                    if(typeof  callback === 'function')
+                        callback(alert);
                 },function(error){
                     log(error);
                     $rootScope.$broadcast('show.message', {alert:error.data});

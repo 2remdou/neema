@@ -12,7 +12,7 @@ app.controller('LoginController',
         if($scope.form.$invalid) return;
 
         usSpinnerService.spin('nt-spinner');
-        UserService.loginRestaurant(user,function(token){
+        UserService.loginAdmin(user,function(token){
             var alert = {textAlert:'Bienvenue sur la plateforme Neema',typeAlert:'success'};
             $scope.$emit('show.message',{alert:alert});
 
@@ -24,11 +24,4 @@ app.controller('LoginController',
         $scope.formSubmit = false;
     };
 
-    $scope.$on('user.connected',function(event,args){
-        var alert = {textAlert:'Bienvenue sur la plateforme Neema',typeAlert:'success'};
-        $scope.$emit('show.message',{alert:alert});
-
-        $scope.$emit('stop.spinner');
-        $state.go('neema');
-    });
 }]);

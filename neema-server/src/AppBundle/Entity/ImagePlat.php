@@ -50,10 +50,6 @@ class ImagePlat
      *
      * @Vich\UploadableField(mapping="plat_image", fileNameProperty="imageName")
      * @var File
-     * @Assert\Image(
-     *      maxSize="3M",
-     *      maxSizeMessage="La taille ne peux exceder 3M"
-     * )
      */
     private $imageFile;
 

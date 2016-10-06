@@ -1,0 +1,47 @@
+<ion-view>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input item-select">
+                <div class="input-label">
+                    Commande
+                </div>
+                <select name="commande" ng-model="$selected"
+                        ng-change="selectCommande($selected)">
+                    <option value="" selected>Selectionner une commande</option>
+                    <option ng-repeat="commande in commandes track by commande.id|filter:orderBy:commande.dateCommande "
+                            value="{{commande.id}}">{{commande.restaurant.nom}}({{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}})</option>
+                </select>
+            </label>
+            <div ng-show="commande.selected" ng-repeat="commande in commandes track by commande.id|filter:orderBy:commande.dateCommande ">
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-clock"></i>
+                         Dans : 
+                            <neema-timer time="commande.dureeRestant">
+
+                            </neema-timer>
+                </p>
+                <p  class="item item-icon-right" >
+                    <strong >{{commande.restaurant.nom}} ( {{commande.restaurant.telephone}} ) </strong>
+                </p>
+                <p  class="item item-icon-right" >
+                    <i class="icon ion-key cursor-pointer" ng-click="showCodeCommande()"></i>
+                         Code secret : 
+                            <span ng-hide="codeCommandeVisible">********</span>
+                            <span ng-show="codeCommandeVisible">{{commande.codeCommande}}</span>
+                </p>
+                <h5 class="text-center">Les details de la commande</h5>
+                <p ng-repeat="detailCommande in commande.detailCommandes track by detailCommande.id|orderBy:detailCommande.prix:false" class="item item-icon-left" > 
+                    <i class="icon ion-android-restaurant"></i>  
+                    ({{detailCommande.quantite}}) {{detailCommande.plat.nom}}
+                    <span class="montant">{{detailCommande.prix|montant}}</span>
+                </p>
+                <div class="row item">
+                    <h2>MONTANT</h2>
+                    <strong class="montant">{{commande.totalCommande|montant}}</strong>
+                </div>
+
+            </div>
+            
+        </div>
+    </ion-content>
+</ion-view>

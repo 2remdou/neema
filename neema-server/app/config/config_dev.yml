@@ -57,7 +57,8 @@ vich_uploader:
         plat_image:
             uri_prefix: images/plats
             upload_destination: neema_plat_storage_local
-            namer: neema.namer
+            namer: vich_uploader.namer_uniqid
+#            namer: neema.namer
 
             inject_on_load:     true
             delete_on_update:   true
@@ -65,7 +66,8 @@ vich_uploader:
         restaurant_image:
             uri_prefix: images/restaurant
             upload_destination: neema_restaurant_storage_local
-            namer: neema.namer
+            namer: vich_uploader.namer_uniqid
+#            namer: neema.namer
 
             inject_on_load:     true
             delete_on_update:   true

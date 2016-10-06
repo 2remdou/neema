@@ -1,5 +1,9 @@
 <ion-view view-title="Commandes">
     <ion-content scroll="true" padding="true">
+        <ion-refresher
+            pulling-text="Pull to refresh..."
+            on-refresh="refreshListCommande()">
+        </ion-refresher>
         <div ng-show="newCommande" class="new-commande-bar cursor-pointer" ng-click="refreshListCommande()">
             {{countNewCommande}} {{textNewCommande}}
         </div>
@@ -7,24 +11,34 @@
             <div class="card" ng-repeat="commande in commandes">
                 <div class="item item-divider">
                     <div class="table row">
-                        <div class="col">Telephone</div>
-                        <div class="col">Date Commande</div>
-                        <div class="col">Etat</div>
+                        <div class="col col-25">Client</div>
+                        <div class="col col-25">Date Commande</div>
+                        <div class="col col-25">A Emporter</div>
+                        <div class="col col-25">Montant</div>
                     </div>
                     <div class="table row">
-                        <div class="col">{{commande.telephone}}({{commande.user.nom}} {{commande.user.prenom}})</div>
-                        <div class="col">{{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}}</div>
-                        <div class="col">{{commande.etatCommande.libelle}}</div>
+                        <div class="col col-25" style="white-space: normal;">
+                            {{commande.user.nom}} {{commande.user.prenom}}
+                            {{commande.telephone}}
+                        </div>
+                        <div class="col  col-25">{{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}}</div>
+                        <div class="col col-25" style="white-space: normal;">
+                            <span ng-show="commande.aEmporter">OUI</span>
+                            <span ng-hide="commande.aEmporter">NON</span>
+                        </div>
+                        <div class="col  col-25">{{commande.totalCommande|montant}}</div>
                     </div>
                 </div>
                 <div class="item item-text-wrap">
                     <div class="row table header">
                         <div class="table col">Plat</div>
+                        <div class="table col col-20">Quantite</div>
                         <div class="table col">Temps Restant</div>
                         <div class="table col">Terminer</div>
                     </div>
                     <div class="table row" ng-repeat="detail in commande.detailCommandes">
                         <div class="table col">{{detail.plat.nom}}</div>
+                        <div class="table col col-20">{{detail.quantite}}</div>
                         <div class="table col">
                             <neema-timer time="detail.plat.dureePreparation"></neema-timer>
                         </div>

@@ -36,6 +36,12 @@ app
                 templateUrl: 'js/view/editPlat.html',
                 controller:'EditPlatController'
             })
+            .state('numeroAutorise', {
+                url: '/autorise-numero',
+                cache: enabledCache,
+                templateUrl: 'js/view/numeroAutorise.html',
+                controller:'NumeroAutoriseController'
+            })
             .state('login', {
                 url: '/login',
                 cache: enabledCache,

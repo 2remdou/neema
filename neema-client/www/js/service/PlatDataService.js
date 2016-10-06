@@ -14,7 +14,7 @@ app.service('PlatDataService',
 
         this.allPlatAreAlreadyLoaded = {onMenu:false,other:false};
 
-        this.lastTimeToLoad = null;
+        this.lastTimeToLoad;
 
         this.timeForLoadingExpired = function(){
             var b = false;

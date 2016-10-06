@@ -146,18 +146,20 @@ class UserController extends FOSRestController
 
             $em->flush();
 
-            $twilio = $this->get('twilio.api');
-
-            $message = $twilio->account->messages->sendMessage(
-                $this->getParameter('phonenumber'), // From a Twilio number in your account
-                $this->addCountryCodeInPhoneNumber($phoneNumber), // Text any number
-                "Hi, c'est l'equipe de neema. Votre code est ".$user->getActivationCode()
-            );
-
 
             $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
 
             $em->getConnection()->commit();
+
+            $producer = $this->get('app.rabbitmq');
+
+            $message = array('telephone' => $this->addCountryCodeInPhoneNumber($phoneNumber),
+                'content'=>"Hi, c'est l'equipe de neema. Votre code est ".$user->getActivationCode(),
+                'dateMessage'=> new \DateTime(),
+            );
+
+
+            $producer->publish($message,'notification.sms');
 
             return MessageResponse::message('utilisateur ajouté avec succès','success',201,array('token'=>$jwt));
 
@@ -512,6 +514,7 @@ class UserController extends FOSRestController
      * @RequestParam(name="username",nullable=true, description="username")
      * @Route("api/users/sendBackActivationCode",name="put_user_sendback_code", options={"expose"=true})
      * @Method({"PUT"})
+     *  @Security("has_role('ROLE_CLIENT')")
      */
 
     public function sendBackActivationCodeAction(ParamFetcher $paramFetcher){
@@ -528,11 +531,33 @@ class UserController extends FOSRestController
             }
         }
 
+        $now = new \DateTime();
+
+        //si la generation du code a depassé les 24 heures
+        if($now->diff($user->getDateTentativeActivation())->days !== 0){
+            $user->setNbreTentativeActivation(0);
+        }
+
+        if($user->getNbreTentativeActivation()>=3){
+            return MessageResponse::message('Vous avez atteint la limite,
+                veuillez reessayer dans 24 heures','danger',400);
+        }
+
         $user->generateActivationCode();
 
         $em->flush();
 
-        return MessageResponse::message('Code renvoyé','success',200);
+        $producer = $this->get('app.rabbitmq');
+
+        $message = array('telephone' => $this->addCountryCodeInPhoneNumber($user->getTelephone()),
+            'content'=>"Hi, c'est l'equipe de neema. Votre code est ".$user->getActivationCode(),
+            'dateMessage'=> new \DateTime(),
+        );
+        
+        $producer->publish($message,'notification.sms');
+
+
+        return MessageResponse::message('Code renvoyé au numero '. $user->getTelephone(),'success',200);
 
     }
 

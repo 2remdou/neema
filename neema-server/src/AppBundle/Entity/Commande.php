@@ -77,6 +77,16 @@ class Commande
     private $delivered;
 
     /**
+     * pour savoir si la commande est à emporter
+     * @var boolean
+     *
+     * @ORM\Column(name="aEmporter", type="boolean", options={"default":false})
+     * @Expose()
+     * @SerializedName("aEmporter")
+     */
+    private $aEmporter;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="dateDelivered", type="datetime",nullable=true)
@@ -483,6 +493,21 @@ class Commande
         $this->totalCommande = $totalCommande;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isAEmporter()
+    {
+        return $this->aEmporter;
+    }
+
+    /**
+     * @param boolean $aEmporter
+     */
+    public function setAEmporter($aEmporter)
+    {
+        $this->aEmporter = $aEmporter;
+    }
 
 
 

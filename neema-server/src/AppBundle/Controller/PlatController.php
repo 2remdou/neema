@@ -99,27 +99,32 @@ class PlatController extends FOSRestController
     public function postPlatImageAction(Plat $plat,Request $request){
         $em = $this->getDoctrine()->getManager();
 
-/*        $plat = $em->getRepository('AppBundle:Plat')->find($paramFetcher->get('plat'));
-        if(!$plat){
-            return MessageResponse::message('Erreur lors de l\'enregistrement de l\'image','danger',404);
-        }*/
+        try{
+            $em->getConnection()->beginTransaction();
+            if($plat->getImagePlat()){ //s'il existe une autre image, je le supprime
+                $em->remove($plat->getImagePlat());
+                $em->flush();
+            }
 
-        if($plat->getImagePlat()){ //s'il existe une autre image, je le supprime
-            $em->remove($plat->getImagePlat());
+            $file = $request->files->get('file');
+            if(!$file){
+                return MessageResponse::message('Image introuvable','danger',400);
+            }
+            $image = new ImagePlat();
+            $image->setWebPath($this->getParameter('urlimages').'/plats');
+            $image->setImageFile($file);
+            $image->setPlat($plat);
+
+            $em->persist($image);
             $em->flush();
+            $em->getConnection()->commit();
+            return MessageResponse::message('Enregistrement effectué avec succès','success',200);
+
+        }catch (Exception $e){
+            $em->getConnection()->rollBack();
+            throw $e;
         }
 
-
-        $file = $request->files->get('file');
-        $image = new ImagePlat();
-        $image->setWebPath($this->getParameter('urlimages').'/plats');
-        $image->setImageFile($file);
-        $image->setPlat($plat);
-
-        $em->persist($image);
-        $em->flush();
-
-        return MessageResponse::message('Enregistrement effectué avec succès','success',200);
     }
 
 
@@ -156,7 +161,6 @@ class PlatController extends FOSRestController
      * )
      * @Route("api/plats/onMenu",name="get_plats_onmenu", options={"expose"=true})
      * @Method({"GET"})
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
 	public function getPlatsOnMenuAction(Request $request){
@@ -230,7 +234,7 @@ class PlatController extends FOSRestController
         if(!$restaurant){
             return MessageResponse::message('Restaurant introuvable','info',400);
         }
-        return $em->getRepository('AppBundle:Plat')->findByRestaurant($restaurant->getId());
+        return $em->getRepository('AppBundle:Plat')->findByRestaurantOnMenu($restaurant->getId());
     }
 
     /**
@@ -246,7 +250,6 @@ class PlatController extends FOSRestController
      * )
      * @Route("api/plats/by-restaurant/{id}",name="get_plats_by_restaurant", options={"expose"=true})
      * @Method({"GET"})
-     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
     public function getPlatsByRestaurantWithPaginatorAction($id,Request $request){

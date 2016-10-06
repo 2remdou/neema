@@ -8,6 +8,10 @@ services:
         class: AppBundle\Service\CommandeManager
         arguments: ["%majoration_time_livraison%"]
 
+    app.rabbitmq:
+        class: AppBundle\Service\RabbitMQService
+        arguments: ["@old_sound_rabbit_mq.notification_producer"]
+
     app.operation:
         class: AppBundle\Util\Operation
         arguments: ["@doctrine.orm.entity_manager","@validator"]

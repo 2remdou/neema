@@ -83,17 +83,29 @@ app
                 templateUrl: 'js/view/commande.html',
                 controller:'CommandeController'
             })
-            .state('suivi', {
-                url: '/suivi',
+            .state('infoCommande', {
+                url: '/commande/:idCommande',
                 cache: enabledCache,
                 templateUrl: 'js/view/infoCommande.html',
                 controller:'InfoCommandeController'
+            })
+            .state('listCommande', {
+                url: '/list-commandes',
+                cache: enabledCache,
+                templateUrl: 'js/view/listCommande.html',
+                controller:'ListCommandeController'
             })
             .state('restaurants', {
                 url: '/restaurants',
                 cache: enabledCache,
                 templateUrl: 'js/view/restaurant.html',
                 controller:'RestaurantController'
+            })
+            .state('notifications', {
+                url: '/notifications',
+                cache: enabledCache,
+                templateUrl: 'js/view/notification.html',
+                controller:'NotificationController'
             })
             .state('listPlatsByRestaurant', {
                 url: '/plat/restaurant/:idRestaurant',

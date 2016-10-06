@@ -1,0 +1,19 @@
+<ion-view>
+    <ion-content>
+        <ion-refresher
+        pulling-text="Pull to refresh..."
+        on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="card" ng-repeat="notification in notifications track by notification.id" ng-click="showDetail(notification)">
+        <div class="item item-divider text-center">
+            {{ notification.dateNotification|date:'dd/MM/yyyy H:mm:ss':'+GMT' }}
+            <div>{{ notification.title }}</div>
+        </div>
+        <div class="item item-text-wrap">
+            {{ notification.message }}
+        </div>
+    </div>
+        <ion-infinite-scroll on-infinite="loadMore()" ng-if="moreDataCanBeLoaded" icon="ion-loading-c" distance="1%">
+        </ion-infinite-scroll>
+    </ion-content>
+</ion-view>

@@ -3,10 +3,12 @@
  */
 'use strict';
 
-app.controller('InfoCommandeController',
+app
+.controller('InfoCommandeController_old',
     ['$scope','SpinnerService','$state','CommandeService','FRAIS_COMMANDE',
     function($scope,SpinnerService,$state,CommandeService,FRAIS_COMMANDE
     ){
+
         $scope.codeCommandeVisible = false;
 
         CommandeService.listByUserConnected();

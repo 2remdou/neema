@@ -1,0 +1,31 @@
+<ion-view>
+    <ion-content scroll="true" class="padding has-header">
+        <form name="form" novalidate>
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">Numero à autoriser</span>
+                    <input type="text" name="numero" ng-model="numeroAutorise.numero" required>
+                </label>
+                <div ng-messages="form.nom.$error" ng-show="form.$submitted" role="alert">
+                    <div ng-messages-include="js/view/messageValidateForm.html"></div>
+                </div>
+            </div>
+        </form>
+
+        <hr>
+        <div class="item item-text-wrap">
+            <div class="row table header">
+                <div class="table col text-center">Liste des numeros autorisés</div>
+            </div>
+            <div class="table row" ng-repeat="numeroAutorise in numeroAutorises">
+                <div class="table col text-center">{{numeroAutorise.numero}}</div>
+            </div>
+        </div>    
+    </ion-content>
+    <ion-footer-bar>
+        <button ng-click="addNumero(numeroAutorise)" class="button button-balanced col-offset-25 col-50">Enregistrer</button>
+    </ion-footer-bar>
+
+</ion-view>
+
+

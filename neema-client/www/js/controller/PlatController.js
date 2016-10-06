@@ -5,7 +5,9 @@
 'use strict';
 app.controller('PlatController',
     ['$scope','PlatService','PlatDataService','$stateParams','$state','PanierService',
-        function($scope,PlatService,PlatDataService,$stateParams,$state,PanierService){
+    'PopupService',
+        function($scope,PlatService,PlatDataService,$stateParams,$state,PanierService,
+        PopupService){
 
             if(!$stateParams.idPlat) $state.go('home');
             $scope.isFirst = true;
@@ -35,7 +37,19 @@ app.controller('PlatController',
 */            
 
             $scope.addInPanier = function(plat){
-                PanierService.add(plat);
+                var popup = {
+                    title: 'Quantite',
+                    message: 'Entrez la quantite à commander',
+                    inputType: 'number',
+                    inputPlaceholder: 'La quantite',
+                    defaultText: 1
+                };
+                PopupService.prompt(popup).then(function(res){
+                    if(res && typeof res === 'number'){
+                        plat.quantite = res;
+                        PanierService.add(plat);
+                    }
+                });
             };
 
             $scope.removeInPanier = function(plat){

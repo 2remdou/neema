@@ -28,4 +28,14 @@ app.service('PopupService',
             });
         };
 
+        this.prompt = function(popup){
+            return $ionicPopup.prompt({
+                title: popup.title,
+                template: popup.message,
+                inputType: popup.inputType,
+                inputPlaceholder: popup.inputPlaceholder,
+                defaultText:popup.defaultText
+                });
+        };
+
 }]);

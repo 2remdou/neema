@@ -40,4 +40,15 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
         return $query->getArrayResult();
     }
 
+    public function findById($id){
+
+        $restaurant = $this->mainQueryBuilder()
+            ->where('r.id = :id')
+            ->setParameter('id',$id)
+            ->getQuery()
+            ->getArrayResult();
+        return count($restaurant)===1?$restaurant[0]:null;
+    }
+
+
 }

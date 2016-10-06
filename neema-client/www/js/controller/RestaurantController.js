@@ -15,10 +15,12 @@ app
 
             $scope.loadRestaurant = function(){
                 SpinnerService.start();
-                RestaurantService.list().then(function(restaurants){
+                RestaurantService.list(function(restaurants){
                     timeLastLoading = new Date().getTime();
                     $scope.restaurants = restaurants;
                     SpinnerService.stop();
+                },function(){
+                    
                 });
             };
 

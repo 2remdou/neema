@@ -63,11 +63,26 @@ class CommandeController extends FOSRestController
      * @RequestParam(name="telephone",nullable=false, description="le numero de telephone du client")
      * @RequestParam(name="detailCommandes", array=true,nullable=false, description="les details de la commande")
      * @RequestParam(name="restaurant",nullable=false, description="Le restaurant de la commande")
+     * @RequestParam(name="aEmporter",nullable=false, description="La commande est à emporter ou pas")
      * @Route("api/commandes",name="post_commande", options={"expose"=true})
      * @Method({"POST"})
      * @Security("has_role('ROLE_CLIENT')")
      */
 	public function postCommandeAction(Request $request,ParamFetcher $paramFetcher){
+
+        $em = $this->getDoctrine()->getManager();
+
+        $telephone = $paramFetcher->get('telephone');
+
+        $restaurant = $em->getRepository('AppBundle:Restaurant')->findOneBy(array('id'=>$paramFetcher->get('restaurant')));
+
+
+        if($this->get('kernel')->getEnvironment() === 'prod' &&
+            !$em->getRepository('AppBundle:NumeroAutorise')->findBy(array('numero'=>$telephone))){
+            return MessageResponse::message('Désolé, l\'application est en version TEST, le numero '.$telephone.' n\'est
+            pas autorisé à passer une commande pour le moment','danger',400);
+        }
+
 
         $details = $paramFetcher->get('detailCommandes');
         $operation = $this->get('app.operation');
@@ -80,7 +95,6 @@ class CommandeController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
         $em->getConnection()->beginTransaction();
 
-        $restaurant = $em->getRepository('AppBundle:Restaurant')->findOneBy(array('id'=>$paramFetcher->get('restaurant')));
 
         if(!$restaurant){
             return MessageResponse::message('Le restaurant de la commande est inconnu','danger',400);
@@ -93,6 +107,7 @@ class CommandeController extends FOSRestController
             $commande->setUser($this->getUser());
             $commande->setRestaurant($restaurant);
             $commande->setEtatCommande($etatCommande);
+            $commande->setAEmporter($paramFetcher->get('aEmporter'));
 
 
             $validator = $this->get('validator');
@@ -163,7 +178,7 @@ class CommandeController extends FOSRestController
             throw $e;
         }
 
-        return MessageResponse::message('La commande a été enrégistré avec succes','s uccess',201,array('codeCommande'=>$commande->getCodeCommande()));
+        return MessageResponse::message('La commande a été enrégistré avec succes','success',201,array('id'=>$commande->getId(),'codeCommande'=>$commande->getCodeCommande()));
 
 
 	}
@@ -235,19 +250,18 @@ class CommandeController extends FOSRestController
      *   }
      * )
      * @RequestParam(name="from",nullable=false, description="la date de debut")
-     * @Route("api/commandes/refresh",name="get_refresh_commandes_by_restaurant", options={"expose"=true})
+     * @Route("api/commandes/refresh-restaurant",name="get_refresh_commandes_by_restaurant", options={"expose"=true})
      * @Method({"POST"})
      * @Security("has_role('ROLE_RESTAURANT')")
      */
 
-	public function getRefreshCommandesFrom(Request $request){
+	public function getRefreshRestaurantCommandesFrom(Request $request){
         $em = $this->getDoctrine()->getManager();
 
         $from = $request->request->get('from');
         if(!$from){
             return MessageResponse::message('Le parametre from est obligatoire','danger',400);
         }
-        dump($from);
         $from = new \DateTime($from,new \DateTimeZone("UTC"));
         if($this->get('security.authorization_checker')->isGranted('ROLE_ADMIN')){
             $operation = $this->get('app.operation');
@@ -261,7 +275,40 @@ class CommandeController extends FOSRestController
         if(!$userRestaurant){
             return MessageResponse::message('Cet utilisateur n\'est lié à aucun restaurant','danger',400);
         }
-        $commandes = $em->getRepository('AppBundle:Commande')->refreshMenu($userRestaurant->getRestaurant()->getId(),$from,new \DateTime());
+        $commandes = $em->getRepository('AppBundle:Commande')->refreshByRestaurantMenu($userRestaurant->getRestaurant()->getId(),$from,new \DateTime());
+
+        return $commandes;
+	}
+
+	/**
+     * Rafraichir les commandes d'un client en fonction d'un interval de temps
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Rafraichir les commandes d'un client en fonction d'un interval de temps",
+     *   statusCodes = {
+     *     	200 = "Succes",
+     *		404= "Not found"
+     *   }
+     * )
+     * @RequestParam(name="from",nullable=false, description="la date de debut")
+     * @Route("api/commandes/refresh-client",name="get_refresh_commandes_client", options={"expose"=true})
+     * @Method({"POST"})
+     * @Security("has_role('ROLE_CLIENT')")
+     */
+
+	public function getRefreshCommandesClientFrom(Request $request){
+        $em = $this->getDoctrine()->getManager();
+
+        $from = $request->request->get('from');
+        if(!$from){
+            return MessageResponse::message('Le parametre from est obligatoire','danger',400);
+        }
+        $from = new \DateTime($from,new \DateTimeZone("UTC"));
+
+        $user = $this->getUser();
+
+        $commandes = $em->getRepository('AppBundle:Commande')->refreshByClientMenu($user->getId(),$from,new \DateTime());
 
         return $commandes;
 	}
@@ -282,14 +329,19 @@ class CommandeController extends FOSRestController
      * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
-	public function getCommandesByUserConnectedAction(){
+	public function getCommandesByUserConnectedAction(Request $request){
         $em = $this->getDoctrine()->getManager();
 
 
         $user = $this->getUser();
 
-        $commandes = $em->getRepository('AppBundle:Commande')->findByUser($user->getId());
-        return $commandes;
+        $page = $request->query->getInt('page', 1);
+        $page = $page<=0?1:$page;
+
+        $commandes = $em->getRepository('AppBundle:Commande')->findByUser($user->getId(),$page,10);
+
+
+        return array('commandes'=>$commandes,'currentPage'=>$page);
 	}
 	/**
      * Lister les details commandes
@@ -323,16 +375,14 @@ class CommandeController extends FOSRestController
      *   }
      * )
      * @Route("api/commandes/{id}",name="get_commande", options={"expose"=true})
+     * @ParamConverter("commande", class="AppBundle:Commande")
      * @Method({"GET"})
+     * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
      */
 
-	public function getCommandeAction($id,Request $request){
-
+	public function getCommandeAction($id){
         $em = $this->getDoctrine()->getManager();
-        $commande=$em->getRepository('AppBundle:Commande')->findById($id);
-        if(!$commande){
-            return MessageResponse::message('Commande introuvable','danger',400);
-        }
+        $commande = $em->getRepository('AppBundle:Commande')->findById($id);
         return $commande;
 	}
 
@@ -405,7 +455,6 @@ class CommandeController extends FOSRestController
         $detailCommande->setFinished(true);
         $detailCommande->setDateFinished(new \DateTime());
 
-        $em->flush();
         $dispatcher = $this->get('event_dispatcher');
         $dispatcher->dispatch(NeemaEvents::DETAIL_COMMANDE_FINISHED,new DetailCommandeEvent($detailCommande));
 
@@ -420,8 +469,14 @@ class CommandeController extends FOSRestController
             }
         }
         if($commandeIsReady){
+            $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CP'));
+
+            $detailCommande->getCommande()->setEtatCommande($etatCommande);
+
             $dispatcher->dispatch(NeemaEvents::COMMANDE_PRETE,new CommandeEnregistreEvent($detailCommande->getCommande()));
         }
+        $em->flush();
+
 
         return MessageResponse::message('Merci, ce plat a été marqué terminé','success',200);
     }
@@ -444,6 +499,7 @@ class CommandeController extends FOSRestController
      * @Method({"PUT"})
 	 * @Security("has_role('ROLE_RESTAURANT')")
 	 */
+
 	public function putDeliveredCommandeAction(Commande $commande,ParamFetcher $paramFetcher){
 
         if($commande->getCodeCommande()!=$paramFetcher->get('code')){
@@ -458,7 +514,7 @@ class CommandeController extends FOSRestController
             return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de les remettre au client','info',400);
         }
 
-        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL2'));
+        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CN2'));
 
         $commande->setDelivered(true);
         $commande->setEtatCommande($etatCommande);

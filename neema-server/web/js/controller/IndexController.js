@@ -15,7 +15,19 @@ app.controller('IndexController',
                 $state.go('login');
             }
             usSpinnerService.spin('nt-spinner');
-            CommandeService.listByRestaurant();
+            CommandeService.listByRestaurant(function(commandes){
+                $scope.commandes = commandes;
+                usSpinnerService.stop('nt-spinner');
+
+                //determination du temps de preparation restant pour chaque plat
+                // en fonction de la date de la commande
+                angular.forEach($scope.commandes,function(commande){
+                    angular.forEach(commande.detailCommandes,function(detailCommande){
+                        detailCommande.plat.dureePreparation = getDureeRestant(commande.dateCommande,detailCommande.plat.dureePreparation*1000);
+                    })
+                });
+
+            });
 
             $scope.finishPreparation = function(detail){
                 $scope.detail = detail; //afin de pouvoir mettre finished à true dans le listener, pour faire réagir le code html
@@ -41,18 +53,6 @@ app.controller('IndexController',
 
 
             //*************LISTENER***************
-            $scope.$on('commande.list',function(event,args){
-                $scope.commandes = args.commandes;
-                usSpinnerService.stop('nt-spinner');
-
-                //determination du temps de preparation restant pour chaque plat
-                // en fonction de la date de la commande
-                angular.forEach($scope.commandes,function(commande){
-                    angular.forEach(commande.detailCommandes,function(detailCommande){
-                        detailCommande.plat.dureePreparation = getDureeRestant(commande.dateCommande,detailCommande.plat.dureePreparation*1000);
-                   })
-                });
-            });
             $scope.$on('commande.detail.updated',function(event,args){
                 $scope.detail.finished = true;
                 usSpinnerService.stop('nt-spinner');

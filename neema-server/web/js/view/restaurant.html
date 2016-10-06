@@ -57,7 +57,7 @@
         <button class="btn btn-primary" nt-btn-image cible="selectImage">Ajouter Image</button>
         <div ng-show="uploader.isHTML5" class="table-bordered">
 
-            <div ng-repeat="image in restaurant.images" class="col-md-4">
+            <div ng-repeat="image in restaurant.imageRestaurants" class="col-md-4">
                 <button type="button" class="close" data-dismiss="alert" ng-click="removeImage(image,$index)"
                         data-toggle="tooltip" data-placement="top" title="Supprimer l'image"
                         nt-remove><i class="glyphicon glyphicon-remove"></i></button>

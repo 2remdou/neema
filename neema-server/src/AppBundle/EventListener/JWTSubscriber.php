@@ -37,6 +37,7 @@ class JWTSubscriber implements EventSubscriberInterface
         $payload['prenom'] = $user->getPrenom();
         $payload['telephone'] = $user->getTelephone();
         $payload['roles'] = $user->getRoles();
+        $payload['enabled'] = $user->getEnabled();
 
 //        if($this->authorizationChecker->isGranted('ROLE_RESTAURANT')){
         if($user->hasRole('ROLE_RESTAURANT')){

@@ -1,8 +1,8 @@
 'use strict'
 app
     .run(
-    ['$ionicPlatform','$state','$location',
-    function($ionicPlatform,$state,$location) {
+    ['$ionicPlatform','$state','$location','$rootScope',
+    function($ionicPlatform,$state,$location,$rootScope) {
         $ionicPlatform.ready(function() {
             if(window.cordova && window.cordova.plugins.Keyboard) {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -17,8 +17,13 @@ app
             if(window.StatusBar) {
                 StatusBar.styleDefault();
             }
-             // $state.go('suivi');
-        });
+            $state.go('home');
+/*            if($rootScope.userConnected){
+                $state.go('home');
+            }else{
+                $state.go('login');
+            }
+*/        });
 
 
     }])
@@ -27,8 +32,6 @@ app
         function($rootScope,UserService,SpinnerService,$state,Restangular){
 
             UserService.initUser();
-
-            if(!$rootScope.userConnected) $state.go('login');
 
             $rootScope.search = function(key){
                 SpinnerService.start();
@@ -44,39 +47,46 @@ app
 
     }])
     .run(
-    ['PopupService','$rootScope','SpinnerService',
-        function(PopupService,$rootScope,SpinnerService){
+    ['PopupService','$rootScope','SpinnerService','$cordovaNetwork',
+        function(PopupService,$rootScope,SpinnerService,$cordovaNetwork){
+                $rootScope.$on('show.message',function(event,args){
+                    SpinnerService.stop();
+                    var defaultMessage = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'};
+/*
+                    ionic.Platform.ready(function(){
+                        defaultMessage = {textAlert:'Vous devez être connecter à internet',typeAlert:'danger'};
+                    });
+*/
+                    if(!args.alert){
+                        args.alert = defaultMessage;
+                    }else{
+                        if(!args.alert.textAlert) args.alert = defaultMessage;
+                    }
 
-            $rootScope.$on('show.message',function(event,args){
-                SpinnerService.stop();
-                var defaultMessage = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'};
-                if(!args.alert){
-                    args.alert = defaultMessage;
-                }else{
-                    if(!args.alert.textAlert) args.alert = defaultMessage;
-                }
-
-                var alert = args.alert;
-                var popup = {
-                    title:'Neema',
-                    message:alert.textAlert,
-                    cssClass:'popup'+capitalizeFirstLetter(alert.typeAlert)
-                };
-                PopupService.show(popup);
-            });
+                    var alert = args.alert;
+                    var popup = {
+                        title:'Neema',
+                        message:alert.textAlert,
+                        cssClass:'popup'+capitalizeFirstLetter(alert.typeAlert)
+                    };
+                    PopupService.show(popup);
+                });
 
         }])
     .run(
-    ['Restangular','$state','SpinnerService','$rootScope',
-        function(Restangular,$state,SpinnerService,$rootScope){
+    ['Restangular','$state','SpinnerService','$rootScope','$location',
+        function(Restangular,$state,SpinnerService,$rootScope,$location){
             Restangular.setErrorInterceptor(function(response, deferred, responseHandler) {
 
-                if(response.status === 401 && !$rootScope.userConnected) {
+                if(response.status === 401) {
                     $state.go('login');
                 }
 
                 if(response.status === 409) {
-                    $state.go('codeForActivation');
+                    SpinnerService.stop();
+                    // $location.path('/codeForActivation');
+                    //  $state.go('codeForActivation');
+                    return false;
                 }
 
                 SpinnerService.stop();
@@ -116,27 +126,8 @@ app
                 PopupService.show(popup);
         });
     }])
-/*    .run(['$ionicPlatform','UserService','$rootScope',
-            function($ionicPlatform,UserService,$rootScope){   
-                ionic.Platform.ready(function(){
-                    var options = {
-                        android: { 
-                            senderID: "842997542833"
-                        },
-                        ios: {
-                            alert: "true",
-                            badge: "true",
-                            sound: "true"
-                        },
-                        windows: {}
-                    };
-                        var push = PushNotification.init(options);                    
-
-                });
-    }]) 
-*/
-    .run(['$cordovaPushV5','$ionicPlatform','UserService','$rootScope',
-            function($cordovaPushV5,$ionicPlatform,UserService,$rootScope){   
+    .run(['$cordovaPushV5','$ionicPlatform','UserService','$rootScope','PopupService',
+            function($cordovaPushV5,$ionicPlatform,UserService,$rootScope,PopupService){   
                 ionic.Platform.ready(function(){
                     var options = {
                         android: { 
@@ -163,7 +154,12 @@ app
                         });
 
                         $rootScope.$on('$cordovaPushV5:notificationReceived', function(event, data){
-                            console.log(data.message);
+                            var popup = {
+                                title:'Notification',
+                                message:data.message,
+                                cssClass:'popupInfo'
+                            };
+                            PopupService.show(popup);
                         });
 
 
@@ -172,6 +168,21 @@ app
 
                 });
     }]) 
+    .run(['$rootScope','$location','$state',
+        function($rootScope,$location,$state){ 
+            $rootScope.$on("$stateChangeStart", 
+            function(event, toState, toParams, fromState, fromParams) {
+                if($rootScope.userConnected){
+                    if(!$rootScope.userConnected.enabled){
+                        if(toState.name!='codeForActivation' && toState.name!='logout'){
+                            $state.go('codeForActivation');
+                            event.preventDefault();
+                        }
+                    }                
+                }
+        });
+        }
+    ])
    ;
 
 

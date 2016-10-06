@@ -113,6 +113,25 @@ class User implements UserInterface
      */
     protected $activationCode;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateTentativeActivation", type="date")
+     * @Expose()
+     * @SerializedName("dateTentativeActivation")
+     */
+    private $dateTentativeActivation;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nbreTentativeActivation", type="smallint")
+     * @Expose()
+     * @SerializedName("nbreTentativeActivation")
+     */
+    private $nbreTentativeActivation;
+
+
 
     /**
      * @var array
@@ -261,6 +280,10 @@ class User implements UserInterface
         return $this->roles;
     }
 
+
+    public function hasRole($role){
+        return in_array($role,$this->roles);
+    }
     /**
      * Set salt
      *
@@ -433,6 +456,13 @@ class User implements UserInterface
     {
         $this->activationCode = rand(10000,99999);
 
+        if(!$this->nbreTentativeActivation){
+            $this->nbreTentativeActivation = 0;
+            $this->dateTentativeActivation = new \DateTime();
+        }
+        else
+            $this->nbreTentativeActivation ++;
+
         return $this;
     }
 
@@ -494,6 +524,42 @@ class User implements UserInterface
     public function setTelephone($telephone)
     {
         $this->telephone = $telephone;
+    }
+
+
+
+    /**
+     * Add deviceToken
+     *
+     * @param \AppBundle\Entity\DeviceToken $deviceToken
+     *
+     * @return User
+     */
+    public function addDeviceToken(\AppBundle\Entity\DeviceToken $deviceToken)
+    {
+        $this->deviceTokens[] = $deviceToken;
+
+        return $this;
+    }
+
+    /**
+     * Remove deviceToken
+     *
+     * @param \AppBundle\Entity\DeviceToken $deviceToken
+     */
+    public function removeDeviceToken(\AppBundle\Entity\DeviceToken $deviceToken)
+    {
+        $this->deviceTokens->removeElement($deviceToken);
+    }
+
+    /**
+     * Get deviceTokens
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDeviceTokens()
+    {
+        return $this->deviceTokens;
     }
 
 

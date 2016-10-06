@@ -11,7 +11,7 @@ app.directive('neemaTimer', [function() {
         },
         template:'<span>{{humanizeTime}}</span>',
         controller:['$scope','$element','$attrs','$interval',function($scope,$element,$attrs,$interval){
-            if($scope.time <= 0){
+            if($scope.time <= 0 || typeof $scope.time === "undefined"){
                 $scope.humanizeTime ='00 minute 00 seconde';
                 $element.css('color','red');
                 return;

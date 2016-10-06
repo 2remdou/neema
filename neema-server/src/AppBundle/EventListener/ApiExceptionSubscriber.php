@@ -97,7 +97,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
                 throw new ChangePasswordException('Vous devez changer votre mot de passe, après réinitialisation');
             }
             if(!$user->getEnabled() && $event->getController()[1]!=='enabledAction' && $event->getController()[1]!=='sendBackActivationCodeAction'){
-//                throw new ChangePasswordException('Tapez le code réçu par sms, pour activer votre compte');
                 throw new AccountEnabledException('Tapez le code réçu par sms, pour activer votre compte');
             }
         }

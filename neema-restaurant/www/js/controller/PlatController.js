@@ -10,23 +10,30 @@ app
 
              $scope.savePlat = function(plat){
                 if(form.$invalid) return;
-
+/*
                 if(!$scope.imageSelected){
                     var alert = {textAlert:'Vous devez selectionner une image',typeAlert:'danger'};
                     $scope.$emit('show.message',{alert:alert});
                     return;
                 }
-                SpinnerService.start();
+
+*/                SpinnerService.start();
                 //conversion de dureePreparation en seconde
                 if(plat.dureePreparation) plat.dureePreparation *= 60;
 
                 PlatService.post($scope.plat,function(idPlat){
-                    ImageService.uploadImagePlat($scope.imageSelected.src,idPlat,function(){
+/*                    ImageService.uploadImagePlat($scope.imageSelected.src,idPlat,function(){
                         var alert = {textAlert:'Enregistrement effectué',typeAlert:'success'};
                         $scope.$emit('show.message',{alert:alert});
                         SpinnerService.stop();
                         $state.go('menu');         
                     });
+*/
+                        var alert = {textAlert:'Enregistrement effectué',typeAlert:'success'};
+                        $scope.$emit('show.message',{alert:alert});
+                        SpinnerService.stop();
+                        $state.go('menu');         
+
                 });
                 
 

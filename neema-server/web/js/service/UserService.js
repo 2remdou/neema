@@ -22,12 +22,13 @@ app.service('UserService',
                 });
             };
 
-            this.login = function(user){
+            this.login = function(user,callback){
                 _userService.one('login-client').post('',user).then(function(response){
                     that.setToken(response.token);
                     that.setRefreshToken(response.refresh_token);
                     $rootScope.userConnnected = that.getUser();
                     $rootScope.$broadcast('user.connected',{token:response.token});
+                    callback(response.token);
                 },function(error){
                     that.clear();
                     $rootScope.$broadcast('show.message',{alert:error.data});
@@ -35,6 +36,17 @@ app.service('UserService',
             };
             this.loginRestaurant = function(user,callback){
                 _userService.one('login-restaurant').post('',user).then(function(response){
+                    that.setToken(response.token);
+                    that.setRefreshToken(response.refresh_token);
+                    $rootScope.userConnnected = that.getUser();
+                    callback(response.token);
+                },function(error){
+                    that.clear();
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+            this.loginAdmin = function(user,callback){
+                _userService.one('login-admin').post('',user).then(function(response){
                     that.setToken(response.token);
                     that.setRefreshToken(response.refresh_token);
                     $rootScope.userConnnected = that.getUser();
@@ -192,8 +204,10 @@ app.service('UserService',
                         username:tokenDecoded.username,
                         telephone:tokenDecoded.telephone,
                         roles : tokenDecoded.roles,
-                        restaurant : tokenDecoded.restaurant
+                        enabled : tokenDecoded.enabled
                     };
+                    if(tokenDecoded.restaurant)
+                        user.restaurant = tokenDecoded.restaurant;
                     return user;
                 }
             };
@@ -205,8 +219,6 @@ app.service('UserService',
 
             this.initUser = function(){
                 $rootScope.userConnected = that.getUser();
-                $rootScope.isClient = that.isClient();
-                $rootScope.isLivreur = that.isLivreur();
             };
 
             this.isClient = function(){

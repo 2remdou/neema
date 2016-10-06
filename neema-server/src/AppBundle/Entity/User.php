@@ -113,6 +113,25 @@ class User implements UserInterface
      */
     protected $activationCode;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateTentativeActivation", type="date")
+     * @Expose()
+     * @SerializedName("dateTentativeActivation")
+     */
+    private $dateTentativeActivation;
+
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="nbreTentativeActivation", type="smallint")
+     * @Expose()
+     * @SerializedName("nbreTentativeActivation")
+     */
+    private $nbreTentativeActivation;
+
+
 
     /**
      * @var array
@@ -147,6 +166,7 @@ class User implements UserInterface
     public function __construct(){
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->isReseted = false;
+        $this->nbreTentativeActivation = 0;
     }
 
 
@@ -437,6 +457,11 @@ class User implements UserInterface
     {
         $this->activationCode = rand(10000,99999);
 
+        $this->nbreTentativeActivation ++;
+
+        $this->dateTentativeActivation = new \DateTime();
+
+
         return $this;
     }
 
@@ -534,5 +559,55 @@ class User implements UserInterface
     public function getDeviceTokens()
     {
         return $this->deviceTokens;
+    }
+
+
+
+    /**
+     * Set dateTentativeActivation
+     *
+     * @param \DateTime $dateTentativeActivation
+     *
+     * @return User
+     */
+    public function setDateTentativeActivation($dateTentativeActivation)
+    {
+        $this->dateTentativeActivation = $dateTentativeActivation;
+
+        return $this;
+    }
+
+    /**
+     * Get dateTentativeActivation
+     *
+     * @return \DateTime
+     */
+    public function getDateTentativeActivation()
+    {
+        return $this->dateTentativeActivation;
+    }
+
+    /**
+     * Set nbreTentativeActivation
+     *
+     * @param integer $nbreTentativeActivation
+     *
+     * @return User
+     */
+    public function setNbreTentativeActivation($nbreTentativeActivation)
+    {
+        $this->nbreTentativeActivation = $nbreTentativeActivation;
+
+        return $this;
+    }
+
+    /**
+     * Get nbreTentativeActivation
+     *
+     * @return integer
+     */
+    public function getNbreTentativeActivation()
+    {
+        return $this->nbreTentativeActivation;
     }
 }

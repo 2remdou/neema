@@ -44,7 +44,7 @@ fos_elastica:
                 plat:
                     mappings:
                         id: ~
-                        nom: { analyzer: custom_analyzer_ngram3 }
+                        nom: { analyzer: custom_search_analyzer }
                         description: ~
                         prix: ~
                         imagePlat:

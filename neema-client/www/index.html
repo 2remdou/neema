@@ -70,21 +70,25 @@
                 </ion-header-bar>
                 <ion-content>
                     <ion-list>
+                        <ion-item menu-close="" ui-sref="home" class="cursor-pointer">
+                            <i class="icon ion-home"></i>
+                            Accueil
+                        </ion-item>
                         <ion-item ng-hide="userConnected" menu-close="" ui-sref="login" class="cursor-pointer">
                             <i class="icon ion-person"></i>
                             Connexion 
                         </ion-item>
-                        <ion-item ng-show="userConnected &amp;&amp; isClient" menu-close="" ui-sref="home" class="cursor-pointer">
-                            <i class="icon ion-home"></i>
-                            Accueil
-                        </ion-item>
-                        <ion-item ng-show="userConnected &amp;&amp; isClient" menu-close="" ui-sref="suivi" class="cursor-pointer">
+                        <ion-item ng-show="userConnected" menu-close="" ui-sref="listCommande" class="cursor-pointer">
                             <i class="icon ion-map"></i>
                             Suivi commandes
                         </ion-item>
-                        <ion-item ng-show="userConnected &amp;&amp; isClient" menu-close="" ui-sref="restaurants" class="cursor-pointer">
+                        <ion-item menu-close="" ui-sref="restaurants" class="cursor-pointer">
                             <i class="icon ion-android-restaurant"></i>
                             Restaurants
+                        </ion-item>
+                        <ion-item ng-show="userConnected" menu-close="" ui-sref="notifications" class="cursor-pointer">
+                            <i class="icon ion-android-restaurant"></i>
+                            Notifications
                         </ion-item>
                         <ion-item ng-show="userConnected" menu-close="" ui-sref="logout" class="cursor-pointer">
                             <i class="icon ion-unlocked"></i>
