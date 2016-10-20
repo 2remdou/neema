@@ -61,7 +61,7 @@
             </ion-side-menu-content>
 
             <ion-side-menu side="left">
-                <ion-header-bar class="bar-stable">
+                <ion-header-bar class="bar-balanced">
                     <h1 class="title" ng-hide="userConnected">Neema</h1>
 
                     <h3 class="title" ng-show="userConnected" menu-close="">
@@ -89,6 +89,10 @@
                         <ion-item ng-show="userConnected" menu-close="" ui-sref="notifications" class="cursor-pointer">
                             <i class="icon ion-android-restaurant"></i>
                             Notifications
+                        </ion-item>
+                        <ion-item menu-close="" ui-sref="contact" class="cursor-pointer">
+                            <i class="icon ion-android-contacts"></i>
+                            Nous contacter
                         </ion-item>
                         <ion-item ng-show="userConnected" menu-close="" ui-sref="logout" class="cursor-pointer">
                             <i class="icon ion-unlocked"></i>

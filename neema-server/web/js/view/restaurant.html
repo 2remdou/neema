@@ -35,7 +35,7 @@
                            placeholder="Latitude" ng-model="restaurant.latitude">
                 </div>
                 <div class="col-sm-4" ng-class="{ 'has-error' : form.quartier.$invalid && formIsSubmit}">
-                    <label for="email" class="text-primary control-label">Quartier</label>
+                    <label for="quartier" class="text-primary control-label">Quartier</label>
                     <ui-select tabindex="4" ng-model="restaurant.quartier" theme="bootstrap" name="quartier" id="quartier" required>
                         <ui-select-match placeholder="Selectionner un quartier">{{$select.selected.nom}}</ui-select-match>
                         <ui-select-choices repeat="quartier in quartiers|filter:$select.search">

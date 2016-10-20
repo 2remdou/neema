@@ -143,6 +143,22 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
                }
            }
        })
+       .state('lieuLivraison',{
+           url:'/lieu-livraison',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/lieuLivraison.html',
+                   controller: 'LieuLivraisonController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
+           }
+       })
        .state('inscription',{
            url:'/inscription',
            views:{

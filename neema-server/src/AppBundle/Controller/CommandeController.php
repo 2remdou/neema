@@ -76,12 +76,13 @@ class CommandeController extends FOSRestController
 
         $restaurant = $em->getRepository('AppBundle:Restaurant')->findOneBy(array('id'=>$paramFetcher->get('restaurant')));
 
-
+        /*
         if($this->get('kernel')->getEnvironment() === 'prod' &&
             !$em->getRepository('AppBundle:NumeroAutorise')->findBy(array('numero'=>$telephone))){
             return MessageResponse::message('Désolé, l\'application est en version TEST, le numero '.$telephone.' n\'est
             pas autorisé à passer une commande pour le moment','danger',400);
         }
+        */
 
 
         $details = $paramFetcher->get('detailCommandes');
@@ -309,7 +310,6 @@ class CommandeController extends FOSRestController
         $user = $this->getUser();
 
         $commandes = $em->getRepository('AppBundle:Commande')->refreshByClientMenu($user->getId(),$from,new \DateTime());
-
         return $commandes;
 	}
 
@@ -514,7 +514,7 @@ class CommandeController extends FOSRestController
             return MessageResponse::message('Tous les plats doivent être marqués terminés, avant de les remettre au client','info',400);
         }
 
-        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CN2'));
+        $etatCommande = $em->getRepository('AppBundle:EtatCommande')->findOneBy(array('code'=>'CL2'));
 
         $commande->setDelivered(true);
         $commande->setEtatCommande($etatCommande);

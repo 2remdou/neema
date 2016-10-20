@@ -27,8 +27,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
      * @return \Doctrine\ORM\QueryBuilder
      */
     private function getMainQueryBuilder(){
-        return $this->_em->createQueryBuilder('u')
-            ->addSelect(['PARTIAL u.{id,username,nom,prenom,role}','ur','r','q','c'])
+        return $this->createQueryBuilder('u')
+            ->select(['PARTIAL u.{id,username,nom,prenom,roles,enabled}','ur','r','q','c'])
             ->leftJoin('u.userRestaurant','ur')
             ->leftJoin('ur.restaurant','r')
             ->leftJoin('r.quartier','q')
@@ -40,6 +40,15 @@ class UserRepository extends \Doctrine\ORM\EntityRepository
         return $this->getEntityManager()
                 ->createQuery($this->getMainDql())
                 ->getArrayResult();
+    }
+
+    public function findById($id){
+        $user = $this->getMainQueryBuilder()
+            ->where('u.id=:id')
+            ->setParameter('id',$id)
+            ->getQuery()
+            ->getArrayResult();
+        return count($user)===1?$user[0]:null;
     }
 
     public function findUsersRestaurantAndLivreur(){

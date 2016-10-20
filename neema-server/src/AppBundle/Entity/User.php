@@ -116,6 +116,15 @@ class User implements UserInterface
     /**
      * @var \DateTime
      *
+     * @ORM\Column(name="dateCreation", type="date")
+     * @Expose()
+     * @SerializedName("dateCreation")
+     */
+    private $dateCreation;
+
+    /**
+     * @var \DateTime
+     *
      * @ORM\Column(name="dateTentativeActivation", type="date")
      * @Expose()
      * @SerializedName("dateTentativeActivation")
@@ -167,6 +176,7 @@ class User implements UserInterface
         $this->salt = base_convert(sha1(uniqid(mt_rand(), true)), 16, 36);
         $this->isReseted = false;
         $this->nbreTentativeActivation = 0;
+        $this->dateCreation = new \DateTime();
     }
 
 
@@ -609,5 +619,29 @@ class User implements UserInterface
     public function getNbreTentativeActivation()
     {
         return $this->nbreTentativeActivation;
+    }
+
+    /**
+     * Set dateCreation
+     *
+     * @param \DateTime $dateCreation
+     *
+     * @return User
+     */
+    public function setDateCreation($dateCreation)
+    {
+        $this->dateCreation = $dateCreation;
+
+        return $this;
+    }
+
+    /**
+     * Get dateCreation
+     *
+     * @return \DateTime
+     */
+    public function getDateCreation()
+    {
+        return $this->dateCreation;
     }
 }

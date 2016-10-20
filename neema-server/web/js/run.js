@@ -82,6 +82,7 @@ app
 
                 return false; // error handled
             }
+            usSpinnerService.stop('nt-spinner');
 
             return true; // error not handled
         });

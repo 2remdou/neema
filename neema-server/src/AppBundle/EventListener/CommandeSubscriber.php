@@ -46,8 +46,14 @@ class CommandeSubscriber implements EventSubscriberInterface
 
         $message = array('event'=>NeemaEvents::COMMANDE_ENREGISTRE,
             'commande'=>$commande->getId(),
-            'restaurant' => array('id'=>$commande->getRestaurant()->getId()),
-            'dateMessage'=> new \DateTime()
+            'user' => array(
+                'telephone'=>$commande->getUser()->getTelephone()
+            ),
+            'restaurant' => array(
+                'id'=>$commande->getRestaurant()->getId(),
+                'nom'=>$commande->getRestaurant()->getNom()
+            ),
+                'dateMessage'=> new \DateTime()
         );
         $this->producer->publish(json_encode($message),'commande.enregistre');
     }
@@ -83,7 +89,8 @@ class CommandeSubscriber implements EventSubscriberInterface
             'commande'=>$commande->getId(),
             'dateMessage'=> new \DateTime(),
         );
-        $this->producer->publish(json_encode($message),'notification.sms');
+
+//        $this->producer->publish(json_encode($message),'notification.sms');
 
         //notification par push
 

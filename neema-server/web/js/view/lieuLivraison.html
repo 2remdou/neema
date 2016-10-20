@@ -1,0 +1,75 @@
+
+<div class="col-md-12 col-xs-12">
+    <div class="col-md-8 col-md-offset-2 mg-top-20">
+        <form class="form-horizontal" name="form" novalidate>
+            <div class="col-md-12 col-xs-12  mg-top-20">
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.nom.$invalid && formIsSubmit}">
+                    <label for="nom" class="text-primary control-label">Nom</label>
+                    <input type="text" name="nom" id="nom" tabindex="0" class="form-control"
+                           placeholder="Nom " ng-model="lieuLivraison.nom" required>
+                    <p ng-show="form.nom.$invalid && formIsSubmit" class="help-block">Le nom est obligatoire.</p>
+                </div>
+                <div class="col-sm-4">
+                    <label for="latitude" class="text-primary control-label">Latitude</label>
+                    <input type="text" name="longitude" id="latitude" tabindex="3" class="form-control"
+                           placeholder="Latitude" ng-model="lieuLivraison.latitude">
+                </div>
+                <div class="col-sm-4">
+                    <label for="longitude" class="text-primary control-label">Longitude</label>
+                    <input type="text" name="longitude" id="longitude" tabindex="3" class="form-control"
+                           placeholder="Longitude" ng-model="lieuLivraison.longitude">
+                </div>
+
+                <div class="col-sm-8">
+                    <label for="description" class="text-primary control-label col-md-4">Description :</label>
+                    <textarea class="form-control" tabindex="5" cols="20" id="description" ng-model="lieuLivraison.description" name="description" placeholder="Description du lieuLivraison" rows="4"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 col-md-offset-4 mg-top-20">
+        <button class="form-control btn btn-success" ng-click="save(lieuLivraison)" ng-hide="forUpdate"> Enregistrer</button>
+        <button class="form-control btn btn-info" ng-click="update(lieuLivraison)" ng-show="forUpdate"> Modifer</button>
+    </div>
+
+    <div class="col-md-8 col-md-offset-2 mg-top-20">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Lieu</th>
+                <th>Latitude,Longitude</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="lieuLivraison in lieuLivraisons">
+                <td>
+                    <span>{{lieuLivraison.nom}}</span>
+                </td>
+                <td>
+                    <span>{{lieuLivraison.latitude}},{{lieuLivraison.longitude}}</span>
+                </td>
+                <td>
+                    <span>{{lieuLivraison.description}}</span>
+                </td>
+
+                <td class="text-center">
+                    <a ng-click="selectedLieuLivraison(lieuLivraison)">
+                        <i class="glyphicon glyphicon-pencil"></i>
+                    </a>
+                </td>
+                <td class="text-center">
+                    <a ng-click="delete (lieuLivraison)">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+
+
+
+</div>

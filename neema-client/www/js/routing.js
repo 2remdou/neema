@@ -113,5 +113,10 @@ app
                 templateUrl: 'js/view/home.html',
                 controller:'PlatByRestaurantController'
             })
+            .state('contact', {
+                url: '/contact',
+                cache: enabledCache,
+                templateUrl: 'js/view/contact.html'
+            })
         ;
     }]);

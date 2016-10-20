@@ -139,6 +139,12 @@ class Commande
     private $restaurant;
 
     /**
+     * @ORM\ManyToOne(targetEntity="LieuLivraison")
+     */
+    private $lieuLivraison;
+
+
+    /**
      * @ORM\ManyToOne(targetEntity="EtatCommande", inversedBy="commandes")
      * @ORM\JoinColumn(name="etatCommande",referencedColumnName="code",nullable=false)
      * @Assert\NotNull(message="L'etat est obligatoire")

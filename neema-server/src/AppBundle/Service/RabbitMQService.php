@@ -11,7 +11,7 @@ namespace AppBundle\Service;
 
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
 
-class RabbitMQManager
+class RabbitMQService
 {
     private $producer;
 

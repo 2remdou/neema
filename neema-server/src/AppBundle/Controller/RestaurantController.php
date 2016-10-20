@@ -39,6 +39,7 @@ class RestaurantController extends FOSRestController
      * @RequestParam(name="longitude",nullable=false, description="longitude du restaurant")
      * @RequestParam(name="latitude",nullable=false, description="latitude du restaurant")
 	 * @RequestParam(name="quartier",nullable=false, description="id du quartier")
+	 * @RequestParam(name="description",nullable=true, description="une description du restaurant")
 	 * @Route("api/restaurants",name="post_restaurant", options={"expose"=true})
      * @Method({"POST"})
 	 * @Security("has_role('ROLE_ADMIN')")

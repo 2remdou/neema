@@ -141,17 +141,22 @@ app.service('UserService',
                 });
             };
 
-            this.enabled = function(code){
+            this.enabled = function(code,callback){
                 _userService.customPUT(code,'enabled').then(function(response){
-                    $rootScope.$broadcast('user.account.enabled',{alert:response.data});
+                    that.setToken(response.data.token);
+                    $rootScope.$broadcast('user.account.enabled',{alert:response.data.alert});
+                    if(typeof callback === 'function')
+                        callback(response.data.alert);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
             };
 
-            this.sendBackCodeActivation = function(telephone){
-                _userService.customPUT({username:telephone},'sendBackActivationCode').then(function(response){
-                    $rootScope.$broadcast('user.code.sendback',{alert:response.data});
+            this.sendBackCodeActivation = function(callback){
+                _userService.customPUT(null,'sendBackActivationCode').then(function(response){
+                    $rootScope.$broadcast('user.code.sendback',{alert:response.data.alert});
+                    if(typeof callback === 'function')
+                        callback(response.data.alert);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
@@ -193,7 +198,7 @@ app.service('UserService',
             };
 
             this.getUser= function(){
-                if(user) return user; //si la fonction déja executée
+                //if(user) return user; //si la fonction déja executée
 
                 if(that.getToken()){ // si un token existe
                     var tokenDecoded= jwtHelper.decodeToken(that.getToken());

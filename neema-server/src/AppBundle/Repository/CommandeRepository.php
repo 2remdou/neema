@@ -21,7 +21,7 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
     private function mainQueryBuilder(){
 
         $queryBuilder = $this->minQueryBuilder()
-            ->addSelect(['r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom}'])
+            ->addSelect(['r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom,enabled}'])
             ->leftJoin('c.restaurant','r')
             ->leftJoin('r.imageRestaurants','ir')
             ->leftJoin('c.detailCommandes','d')

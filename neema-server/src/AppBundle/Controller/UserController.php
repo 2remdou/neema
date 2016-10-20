@@ -458,7 +458,10 @@ class UserController extends FOSRestController
 
         $em->flush();
 
-        return MessageResponse::message('Votre compte a été activé avec succès','success',200);
+        $token = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+
+        return MessageResponse::message('Votre compte a été activé avec succès','success',200,array('token'=>$token));
 
     }
 
@@ -553,7 +556,7 @@ class UserController extends FOSRestController
             'content'=>"Hi, c'est l'equipe de neema. Votre code est ".$user->getActivationCode(),
             'dateMessage'=> new \DateTime(),
         );
-        
+
         $producer->publish($message,'notification.sms');
 
 
@@ -667,7 +670,6 @@ class UserController extends FOSRestController
          * @RequestParam(name="token",nullable=false, description="le token du device")
          * @RequestParam(name="os",nullable=false, description="l'os du device")
          * @Route("api/users/device-token",name="put_device_token", options={"expose"=true})
-         * @Security("is_granted('IS_AUTHENTICATED_FULLY')")
          * @Method({"POST"})
          */
 
@@ -675,6 +677,10 @@ class UserController extends FOSRestController
             $em = $this->getDoctrine()->getManager();
 
             $user = $this->getUser();
+
+            if(!$user){
+                return MessageResponse::message('','success',200);
+            }
 
             $deviceToken = $em->getRepository('AppBundle:DeviceToken')->findOneBy(array('user'=>$user,'token'=>$paramFetcher->get('token')));
             if($deviceToken){

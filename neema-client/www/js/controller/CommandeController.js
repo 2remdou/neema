@@ -4,9 +4,9 @@
 app
     .controller('CommandeController',
         ['$scope','PlatService','PanierService','$state',
-            'SpinnerService','CommandeService','PopupService','FRAIS_COMMANDE',
+            'SpinnerService','CommandeService','PopupService','FRAIS_COMMANDE','$rootScope',
             function($scope,PlatService,PanierService,$state,
-                    SpinnerService,CommandeService,PopupService,FRAIS_COMMANDE){
+                    SpinnerService,CommandeService,PopupService,FRAIS_COMMANDE,$rootScope){
 
                 if(PanierService.isEmpty()){
                     $state.go('home');
@@ -17,7 +17,7 @@ app
                 $scope.commande.aEmporter=false;
                 $scope.plats = PanierService.getPanier();
                 $scope.commande.restaurant = $scope.plats[0].restaurant;//car tous les plats viennent du même restaurant
-                if($scope.userConnected){
+                if($rootScope.userConnected){
                     $scope.commande.telephone = $scope.userConnected.telephone;
                 }
 
