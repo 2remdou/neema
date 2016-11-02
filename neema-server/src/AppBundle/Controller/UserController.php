@@ -270,6 +270,7 @@ class UserController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
 
         try{
+            $em->getConnection()->beginTransaction();
             $user = new User();
 
             $user->setUsername($paramFetcher->get('username'));
@@ -290,7 +291,7 @@ class UserController extends FOSRestController
             }
 
             $em->persist($user);
-            $em->flush();
+//            $em->flush();
 
             $livreur = new Livreur();
             $livreur->setCode($user->getUsername());
@@ -303,9 +304,14 @@ class UserController extends FOSRestController
 
             $em->persist($livreur);
 
+
+            $livraisonService = $this->get('app.livraison.service');
+
+            $livraisonService->attachLivreurOnLivraisonWithoutLivreur($livreur);
+
             $em->flush();
 
-            $em->getConnection()->beginTransaction();
+            $em->getConnection()->commit();
 
             return MessageResponse::message('Livreur ajouté avec succès','success',201);
 

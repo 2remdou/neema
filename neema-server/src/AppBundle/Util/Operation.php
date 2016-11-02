@@ -104,6 +104,9 @@ class Operation
     public function all($repository){
 
         $objects = $this->em->getRepository($repository)->findAll();
+        if(count($objects)===0){
+            return MessageResponse::message('Aucune donnée','info',400);
+        }
         return $objects;
     }
 

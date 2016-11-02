@@ -4,9 +4,11 @@
 app
     .controller('CommandeController',
         ['$scope','PlatService','PanierService','$state',
-            'SpinnerService','CommandeService','PopupService','FRAIS_COMMANDE','$rootScope',
+            'SpinnerService','CommandeService','PopupService','$rootScope',
+            'LieuLivraisonService','$ionicModal','ParameterService','$timeout',
             function($scope,PlatService,PanierService,$state,
-                    SpinnerService,CommandeService,PopupService,FRAIS_COMMANDE,$rootScope){
+                    SpinnerService,CommandeService,PopupService,$rootScope,
+                    LieuLivraisonService,$ionicModal,ParameterService,$timeout){
 
                 if(PanierService.isEmpty()){
                     $state.go('home');
@@ -14,28 +16,41 @@ app
                 }
                 $scope.commande={};
                 $scope.commande.total=0;
-                $scope.commande.aEmporter=false;
+                $scope.commande.fraisCommande=0;
+                $scope.commande.lieuLivraison=null;
+                $scope.commande.aLivrer=false;
                 $scope.plats = PanierService.getPanier();
                 $scope.commande.restaurant = $scope.plats[0].restaurant;//car tous les plats viennent du même restaurant
                 if($rootScope.userConnected){
                     $scope.commande.telephone = $scope.userConnected.telephone;
                 }
 
+                LieuLivraisonService.list(function(lieuLivraisons){
+                    $scope.lieuLivraisonsOriginal = lieuLivraisons;
+                    $scope.lieuLivraisons = lieuLivraisons;
+                });
+
                 var refreshCommande = function(){
+                    var maxTime = 0;
+                    var timeDetail = 0;
                     $scope.commande.total = 0;
                     $scope.commande.dureeCommande = 0;
                     $scope.commande.detailCommandes = [];
                     angular.forEach($scope.plats,function(plat){
+                        if($scope.commande.aLivrer) $scope.commande.dureeCommande = ParameterService.getTimeLivraison();
                         $scope.commande.detailCommandes.push({
                             quantite:plat.quantite,
                             prix:plat.prix,
                             plat:plat.id
                         });
+                        timeDetail = parseInt(plat.dureePreparation)*parseInt(plat.quantite);
+                        if(maxTime===0) maxTime = timeDetail;
+                        if(timeDetail>maxTime) maxTime = timeDetail;
                         $scope.commande.total += parseInt(plat.prix)*parseInt(plat.quantite);
-                        $scope.commande.dureeCommande += parseInt(plat.dureePreparation)*parseInt(plat.quantite);
                         // $scope.commande.fraisCommande = $scope.commande.total*FRAIS_COMMANDE;
-                        $scope.commande.totalCommande=$scope.commande.total;
                     });
+                    $scope.commande.dureeCommande += maxTime;
+                    $scope.commande.totalCommande = $scope.commande.total+$scope.commande.fraisCommande;
                 };
                 refreshCommande();
 
@@ -74,6 +89,9 @@ app
                 $scope.valider = function(commande){
                     var c = angular.copy(commande);
                     c.restaurant = c.restaurant.id;
+                    if(c.aLivrer){
+                        c.lieuLivraison = c.lieuLivraison.id;
+                    }
                     var popup = {
                         title: 'Confirmation',
                         message: 'Voulez-vous passer cette commande ?'
@@ -100,6 +118,63 @@ app
                 };
 
 
+                $ionicModal.fromTemplateUrl('js/view/modalListLieuLivraison.html', {
+                    scope: $scope,
+                    animation: 'slide-in-up'
+                }).then(function(modal) {
+                    $scope.modal = modal;
+                });
+                $scope.openModal = function() {
+                    return $scope.modal.show();
+                };
+                $scope.closeModal = function() {
+                    $scope.modal.hide().then(function(){
+                        if($scope.commande.lieuLivraison){
+                            $scope.commande.fraisCommande = ParameterService.getFraisCommande();
+                            $scope.commande.totalCommande += $scope.commande.fraisCommande;
+                            $scope.commande.aLivrer=true;
+                        }else{
+                            $scope.commande.aLivrer=false;
+                        }
+                       
+                    });
+                };
+                // Cleanup the modal when we're done with it!
+                $scope.$on('$destroy', function() {
+                    $scope.modal.remove();
+                });
+                // Execute action on hide modal
+                $scope.$on('modal.hidden', function() {
+                    // Execute action
+                });
+                // Execute action on remove modal
+                $scope.$on('modal.removed', function() {
+                    // Execute action
+                });
+
+                $scope.aLivrer = function(select){
+                    if($scope.commande.aLivrer){
+                            $scope.openModal();
+                    }
+                    else{
+                        delete $scope.commande.lieuLivraison;
+                        $scope.commande.aLivrer=false;
+                        $scope.commande.totalCommande -= $scope.commande.fraisCommande;
+                        $scope.commande.fraisCommande=0;
+                    }
+                };
+                $scope.search = function(searchKey){ // utilisé dans modalListLieuLivraison.html
+                    $scope.lieuLivraisons= _.filter($scope.lieuLivraisonsOriginal,function(lieuLivraison){
+                                                return _.toLower(lieuLivraison.nom).search(_.toLower(searchKey))!=-1 ||
+                                                       _.toLower(lieuLivraison.quartier.nom).search(_.toLower(searchKey))!=-1 ||
+                                                       _.toLower(lieuLivraison.quartier.commune.nom).search(_.toLower(searchKey))!=-1
+                                                ;
+                                            });
+                };
+
+
+
+
                 //***************LISTENER*******************
 
                 $scope.$on('commande.created',function(event,args){
@@ -118,8 +193,8 @@ app
                 });
     }])
     .controller('ListCommandeController',
-    ['$scope','SpinnerService','CommandeService','CommandeDataService',
-    function($scope,SpinnerService,CommandeService,CommandeDataService){
+    ['$scope','SpinnerService','CommandeService','CommandeDataService','$state',
+    function($scope,SpinnerService,CommandeService,CommandeDataService,$state){
                 
         $scope.moreDataCanBeLoaded = true;
         $scope.commandes = CommandeDataService.data.list;
@@ -171,6 +246,9 @@ app
              $scope.doRefresh();
          });
 
+         $scope.$on('not.found',function(event,args){
+             $scope.notFound(event,args);
+         });
 
     }])
     .controller('InfoCommandeController',

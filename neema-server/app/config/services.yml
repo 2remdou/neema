@@ -1,12 +1,30 @@
 # Learn more about services, parameters and containers at
 # http://symfony.com/doc/current/book/service_container.html
-parameters:
-    majoration_time_livraison: "%majorationtimelivraison%"
 
 services:
     app.commande.manager:
         class: AppBundle\Service\CommandeManager
-        arguments: ["%majoration_time_livraison%"]
+        arguments: ["@doctrine.orm.entity_manager","%timeMarge%","%timeLivraison%","@app.util.service","@validator","@security.token_storage","@event_dispatcher"]
+
+    app.util.service:
+        class: AppBundle\Service\UtilService
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    app.livreur.service:
+        class: AppBundle\Service\LivreurService
+        arguments: ["@doctrine.orm.entity_manager","@app.commande.manager"]
+
+    app.livraison.service:
+        class: AppBundle\Service\LivraisonService
+        arguments: ["@doctrine.orm.entity_manager","@app.livreur.service","@app.commande.manager","%fraisCommande%","@app.rabbitmq"]
+
+    app.plat.service:
+        class: AppBundle\Service\PlatService
+        arguments: ["@doctrine.orm.entity_manager"]
+
+    app.restaurant.service:
+        class: AppBundle\Service\RestaurantService
+        arguments: ["@doctrine.orm.entity_manager"]
 
     app.rabbitmq:
         class: AppBundle\Service\RabbitMQService
@@ -26,9 +44,15 @@ services:
         tags:
             - { name: kernel.event_subscriber }
 
+    app.request.subscriber:
+        class: AppBundle\EventListener\RequestSubscriber
+        arguments: ["@kernel"]
+        tags:
+            - { name: kernel.event_subscriber }
+
     app.commande.subscriber:
         class: AppBundle\EventListener\CommandeSubscriber
-        arguments: ["@doctrine.orm.entity_manager","@app.commande.manager","@old_sound_rabbit_mq.notification_producer"]
+        arguments: ["@doctrine.orm.entity_manager","@app.commande.manager","@app.rabbitmq","@app.livreur.service","@app.livraison.service"]
         tags:
             - { name: kernel.event_subscriber }
 

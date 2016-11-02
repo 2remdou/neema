@@ -24,29 +24,6 @@ use AppBundle\Entity\Livreur;
 
 class LivreurController extends FOSRestController
 {
-	/**
-     * Ajouter un livreur
-     *
-     * @ApiDoc(
-     *   resource = true,
-     *   description = "Ajouter un livreur",
-     *   statusCodes = {
-     *     201 = "Created",
-     *   }
-     * )
-     * @RequestParam(name="code",nullable=false, description="le code du livreur")
-     * @RequestParam(name="nom",nullable=false, description="le libelle du livreur")
-     * @RequestParam(name="prenom",nullable=false, description="le prenom du livreur")
-     * @Route("api/livreurs",name="post_livreur", options={"expose"=true})
-     * @Method({"POST"})
-	 * @Security("has_role('ROLE_ADMIN')")
-	 */
-	public function postLivreurAction(Request $request,ParamFetcher $paramFetcher){
-        
-		$operation = $this->get('app.operation');
-		$livreur = new Livreur();
-		return $operation->post($request,$livreur);
-	}
 
 	/**
      * Lister les livreurs
@@ -61,6 +38,7 @@ class LivreurController extends FOSRestController
      * )
      * @Route("api/livreurs",name="get_livreurs", options={"expose"=true})
      * @Method({"GET"})
+     * @Security("has_role('ROLE_ADMIN')")
      */
 
 	public function getLivreursAction(){
@@ -81,6 +59,7 @@ class LivreurController extends FOSRestController
      * )
      * @Route("api/livreurs/{id}",name="get_livreur", options={"expose"=true})
      * @Method({"GET"})
+     * @Security("has_role('ROLE_ADMIN')")
      */
 
 	public function getLivreurAction($id){

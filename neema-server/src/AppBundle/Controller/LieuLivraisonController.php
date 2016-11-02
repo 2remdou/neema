@@ -39,6 +39,7 @@ class LieuLivraisonController extends FOSRestController
      * @RequestParam(name="nom",nullable=false, description="le nom du lieu de la livraison")
      * @RequestParam(name="latitude",nullable=true, description="la latitude du lieu de la livraison")
      * @RequestParam(name="longitude",nullable=true, description="la longitude du lieu de la livraison")
+     * @RequestParam(name="quartier",nullable=false, description="le quartier du lieu de la livraison")
      * @RequestParam(name="description",nullable=true, description="une description du restaurant")
      * @Route("api/lieu-livraisons",name="post_lieu_livraisons", options={"expose"=true})
      * @Method({"POST"})
@@ -52,6 +53,13 @@ class LieuLivraisonController extends FOSRestController
         if($paramFetcher->get('description')) $lieuLivraison->setDescription($paramFetcher->get('description'));
 
         $em = $this->getDoctrine()->getManager();
+
+        $quartier = $em->getRepository('AppBundle:Quartier')->findOneBy(array('id'=>$paramFetcher->get('quartier')));
+
+        if(!$quartier){
+            return MessageResponse::message('Le quartier est introuvable','danger',400);
+        }
+        $lieuLivraison->setQuartier($quartier);
 
         $validator = $this->get('validator');
 
@@ -79,6 +87,7 @@ class LieuLivraisonController extends FOSRestController
      * @RequestParam(name="nom",nullable=false, description="le nom du lieu de la livraison")
      * @RequestParam(name="latitude",nullable=true, description="la latitude du lieu de la livraison")
      * @RequestParam(name="longitude",nullable=true, description="la longitude du lieu de la livraison")
+     * @RequestParam(name="quartier",nullable=false, description="le quartier du lieu de la livraison")
      * @RequestParam(name="description",nullable=true, description="une description du restaurant")
      * @Route("api/lieu-livraisons/{id}",name="put_lieu_livraisons", options={"expose"=true})
      * @ParamConverter("lieuLivraison", class="AppBundle:LieuLivraison")
@@ -92,14 +101,22 @@ class LieuLivraisonController extends FOSRestController
         if($paramFetcher->get('longitude')) $lieuLivraison->setLongitude($paramFetcher->get('longitude'));
         if($paramFetcher->get('description')) $lieuLivraison->setDescription($paramFetcher->get('description'));
 
+        $em = $this->getDoctrine()->getManager();
 
+        if($lieuLivraison->getQuartier()->getId() !== $paramFetcher->get('quartier')){
+            $quartier = $em->getRepository('AppBundle:Quartier')->findOneBy(array('id'=>$paramFetcher->get('quartier')));
+
+            if(!$quartier){
+                return MessageResponse::message('Le quartier est introuvable','danger',400);
+            }
+            $lieuLivraison->setQuartier($quartier);
+        }
         $validator = $this->get('validator');
 
         if($messages = MessageResponse::messageAfterValidation($validator->validate($lieuLivraison))){
             return MessageResponse::message($messages,'danger',400);
         }
 
-        $em = $this->getDoctrine()->getManager();
 
         $em->flush();
 
@@ -169,10 +186,13 @@ class LieuLivraisonController extends FOSRestController
      * @Method({"GET"})
      */
 
-	public function getLieuLivraisonByUserAction(){
+	public function getLieuLivraisonsAction(){
         $em = $this->getDoctrine()->getManager();
 
         $lieuLivraisons = $em->getRepository('AppBundle:LieuLivraison')->findAll();
+        if(count($lieuLivraisons) === 0){
+            return MessageResponse::message('Aucun lieu de livraison pour le moment','info',400);
+        }
 
         return $lieuLivraisons;
 	}

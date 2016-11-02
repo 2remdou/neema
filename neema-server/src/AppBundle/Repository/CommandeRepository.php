@@ -21,8 +21,14 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
     private function mainQueryBuilder(){
 
         $queryBuilder = $this->minQueryBuilder()
-            ->addSelect(['r','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom,enabled}'])
+            ->addSelect(['r','qr','comr','lvs','llv','ql','coml','ir','d','p','ip','e','PARTIAL u.{id,username,nom,prenom,telephone,enabled}'])
             ->leftJoin('c.restaurant','r')
+            ->leftJoin('r.quartier','qr')
+            ->leftJoin('qr.commune','comr')
+            ->leftJoin('c.livraison','lvs')
+            ->leftJoin('c.lieuLivraison','llv')
+            ->leftJoin('llv.quartier','ql')
+            ->leftJoin('ql.commune','coml')
             ->leftJoin('r.imageRestaurants','ir')
             ->leftJoin('c.detailCommandes','d')
             ->leftJoin('d.plat','p')
@@ -43,7 +49,10 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
 
     public function findByTypeDelivered($delivered=false,$idRestaurant=''){
 
-        return $this->mainQueryBuilder()
+        //recuperer les commandes
+        $c = $this->minQueryBuilder()
+            ->leftJoin('c.user','u')
+            ->leftJoin('c.restaurant','r')
             ->where('r.id LIKE :idRestaurant')
             ->andWhere('c.delivered=:delivered')
             ->setMaxResults(10)
@@ -53,6 +62,42 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('c.dateCommande','DESC')
             ->getQuery()
             ->getArrayResult();
+
+        //recuperer les details
+        $commandes = $this->mainQueryBuilder()
+            ->where('c.id IN (:commandes)')
+            ->setParameter(':commandes',$c)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $commandes;
+
+    }
+
+    public function findByEtat(array $codeEtatCommande,$page,$countPerPage=10){
+
+        //recuperer les commandes
+        $c = $this->minQueryBuilder()
+            ->leftJoin('c.etatCommande','ec')
+            ->where('ec.code IN (:codeEtatCommande)')
+            ->setMaxResults(($page-1)*$countPerPage)
+            ->setMaxResults($countPerPage)
+            ->setParameter('codeEtatCommande',$codeEtatCommande)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+
+        //recuperer les details
+        $commandes = $this->mainQueryBuilder()
+            ->where('c.id IN (:commandes)')
+            ->setParameter(':commandes',$c)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $commandes;
+
     }
 
     public function findByUser($idUser,$page=0,$countPerPage=10){
@@ -68,6 +113,44 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
             ->orderBy('c.dateCommande','DESC')
             ->getQuery()
             ->getArrayResult();
+
+        //recuperer les details
+        $commandes = $this->mainQueryBuilder()
+            ->where('c.id IN (:commandes)')
+            ->setParameter(':commandes',$c)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+
+        return $commandes;
+
+
+    }
+
+    public function findHistoriqueByClient($idUser,\DateTime $from=null,\DateTime $to=null, $page=1,$countPerPage=10){
+        //recuperer les commandes
+        $c = $this->minQueryBuilder()
+            ->leftJoin('c.user','u')
+            ->where('u.id=:idUser');
+        if($from){
+            $c = $c
+                ->andWhere('c.dateCommande BETWEEN :from and :to')
+                ->setParameters(
+                    array(
+                    'from'=>$from,
+                    'to'=>$to)
+                );
+        }
+
+        $c = $c
+            ->andWhere('c.delivered=true')
+            ->setFirstResult(($page-1)*$countPerPage)
+            ->setMaxResults($countPerPage)
+            ->setParameter('idUser',$idUser)
+            ->orderBy('c.dateCommande','DESC')
+            ->getQuery()
+            ->getArrayResult();
+
 
         //recuperer les details
         $commandes = $this->mainQueryBuilder()
@@ -139,20 +222,7 @@ class CommandeRepository extends \Doctrine\ORM\EntityRepository
 
     }
 
-    /**
-     * Trouver une commande sans livreur
-     * @return Commande
-     */
-    public function findCommandeWithoutLivreur(){
-        $commandes = $this->minQueryBuilder()
-                    ->leftJoin('c.livraison','livraison')
-                    ->where($this->createQueryBuilder('c')->expr()->isNull('livraison.livreur'))
-                    ->orderBy('c.dateCommande','DESC')
-                    ->getQuery()
-                    ->getResult();
 
-        return count($commandes)!==0?$commandes[0]:null;
 
-    }
 
 }

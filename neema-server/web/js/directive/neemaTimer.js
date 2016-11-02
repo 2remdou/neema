@@ -3,6 +3,8 @@
  */
 'use strict';
 
+
+
 app.directive('neemaTimer', [function() {
     return {
         restrict: 'AE',
@@ -31,6 +33,7 @@ app.directive('neemaTimer', [function() {
                     }
                 }
             },1000,false);
+
 
             $scope.$on("$destroy",function(event){
                 if(timer) $interval.cancel(timer);

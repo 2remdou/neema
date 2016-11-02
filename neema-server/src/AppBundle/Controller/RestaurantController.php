@@ -6,6 +6,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ImageRestaurant;
+use AppBundle\Exception\ApiException;
 use AppBundle\Util\FillAttributes;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
@@ -128,18 +129,29 @@ class RestaurantController extends FOSRestController
      */
 
 	public function getRestaurantsAction(Request $request){
-		$em = $this->getDoctrine()->getManager();
+		$restaurantService = $this->get('app.restaurant.service');
 
-        $restaurants = $em->getRepository('AppBundle:Restaurant')->findAll();
-        return $restaurants;
+        $page = $request->query->getInt('page', 1);
+        $page = $page<=0?1:$page;
+
+        $restaurants = $restaurantService->getList($page);
+        if(!$restaurants && $page==1) throw new ApiException('Aucun restaurant',404,'info');
+
+        if(!$restaurants){
+            $paginator = array('currentPage'=>$page,'nextPage'=>$page);
+        }else{
+            $paginator = array('currentPage'=>$page,'nextPage'=>$page+1);
+        }
+
+        return array('restaurants'=>$restaurants,'paginator'=>$paginator);
 	}
 
 	/**
-     * retourner une restaurant
+     * retourner un restaurant
      *
      * @ApiDoc(
      *   resource = true,
-     *   description = "retourner une restaurant",
+     *   description = "retourner un restaurant",
      *   statusCodes = {
      *     	200 = "Succes",
      *		404= "Not found"	

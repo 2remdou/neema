@@ -1,0 +1,47 @@
+<ion-view view-title="Historique Commande">
+    <ion-content delegate-handle="mainScroll">
+        <ion-refresher
+        pulling-text="Pull to refresh..."
+        on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="card animated bounceInUp" ng-repeat="commande in commandes track by commande.id" ui-sref="infoCommande({idCommande:commande.id})">
+        <div class="item item-balanced item-divider text-center">
+            {{ commande.dateCommande|humanizeDate }}
+            <br>
+            {{ commande.dateCommande|date:'H:mm:ss':'+GMT' }} - 
+            <span ng-show="commande.aLivrer">{{ commande.livraison.dateFinLivraison|date:'H:mm:ss':'+GMT' }}</span> 
+            <span ng-hide="commande.aLivrer">{{ commande.dateDelivered|date:'H:mm:ss':'+GMT' }}</span> 
+            <div>{{ notification.title }}</div>
+        </div>
+        <div class="item item-text-wrap">
+            <div class="list">
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-restaurant"></i>
+                         <strong>Restaurant</strong> : {{commande.restaurant.nom}}
+                         <br>
+                         <strong>Tel</strong> : {{commande.restaurant.telephone}} 
+                         <br>
+                         <strong>Adresse</strong> : {{commande.restaurant.quartier.nom}} 
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-person"></i>
+                         <strong>Client</strong> : {{commande.user.nom}}  {{commande.user.prenom}} 
+                         <br>
+                         <strong>Tel</strong> : {{commande.user.telephone}} 
+                         <br>
+                         <strong>Adresse</strong>: {{commande.lieuLivraison.quartier.nom}} - {{commande.lieuLivraison.nom}} 
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-bicycle"></i>
+                         <strong>Duree Prevue</strong> : {{commande.durationEstimative*1000|humanizeTime}}
+                         <br> 
+                         <strong>Duree effectuée</strong> : {{commande.durationExact*1000|humanizeTime}} 
+                </p>
+
+            </div>
+        </div>
+    </div>
+        <ion-infinite-scroll on-infinite="onInfiniteLoad()" ng-if="canBeLoad" icon="ion-loading-c" distance="0%">
+        </ion-infinite-scroll>
+    </ion-content>
+</ion-view>

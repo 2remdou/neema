@@ -4,16 +4,16 @@
 
 'use strict';
 app.controller('PlatController',
-    ['$scope','PlatService','PlatDataService','$stateParams','$state','PanierService',
-    'PopupService',
-        function($scope,PlatService,PlatDataService,$stateParams,$state,PanierService,
-        PopupService){
+    ['$scope','PlatService','$stateParams','$state','PanierService',
+    'PopupService','PaginatorService',
+        function($scope,PlatService,$stateParams,$state,PanierService,
+        PopupService,PaginatorService){
 
             if(!$stateParams.idPlat) $state.go('home');
             $scope.isFirst = true;
             $scope.isLast = false;
             $scope.index = 0;
-            var plats=PlatDataService.getData();
+            var plats=PaginatorService.getMenu().plats;
 
             $scope.index=_.findIndex(plats,{id:$stateParams.idPlat})
             if($scope.index===-1){

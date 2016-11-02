@@ -3,19 +3,23 @@
         <ion-list>
             <div class="row">
                 <div class="col col-80">
-                    <h5>COMMANDE A EMPORTER</h5>
+                    <h5>COMMANDE A LIVRER</h5>
                 </div>
                 <div class="col">
                     <label class="toggle">
-                        <input type="checkbox" ng-model="commande.aEmporter">
+                        <input type="checkbox" ng-model="commande.aLivrer" ng-click="aLivrer()">
                         <div class="track">
                             <div class="handle"></div>
                         </div>
                     </label>
                 </div>
             </div>
-
-            <ion-item class="item-thumbnail-left card" ng-repeat="plat in plats track by plat.id|orderBy:plat.prix:false">
+            <div class="row" ng-show="commande.aLivrer">
+                <div class="col col-80">
+                    Adresse : {{commande.lieuLivraison.nom}}
+                </div>
+            </div>
+            <ion-item class="item-thumbnail-left card animated bounceInLeft" ng-repeat="plat in plats track by plat.id|orderBy:plat.prix:false">
                 <img ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt=""/>
                 <strong>{{ plat.nom }}</strong>
                 <div class="button button-small button-assertive button-card button-close" ng-click="removeInPanier(plat)">
@@ -40,14 +44,21 @@
                 <i class="icon ion-trash-a padding"></i>
                 </ion-option-button>
             </ion-item>
-
         </ion-list>
-        <div class="row">
-                <h4 class="col col-25 text-left">Durée:</h4>
-                <h4 class="col text-right">{{commande.dureeCommande*1000|humanizeTime}}</h4>
-        </div>       
-
         <div class="list">
+            </p>
+            <p class="item item-icon-left animated bounceInLeft" > 
+                <i class="icon ion-clock"></i>  
+                Duréee : 
+                <span class="montant">{{commande.dureeCommande*1000|humanizeTime}}</span>
+            </p>
+            <!--<p ng-if="commande.aLivrer" ng-class="{bounceInLeft:commande.aLivrer,bounceOutRight:!commande.aLivrer}" class="item item-icon-left animated"> -->
+            <p ng-if="commande.aLivrer" ng-animate="bounce" class="item item-icon-left animated"> 
+                <i class="icon ion-android-bicycle"></i>  
+                Frais Livraison
+                <span class="montant">{{commande.fraisCommande|montant}}</span>
+        </div>               
+        <div class="list animated bounceInLeft">
             <form name="form" novalidate>
                 <div ng-class="{ 'has-error' : form.telephone.$invalid && !form.telephone.$pristine}">
                     N° telephone

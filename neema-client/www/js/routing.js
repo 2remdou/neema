@@ -95,11 +95,11 @@ app
                 templateUrl: 'js/view/listCommande.html',
                 controller:'ListCommandeController'
             })
-            .state('restaurants', {
+            .state('listRestaurants', {
                 url: '/restaurants',
                 cache: enabledCache,
-                templateUrl: 'js/view/restaurant.html',
-                controller:'RestaurantController'
+                templateUrl: 'js/view/listRestaurant.html',
+                controller:'ListRestaurantController'
             })
             .state('notifications', {
                 url: '/notifications',
@@ -118,5 +118,12 @@ app
                 cache: enabledCache,
                 templateUrl: 'js/view/contact.html'
             })
+            .state('historiqueCommande', {
+                url: '/historique-commande',
+                cache: enabledCache,
+                templateUrl: 'js/view/historiqueCommande.html',
+                controller: 'HistoriqueCommandeController'
+            })
+
         ;
     }]);

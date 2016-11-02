@@ -24,9 +24,11 @@ app.service('QuartierService',
                 });
             };
 
-            this.list = function(){
+            this.list = function(callback){
                 _quartierService.getList().then(function(response){
                     $rootScope.$broadcast('quartier.list',{quartiers:response});
+                    if(typeof callback === 'function')
+                        callback(response);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error);

@@ -77,14 +77,14 @@ class Commande
     private $delivered;
 
     /**
-     * pour savoir si la commande est à emporter
+     * pour savoir si la commande est à livrer
      * @var boolean
      *
-     * @ORM\Column(name="aEmporter", type="boolean", options={"default":false})
+     * @ORM\Column(name="aLivrer", type="boolean", options={"default":false})
      * @Expose()
-     * @SerializedName("aEmporter")
+     * @SerializedName("aLivrer")
      */
-    private $aEmporter;
+    private $aLivrer;
 
     /**
      * @var \DateTime
@@ -139,6 +139,14 @@ class Commande
     private $restaurant;
 
     /**
+     * @ORM\OneToOne(targetEntity="Livraison",mappedBy="commande")
+     * @Expose()
+     * @SerializedName("livraison")
+     */
+    private $livraison;
+
+
+    /**
      * @ORM\ManyToOne(targetEntity="LieuLivraison")
      */
     private $lieuLivraison;
@@ -152,6 +160,7 @@ class Commande
      */
     private $etatCommande;
 
+
     /**
      * @var float
      *
@@ -160,15 +169,6 @@ class Commande
      * @Expose()
      */
     private $montantCommande;
-
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="fraisCommande", type="float")
-     * @Assert\NotBlank(message="Le prix est obligatoire")
-     * @Expose()
-     */
-    private $fraisCommande;
 
     /**
      * @var float
@@ -186,7 +186,8 @@ class Commande
     public function __construct(){
         $this->dateCommande = new \DateTime();
         $this->delivered = false;
-        $this->codeCommande = strtoupper(substr(uniqid(),1,8));
+//        $this->codeCommande = strtoupper(substr(uniqid(),1,8));
+        $this->codeCommande = rand(11111,99999);
     }
 
     /**
@@ -500,21 +501,84 @@ class Commande
     }
 
     /**
+     * Get delivered
+     *
      * @return boolean
      */
-    public function isAEmporter()
+    public function getDelivered()
     {
-        return $this->aEmporter;
+        return $this->delivered;
+    }
+
+
+    /**
+     * Set lieuLivraison
+     *
+     * @param \AppBundle\Entity\LieuLivraison $lieuLivraison
+     *
+     * @return Commande
+     */
+    public function setLieuLivraison(\AppBundle\Entity\LieuLivraison $lieuLivraison = null)
+    {
+        $this->lieuLivraison = $lieuLivraison;
+
+        return $this;
     }
 
     /**
-     * @param boolean $aEmporter
+     * Get lieuLivraison
+     *
+     * @return \AppBundle\Entity\LieuLivraison
      */
-    public function setAEmporter($aEmporter)
+    public function getLieuLivraison()
     {
-        $this->aEmporter = $aEmporter;
+        return $this->lieuLivraison;
     }
 
+    /**
+     * Set livraison
+     *
+     * @param \AppBundle\Entity\Livraison $livraison
+     *
+     * @return Commande
+     */
+    public function setLivraison(\AppBundle\Entity\Livraison $livraison = null)
+    {
+        $this->livraison = $livraison;
+        return $this;
+    }
 
+    /**
+     * Get livraison
+     *
+     * @return \AppBundle\Entity\Livraison
+     */
+    public function getLivraison()
+    {
+        return $this->livraison;
+    }
 
+    /**
+     * Set aLivrer
+     *
+     * @param boolean $aLivrer
+     *
+     * @return Commande
+     */
+    public function setALivrer($aLivrer)
+    {
+        $this->aLivrer = $aLivrer;
+
+        return $this;
+    }
+
+    /**
+     * Get aLivrer
+     *
+     * @return boolean
+     */
+    public function getALivrer()
+    {
+        return $this->aLivrer;
+    }
 }

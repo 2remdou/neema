@@ -6,6 +6,7 @@
 namespace AppBundle\MessageResponse;
 
 use FOS\RestBundle\View\View;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class MessageResponse {
 
@@ -28,7 +29,17 @@ class MessageResponse {
 
     public static function messageJson($textAlert='',$typeAlert='success',$codeStatus=200,$data=null){
 
-        return self::message($textAlert,$typeAlert,$codeStatus,$data)->getResponse();
+        $message=array(
+            'textAlert'=> $textAlert,
+            'typeAlert'=> $typeAlert,
+        );
+        if(is_array($data) || !$data){
+            $data['alert'] = $message;
+        }
+        if($codeStatus>=400){
+            return new JsonResponse(array_merge($message,is_array($data)?$data:array()),$codeStatus);
+        }
+        return new JsonResponse(array('data'=>array_merge($message,is_array($data)?$data:array())),$codeStatus);
     }
 
     public static function messageAfterValidation($errors){

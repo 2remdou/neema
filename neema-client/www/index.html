@@ -9,6 +9,7 @@
     <!-- compiled css output -->
     <link href="css/ionic.app.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
+    <link href="lib/animate.css/animate.min.css" rel="stylesheet">
 
     <!-- ionic/angularjs js -->
     <!--<script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -16,21 +17,13 @@
     
     <!-- your app's js -->
     <script src="lib/lib.js"></script>
+    <script src="lib/neemaClientControllers.js"></script>
+    <script src="lib/service.js"></script>
 
       <!-- cordova script (this will be a 404 during development) -->
     <!-- Cordova is bootstrapped by ionic-platform-web-client, uncomment this if you remove ionic-platform-web-client... -->
  <script src="cordova.js"></script> 
 
-
-    <!--<script src="js/util.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/routing.js"></script>-->
-    <!--<script src="js/run.js"></script>-->
-
-
-      <!--service-->
-      <script src="lib/service.js"></script>
 
 
     <!--<script src="https://maps.google.com/maps/api/js?key=AIzaSyCXPmdF5YDDvEOwb6IYlow1Zr_rTknCIn8"></script>-->
@@ -53,7 +46,9 @@
                     </button>
                 </ion-nav-buttons>
                 <ion-nav-buttons side="right">
-                    <a ui-sref="commande" ng-hide="panierIsEmpty()" class="button button-icon button-clear ion-android-cart">
+                    <a ui-sref="commande" ng-if="!panierIsEmpty()" 
+                    class="animated button button-icon button-clear ion-android-cart"
+                    ng-class="{flip:panierIsEmpty}">
                     </a>
                 </ion-nav-buttons>
                 </ion-nav-bar>
@@ -82,7 +77,11 @@
                             <i class="icon ion-map"></i>
                             Suivi commandes
                         </ion-item>
-                        <ion-item menu-close="" ui-sref="restaurants" class="cursor-pointer">
+                        <ion-item ng-show="userConnected" menu-close="" ui-sref="historiqueCommande" class="cursor-pointer">
+                            <i class="icon ion-map"></i>
+                            Historique commandes
+                        </ion-item>
+                        <ion-item menu-close="" ui-sref="listRestaurants" class="cursor-pointer">
                             <i class="icon ion-android-restaurant"></i>
                             Restaurants
                         </ion-item>

@@ -1,0 +1,66 @@
+<ion-view view-title="Neema">
+    <ion-content scroll="true" padding="true" ng-show="livraisonActiveExiste">
+        <div class="list" >
+                <p  class="item item-icon-left" ng-repeat="commande in commandes">
+                    <i class="icon ion-clock"></i>
+                         Dans : 
+                            <neema-timer time="commande.dureeRestante" ></neema-timer>
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-restaurant"></i>
+                         Restaurant : {{livraison.commande.restaurant.nom}} 
+                         <br>
+                         Telephone : {{livraison.commande.restaurant.telephone}}
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-ios-person"></i>
+                         Client : {{livraison.commande.user.nom}}  {{livraison.commande.user.prenom}}
+                         <br>
+                         Telephone: {{livraison.commande.user.telephone}}
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-ios-location"></i>
+                         Adresse :{{livraison.commande.lieuLivraison.nom}}
+                         <br>
+                         Quartier :{{livraison.commande.lieuLivraison.quartier.commune.nom}}-{{livraison.commande.lieuLivraison.quartier.nom}}
+                </p>
+                <h5 class="text-center">Les details de la commande</h5>
+                <p  class="item item-icon-right" >
+                    <i class="icon ion-key cursor-pointer" ng-click="showCodeCommande()"></i>
+                         Code secret : 
+                            <span ng-hide="codeCommandeVisible">********</span>
+                            <span ng-show="codeCommandeVisible">{{livraison.commande.codeCommande}}</span>
+                </p>
+                <p class="item item-icon-left" > 
+                    <i class="icon ion-levels"></i>  
+                    Etat :{{livraison.commande.etatCommande.libelle}}
+                </p>
+                <p class="item item-icon-left" > 
+                    <i class="icon ion-calendar"></i>  
+                    Date :{{livraison.commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}}
+                </p>
+                <p ng-repeat="detailCommande in livraison.commande.detailCommandes track by detailCommande.id|orderBy:detailCommande.prix:false" class="item item-icon-left" > 
+                    <i class="icon ion-android-restaurant"></i>  
+                    {{detailCommande.plat.nom}}
+                    <span class="montant">({{detailCommande.quantite}}) x {{detailCommande.prix|montant}}</span>
+                </p>
+                <div class="row item">
+                    <h2>MONTANT</h2>
+                    <strong class="montant">{{livraison.commande.totalCommande|montant}}</strong>
+                </div> 
+                <button class="button button-block button-balanced"  ng-click="livrer(livraison)">Livrer</button>
+           
+        </div>
+    </ion-content>
+    <ion-content scroll="true" padding="true" ng-hide="livraisonActiveExiste">
+        <div>
+            <div class="row">
+                <div class="col">
+                    <button ng-click="load()" class="button button-block button-balanced">
+                        Actualiser
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

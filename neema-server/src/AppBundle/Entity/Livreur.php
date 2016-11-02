@@ -56,7 +56,7 @@ class Livreur
      * @ORM\OneToOne(targetEntity="User")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
-     * @Assert\NotNull(message="Un utilisateur doit être associé à un livreur")
+     * @Assert\NotNull(message="Un livreur doit être associé à un utilisateur")
      */
     private $user;
 

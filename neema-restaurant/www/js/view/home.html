@@ -13,7 +13,7 @@
                     <div class="table row">
                         <div class="col col-25">Client</div>
                         <div class="col col-25">Date Commande</div>
-                        <div class="col col-25">A Emporter</div>
+                        <div class="col col-25">Type</div>
                         <div class="col col-25">Montant</div>
                     </div>
                     <div class="table row">
@@ -23,8 +23,8 @@
                         </div>
                         <div class="col  col-25">{{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}}</div>
                         <div class="col col-25" style="white-space: normal;">
-                            <span ng-show="commande.aEmporter">OUI</span>
-                            <span ng-hide="commande.aEmporter">NON</span>
+                            <span ng-show="commande.aEmporter">A Emporter</span>
+                            <span ng-show="commande.aLivrer">A Livrer</span>
                         </div>
                         <div class="col  col-25">{{commande.totalCommande|montant}}</div>
                     </div>

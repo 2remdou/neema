@@ -1,6 +1,7 @@
 <?php
 
 namespace AppBundle\Repository;
+use AppBundle\Entity\Livraison;
 
 /**
  * LivraisonRepository
@@ -18,13 +19,19 @@ class LivraisonRepository extends \Doctrine\ORM\EntityRepository
         return $dql;
     }
     private function getMainQueryBuilder(){
-        return $this->createQueryBuilder('l')
-            ->addSelect(['li','c','r','PARTIAL client.{id,username,nom,prenom}'])
-            ->leftJoin('l.livreur','li')
-            ->leftJoin('l.commande','c')
+        return $this->createQueryBuilder('lvs')
+            ->addSelect(['l','c','e','llv','qlv','clv','r','ir','q','commune','PARTIAL client.{id,telephone,nom,prenom}'])
+            ->leftJoin('lvs.livreur','l')
+            ->leftJoin('lvs.commande','c')
+            ->leftJoin('c.etatCommande','e')
+            ->leftJoin('c.lieuLivraison','llv')
+            ->leftJoin('llv.quartier','qlv')
+            ->leftJoin('qlv.commune','clv')
             ->leftJoin('c.restaurant','r')
-            ->leftJoin('c.user','client')
-            ->leftJoin('li.user','livreur');
+            ->leftJoin('r.imageRestaurants','ir')
+            ->leftJoin('r.quartier','q')
+            ->leftJoin('q.commune','commune')
+            ->leftJoin('c.user','client');
     }
     public function findAll(){
 
@@ -35,23 +42,38 @@ class LivraisonRepository extends \Doctrine\ORM\EntityRepository
     }
 
     /**
+     * affiche l'historique des livraisons effectuées par un livreur
+     * @param $idLivreur
+     * @return array
+     */
+    public function findHistorique($idLivreur){
+        $query = $this->getMainQueryBuilder()
+            ->where('l.id=:idLivreur')
+            ->andWhere('lvs.finished=true')
+            ->setParameter('idLivreur',$idLivreur)
+            ->orderBy('lvs.dateFinLivraison','DESC')
+            ->getQuery();
+
+        $livraisons = $query->getArrayResult();
+
+        return $livraisons;
+    }
+
+    /**
      * Recherche la livraison courante du livreur dont l'id est fournit en parametre.
      * Une livraison est dites courante si le restaurant a marqué la commande terminée(commande.giveLivreur=false) et
      * le livreur n'a pas encore livré(livraison.finished=false)
-     * @param $idUser
+     * @param $idLivreur
      * @return array
      */
-    public function findByCurrentLivraison($idUser){
+    public function findLivraisonEncours($idLivreur){
         $query = $this->getMainQueryBuilder()
             ->addSelect(['q','commune','dc','p'])
             ->leftJoin('c.detailCommandes','dc')
             ->leftJoin('dc.plat','p')
-            ->leftJoin('r.quartier','q')
-            ->leftJoin('q.commune','commune')
-            ->where('livreur.id=:idUser')
-            ->andWhere('l.finished=false')
-//            ->andWhere('c.giveLivreur=true')
-            ->setParameter('idUser',$idUser)
+            ->where('l.id=:idLivreur')
+            ->andWhere('lvs.finished=false')
+            ->setParameter('idLivreur',$idLivreur)
             ->orderBy('c.dateCommande','DESC')
             ->getQuery();
 
@@ -59,5 +81,40 @@ class LivraisonRepository extends \Doctrine\ORM\EntityRepository
 
         return count($livraisons)!==0?$livraisons[0]:null;
     }
+
+    /**
+     * Trouver une livraison sans livreur
+     * @return Livraison
+     */
+    public function findWithoutLivreur(){
+        $qb = $this->createQueryBuilder('lvs');
+        $livraisons = $qb
+            ->leftJoin('lvs.commande','c')
+            ->where($qb->expr()->isNull('lvs.livreur'))
+            ->andWhere('c.aLivrer=true')
+//            ->where($this->createQueryBuilder('lvs')->expr()->isNull('livraison.livreur'))
+            ->orderBy('c.dateCommande','ASC')
+            ->getQuery()
+            ->getResult();
+
+        return count($livraisons)!==0?$livraisons[0]:null;
+
+    }
+
+    public function findById($id){
+        $query = $this->getMainQueryBuilder()
+            ->addSelect(['q','commune','dc','p'])
+            ->leftJoin('c.detailCommandes','dc')
+            ->leftJoin('dc.plat','p')
+            ->where('lvs.id=:id')
+            ->setParameter('id',$id)
+            ->getQuery();
+
+        $livraisons = $query->getArrayResult();
+
+        return count($livraisons)!==0?$livraisons[0]:null;
+
+    }
+
 
 }

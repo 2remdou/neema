@@ -10,6 +10,8 @@ use JMS\Serializer\Annotation\ExclusionPolicy,
     JMS\Serializer\Annotation\Expose,
     JMS\Serializer\Annotation\SerializedName;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use AppBundle\Validator\Constraints as NeemaAssert;
+
 
 
 /**
@@ -39,66 +41,60 @@ class Commande
      * @ORM\Column(name="dateCommande", type="datetime")
      * @Expose()
      * @SerializedName("dateCommande")
-     * @Assert\NotBlank(message="la date est obligatoire")
+     * @Assert\NotBlank(message="la date de la commande est obligatoire")
      */
     private $dateCommande;
 
     /**
+     * Le numero de telephone pour contacter le client
      * @var string
      *
      * @ORM\Column(name="telephone", type="string", length=255)
      * @Expose()
      * @Assert\NotBlank(message="le numero du client est obligatoire")
+     * @NeemaAssert\IsGuineanPhone()
      */
     private $telephone;
 
     /**
+     * Le code genere, qui permettra au client de recuperer sa commande
+     * @var string
+     *
+     * @ORM\Column(name="codeCommande", type="string", length=255)
+     * @Expose()
+     * @Assert\NotBlank(message="Le code de la commande est obligatoire")
+     */
+    private $codeCommande;
+
+    /**
+     * pour savoir si le client à recuperer la commande
      * @var boolean
      *
-     * @ORM\Column(name="isDelivered", type="boolean", options={"default":false})
+     * @ORM\Column(name="delivered", type="boolean", options={"default":false})
      * @Expose()
-     * @SerializedName("isDelivered")
+     * @SerializedName("delivered")
      */
-    private $isDelivered;
+    private $delivered;
 
     /**
-     * @var string
+     * pour savoir si la commande est à livrer
+     * @var boolean
      *
-     * @ORM\Column(name="longitude", type="string", length=255)
+     * @ORM\Column(name="aLivrer", type="boolean", options={"default":false})
      * @Expose()
-     * @Assert\NotBlank(message="la longitude est obligatoire")
+     * @SerializedName("aLivrer")
      */
-    private $longitude;
+    private $aLivrer;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="latitude", type="string", length=255)
+     * @ORM\Column(name="dateDelivered", type="datetime",nullable=true)
      * @Expose()
-     * @Assert\NotBlank(message="la latitude est obligatoire")
+     * @SerializedName("dateDelivered")
      */
-    private $latitude;
+    private $dateDelivered;
 
-    /**
-     * @var float
-     *
-     * @ORM\Column(name="fraisTransport", type="float")
-     * @Assert\NotBlank(message="Le transport est obligatoire")
-     * @Expose()
-     * @SerializedName("fraisTransport")
-     */
-    private $fraisTransport;
-
-    /**
-     * La durée de livraison entre le client et le restaurant en seconde
-     * @var float
-     *
-     * @ORM\Column(name="durationLivraison", type="float")
-     * @Assert\NotBlank(message="La durée de livraison  est obligatoire")
-     * @Expose()
-     * @SerializedName("durationLivraison")
-     */
-    private $durationLivraison;
 
     /**
      * La somme des différentes durées pour determiner approximativement
@@ -122,27 +118,11 @@ class Commande
 
 
     /**
-     * @var float
-     * en metre
-     * @ORM\Column(name="distance", type="float")
-     * @Assert\NotBlank(message="La distance entre le restaurant et le client  est obligatoire")
-     * @Expose()
-     */
-    private $distance;
-
-
-    /**
      * @ORM\OneToMany(targetEntity="DetailCommande",mappedBy="commande")
      * @Expose()
      * @SerializedName("detailCommandes")
      */
     private $detailCommandes;
-
-    /**
-     * @ORM\OneToOne(targetEntity="Livraison", mappedBy="commande")
-     * @Expose()
-     */
-    private $livraison;
 
     /**
      * @ORM\ManyToOne(targetEntity="User", inversedBy="commandes")
@@ -159,13 +139,54 @@ class Commande
     private $restaurant;
 
     /**
+     * @ORM\OneToOne(targetEntity="Livraison",mappedBy="commande")
+     * @Expose()
+     * @SerializedName("livraison")
+     */
+    private $livraison;
+
+
+    /**
+     * @ORM\ManyToOne(targetEntity="LieuLivraison")
+     */
+    private $lieuLivraison;
+
+
+    /**
      * @ORM\ManyToOne(targetEntity="EtatCommande", inversedBy="commandes")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="etatCommande",referencedColumnName="code",nullable=false)
      * @Assert\NotNull(message="L'etat est obligatoire")
+     * @Expose()
      */
     private $etatCommande;
 
 
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="montantCommande", type="float")
+     * @Assert\NotBlank(message="Le prix est obligatoire")
+     * @Expose()
+     */
+    private $montantCommande;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="fraisCommande", type="float")
+     * @Assert\NotBlank(message="Le prix est obligatoire")
+     * @Expose()
+     */
+    private $fraisCommande;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="totalCommande", type="float")
+     * @Assert\NotBlank(message="Le total de la commande est obligatoire")
+     * @Expose()
+     */
+    private $totalCommande;
 
 
 
@@ -173,7 +194,8 @@ class Commande
 
     public function __construct(){
         $this->dateCommande = new \DateTime();
-        $this->isDelivered = false;
+        $this->delivered = false;
+        $this->codeCommande = strtoupper(substr(uniqid(),1,8));
     }
 
     /**
@@ -215,7 +237,8 @@ class Commande
      */
     public function getDateCommande()
     {
-        return $this->dateCommande->getTimestamp();
+        return $this->dateCommande;
+//        return $this->dateCommande->getTimestamp();
     }
 
     /**
@@ -242,76 +265,13 @@ class Commande
         return $this->telephone;
     }
 
-    /**
-     * Set isDelivered
-     *
-     * @param boolean $isDelivered
-     *
-     * @return Commande
-     */
-    public function setIsDelivered($isDelivered)
-    {
-        $this->isDelivered = $isDelivered;
-
-        return $this;
-    }
 
     /**
-     * Get isDelivered
-     *
-     * @return boolean
+     * @param boolean $delivered
      */
-    public function getIsDelivered()
+    public function setDelivered($delivered)
     {
-        return $this->isDelivered;
-    }
-
-    /**
-     * Set longitude
-     *
-     * @param string $longitude
-     *
-     * @return Commande
-     */
-    public function setLongitude($longitude)
-    {
-        $this->longitude = $longitude;
-
-        return $this;
-    }
-
-    /**
-     * Get longitude
-     *
-     * @return string
-     */
-    public function getLongitude()
-    {
-        return $this->longitude;
-    }
-
-    /**
-     * Set latitude
-     *
-     * @param string $latitude
-     *
-     * @return Commande
-     */
-    public function setLatitude($latitude)
-    {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    /**
-     * Get latitude
-     *
-     * @return string
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
+        $this->delivered = $delivered;
     }
 
     /**
@@ -346,55 +306,6 @@ class Commande
     public function getDetailCommandes()
     {
         return $this->detailCommandes;
-    }
-
-
-    /**
-     * Set livraison
-     *
-     * @param \AppBundle\Entity\Livraison $livraison
-     *
-     * @return Commande
-     */
-    public function setLivraison(\AppBundle\Entity\Livraison $livraison = null)
-    {
-        $this->livraison = $livraison;
-
-        return $this;
-    }
-
-    /**
-     * Get livraison
-     *
-     * @return \AppBundle\Entity\Livraison
-     */
-    public function getLivraison()
-    {
-        return $this->livraison;
-    }
-
-    /**
-     * Set fraisTransport
-     *
-     * @param float $fraisTransport
-     *
-     * @return Commande
-     */
-    public function setFraisTransport($fraisTransport)
-    {
-        $this->fraisTransport = $fraisTransport;
-
-        return $this;
-    }
-
-    /**
-     * Get fraisTransport
-     *
-     * @return float
-     */
-    public function getFraisTransport()
-    {
-        return $this->fraisTransport;
     }
 
     /**
@@ -446,54 +357,6 @@ class Commande
     }
 
     /**
-     * Set duration
-     *
-     * @param float $duration
-     *
-     * @return Commande
-     */
-    public function setDuration($duration)
-    {
-        $this->duration = $duration;
-
-        return $this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return float
-     */
-    public function getDuration()
-    {
-        return $this->duration;
-    }
-
-    /**
-     * Set distance
-     *
-     * @param float $distance
-     *
-     * @return Commande
-     */
-    public function setDistance($distance)
-    {
-        $this->distance = $distance;
-
-        return $this;
-    }
-
-    /**
-     * Get distance
-     *
-     * @return float
-     */
-    public function getDistance()
-    {
-        return $this->distance;
-    }
-
-    /**
      * Set durationExact
      *
      * @param float $durationExact
@@ -518,30 +381,6 @@ class Commande
     }
 
     /**
-     * Set durationLivraison
-     *
-     * @param float $durationLivraison
-     *
-     * @return Commande
-     */
-    public function setDurationLivraison($durationLivraison)
-    {
-        $this->durationLivraison = $durationLivraison;
-
-        return $this;
-    }
-
-    /**
-     * Get durationLivraison
-     *
-     * @return float
-     */
-    public function getDurationLivraison()
-    {
-        return $this->durationLivraison;
-    }
-
-    /**
      * Set durationEstimative
      *
      * @param float $durationEstimative
@@ -563,5 +402,196 @@ class Commande
     public function getDurationEstimative()
     {
         return $this->durationEstimative;
+    }
+
+    /**
+     * Set etatCommande
+     *
+     * @param \AppBundle\Entity\EtatCommande $etatCommande
+     *
+     * @return Commande
+     */
+    public function setEtatCommande(\AppBundle\Entity\EtatCommande $etatCommande)
+    {
+        $this->etatCommande = $etatCommande;
+
+        return $this;
+    }
+
+    /**
+     * Get etatCommande
+     *
+     * @return \AppBundle\Entity\EtatCommande
+     */
+    public function getEtatCommande()
+    {
+        return $this->etatCommande;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCodeCommande()
+    {
+        return $this->codeCommande;
+    }
+
+    /**
+     * @param string $codeCommande
+     */
+    public function setCodeCommande($codeCommande)
+    {
+        $this->codeCommande = $codeCommande;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateDelivered()
+    {
+        return $this->dateDelivered;
+    }
+
+    /**
+     * @param \DateTime $dateDelivered
+     */
+    public function setDateDelivered($dateDelivered)
+    {
+        $this->dateDelivered = $dateDelivered;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMontantCommande()
+    {
+        return $this->montantCommande;
+    }
+
+    /**
+     * @param float $montantCommande
+     */
+    public function setMontantCommande($montantCommande)
+    {
+        $this->montantCommande = $montantCommande;
+    }
+
+    /**
+     * @return float
+     */
+    public function getFraisCommande()
+    {
+        return $this->fraisCommande;
+    }
+
+    /**
+     * @param float $fraisCommande
+     */
+    public function setFraisCommande($fraisCommande)
+    {
+        $this->fraisCommande = $fraisCommande;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalCommande()
+    {
+        return $this->totalCommande;
+    }
+
+    /**
+     * @param float $totalCommande
+     */
+    public function setTotalCommande($totalCommande)
+    {
+        $this->totalCommande = $totalCommande;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAEmporter()
+    {
+        return $this->aEmporter;
+    }
+
+    /**
+     * @param boolean $aEmporter
+     */
+    public function setAEmporter($aEmporter)
+    {
+        $this->aEmporter = $aEmporter;
+    }
+
+
+
+
+    /**
+     * Get delivered
+     *
+     * @return boolean
+     */
+    public function getDelivered()
+    {
+        return $this->delivered;
+    }
+
+    /**
+     * Get aEmporter
+     *
+     * @return boolean
+     */
+    public function getAEmporter()
+    {
+        return $this->aEmporter;
+    }
+
+    /**
+     * Set lieuLivraison
+     *
+     * @param \AppBundle\Entity\LieuLivraison $lieuLivraison
+     *
+     * @return Commande
+     */
+    public function setLieuLivraison(\AppBundle\Entity\LieuLivraison $lieuLivraison = null)
+    {
+        $this->lieuLivraison = $lieuLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get lieuLivraison
+     *
+     * @return \AppBundle\Entity\LieuLivraison
+     */
+    public function getLieuLivraison()
+    {
+        return $this->lieuLivraison;
+    }
+
+    /**
+     * Set livraison
+     *
+     * @param \AppBundle\Entity\Livraison $livraison
+     *
+     * @return Commande
+     */
+    public function setLivraison(\AppBundle\Entity\Livraison $livraison = null)
+    {
+        $this->livraison = $livraison;
+
+        return $this;
+    }
+
+    /**
+     * Get livraison
+     *
+     * @return \AppBundle\Entity\Livraison
+     */
+    public function getLivraison()
+    {
+        return $this->livraison;
     }
 }

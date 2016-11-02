@@ -5,12 +5,13 @@
         on-refresh="doRefresh()">
     </ion-refresher>
         <div class="card" ng-repeat="commande in commandes track by commande.id" ui-sref="infoCommande({idCommande:commande.id})">
-            <div class="item item-divider">
+            <div class="item item-balanced item-divider text-center">
                 {{ commande.restaurant.nom }}
             </div>
             <div class="item item-text-wrap">
                 <h3>{{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT' }}</h3>
                 <h3>Etat: <span class="balanced">{{commande.etatCommande.libelle}}</span></h3>
+                <h3 ng-show="commande.aLivrer">Adresse: <span class="balanced">{{commande.lieuLivraison.nom}}</span></h3>
                 <div ng-hide="commande.delivered">
                     Durée restante: <neema-timer time="commande.dureeRestante"></neema-timer>
                 </div>

@@ -6,9 +6,13 @@
 
 app
     .config(['RestangularProvider','UrlApi',function(RestangularProvider,UrlApi){
-    RestangularProvider.setBaseUrl(UrlApi);
+            RestangularProvider.setBaseUrl(UrlApi);
+            // RestangularProvider.setDefaultHeaders({version: "1.0.0"});;
+
     }])
     .config(['$httpProvider','jwtInterceptorProvider',function Config($httpProvider, jwtInterceptorProvider) {
+        //definir la version de l'application
+        $httpProvider.defaults.headers.common.version = '1.0.0';
         var requestForRefreshAlreadySend = false;
         jwtInterceptorProvider.tokenGetter = ['jwtHelper','UserService', function(jwtHelper,UserService) {
 

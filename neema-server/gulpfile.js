@@ -3,7 +3,8 @@
  */
 var gulp = require('gulp'),
     concat = require('gulp-concat'),
-    concatCss = require('gulp-concat-css');
+    concatCss = require('gulp-concat-css'),
+    gulpCopy = require('gulp-copy');
 
 gulp.task('concatJs',function () {
     return gulp.src([
@@ -42,9 +43,12 @@ gulp.task('service',function () {
         'web/js/directive/*.js'
     ])
         .pipe(concat('service.js'))
+        .pipe(gulp.dest('../neema-livreur/www/lib/'))
+        .pipe(gulp.dest('../neema-client/www/lib/'))
+        .pipe(gulp.dest('../neema-restaurant/www/lib/'))
         .pipe(gulp.dest('web/bundles/'));
 });
-//
+
 
 gulp.task('concatCss',function(){
     return gulp.src([
@@ -56,7 +60,9 @@ gulp.task('concatCss',function(){
         'web/css/*.css',
     ])
         .pipe(concatCss('all.css',{rebaseUrls:false}))
+        .pipe(gulp.dest('../neema-livreur/www/lib/'))
         .pipe(gulp.dest('web/bundles/'));
+        //.pipe(gulpCopy('../neema-livreur/www/lib/',{prefix:1}));
 });
 
     //aws s3 --region us-east-1 cp web/bundles/all.js s3://neemas3/js/

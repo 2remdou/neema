@@ -1,0 +1,44 @@
+<ion-view view-title="Historique livraison">
+    <ion-content scroll="true" padding="true">
+        <ion-refresher
+        pulling-text="Pull to refresh..."
+        on-refresh="doRefresh()">
+    </ion-refresher>
+    <div class="card" ng-repeat="livraison in livraisons track by livraison.id" ui-sref="infoLivraison({idLivraison:livraison.id})">
+        <div class="item item-balanced item-divider text-center">
+            <!--{{ livraison.dateDebutLivraison|date:'EEEE dd MMMM yyyy' }}-->
+            {{ livraison.dateDebutLivraison|humanizeDate }}
+            <br>
+            {{ livraison.dateDebutLivraison|date:'H:mm:ss':'+GMT' }} - {{ livraison.dateFinLivraison|date:'H:mm:ss':'+GMT' }} 
+            <div>{{ notification.title }}</div>
+        </div>
+        <div class="item item-text-wrap">
+            <div class="list">
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-restaurant"></i>
+                         <strong>Restaurant</strong> : {{livraison.commande.restaurant.nom}}
+                         <br>
+                         <strong>Tel</strong> : {{livraison.commande.restaurant.telephone}} 
+                         <br>
+                         <strong>Adresse</strong> : {{livraison.commande.restaurant.quartier.nom}} 
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-person"></i>
+                         <strong>Client</strong> : {{livraison.commande.user.nom}}  {{livraison.commande.user.prenom}} 
+                         <br>
+                         <strong>Tel</strong> : {{livraison.commande.user.telephone}} 
+                         <br>
+                         <strong>Adresse</strong>: {{livraison.commande.lieuLivraison.quartier.nom}} - {{livraison.commande.lieuLivraison.nom}} 
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-bicycle"></i>
+                         <strong>Duree Livraison</strong> : {{livraison.dureeLivraison}} 
+                </p>
+
+            </div>
+        </div>
+    </div>
+        <ion-infinite-scroll on-infinite="loadMore()" ng-if="moreDataCanBeLoaded" icon="ion-loading-c" distance="1%">
+        </ion-infinite-scroll>
+    </ion-content>
+</ion-view>

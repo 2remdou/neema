@@ -81,8 +81,16 @@ app
 
                 if(response.status === 401) {
                     $state.go('login');
-                    return;
+                    return false;
                 }
+
+                if(response.status === 404) {
+                    SpinnerService.stop();
+                    $rootScope.$broadcast('show.message',{alert:response.data.alert});
+                    $state.go('menu');
+                    return false;
+                }
+
 
             });
 

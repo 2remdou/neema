@@ -31,9 +31,6 @@ class LivraisonSubscriber implements EventSubscriberInterface
     public function onLivraisonIsFinished(LivraisonEvent $livraisonEvent){
         $livraison = $livraisonEvent->getLivraison();
 
-        $livraison->setFinished(true);
-        $livraison->setDateLivraison(new \DateTime());
-
         $commande = $livraison->getCommande();
         $this->commandeManager->calculDurationExact($commande);
     }

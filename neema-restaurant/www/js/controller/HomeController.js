@@ -85,6 +85,9 @@ app.controller('HomeController',
                     CommandeService.finishPreparation(detailCommande,function(alert){
                         SpinnerService.stop();
                         $scope.$emit('show.message',{alert:alert});
+                    },function(alert){
+                        detailCommande.finished = false;
+                        $scope.$emit('show.message',{alert:alert});
                     });
                 }else{
                     detailCommande.finished=false;

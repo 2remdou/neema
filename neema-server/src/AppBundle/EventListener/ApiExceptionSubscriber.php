@@ -10,7 +10,9 @@ namespace AppBundle\EventListener;
 
 
 use AppBundle\Exception\AccountEnabledException;
+use AppBundle\Exception\ApiException;
 use AppBundle\Exception\ChangePasswordException;
+use AppBundle\MessageResponse\MessageResponse;
 use JMS\Serializer\Serializer;
 use Symfony\Component\Debug\Exception\FatalErrorException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -19,6 +21,7 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Router;
@@ -40,6 +43,11 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     public function onKernelException(GetResponseForExceptionEvent $event){
 
         $e = $event->getException();
+
+        if($e instanceof ApiException){
+            $response = MessageResponse::messageJson($e->getMessage(),$e->getTypeAlert(),$e->getCode());
+            $event->setResponse($response);
+        }
 
         if($e instanceof ChangePasswordException){
             $response = new JsonResponse($e->getMessage(),$e->getCode());
@@ -72,19 +80,25 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
             ),404);
             $event->setResponse($response);
         }
-        if($e instanceof FatalErrorException){
-            $response = $event->getResponse();
-/*            $response = new JsonResponse(array(
-                'textAlert'=>'Nous avons cassés quelques choses. Ne vous inquiétez pas, car nous avons presque fini de le régler',
-                'typeAlert'=>'danger'
-            ),500);
-            $event->setResponse($response);*/
+
+        if($e instanceof BadRequestHttpException){
+            //extraction du nom de l'entity
+            preg_match('/Request parameter "(?P<param>\w+)" is empty/',$e->getMessage(),$matches);
+
+            if(array_key_exists('param',$matches))
+                $message = 'le parametre '.$matches['param'].' est obligatoire dans la requête';
+
+            if(!array_key_exists('param',$matches)) {
+                preg_match("/Request parameter value of '(?P<param>\w+)' is not an array/",$e->getMessage(),$matches);
+                if(array_key_exists('param',$matches))
+                    $message = 'le parametre '.$matches['param'].' doit être un tableau';
+            }
+
+            if(!array_key_exists('param',$matches)) return;
+
+            $response = MessageResponse::messageJson($message,'danger',400);
+            $event->setResponse($response);
         }
-
-
-    }
-
-    public function onKernelRequest(GetResponseEvent $event){
 
     }
 
@@ -124,7 +138,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     {
         return array(
             KernelEvents::EXCEPTION=> 'onKernelException',
-            KernelEvents::REQUEST => 'onKernelRequest',
             KernelEvents::CONTROLLER => 'onKernelController'
         );
     }

@@ -22,14 +22,14 @@ var app = angular.module('neema',
     ]);
     
     app
-        //    .constant('UrlApi','http://localhost:8000/api') 
-        //    .constant('URL_SOCKET','localhost:5000') 
+            .constant('UrlApi','http://localhost:8000/api') 
+            .constant('URL_SOCKET','localhost:5000') 
                 //   .constant('UrlApi','http://192.168.43.21:8000/api') 
                 //   .constant('URL_SOCKET','192.168.43.21:5000') 
          .constant('INTERVAL_TIME_FOR_TRY_AGAIN_LOADING',300000) //5 minutes
          .constant('FRAIS_COMMANDE',0) //0% du montant de la commande
-                 .constant('UrlApi','https://neema.herokuapp.com/api')
-                 .constant('URL_SOCKET','https://neema-nodejs.herokuapp.com') 
+                //  .constant('UrlApi','https://neema.herokuapp.com/api')
+                //  .constant('URL_SOCKET','https://neema-nodejs.herokuapp.com') 
     ;
 
 

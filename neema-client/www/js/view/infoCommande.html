@@ -1,18 +1,32 @@
-<ion-view>
+<ion-view view-title="Detail de la commande">
     <ion-content>
         <div class="list">
             <div ng-repeat="commande in commandes">
                 <p  class="item item-icon-left" >
                     <i class="icon ion-clock"></i>
-                         Dans : 
+                    Date : {{commande.dateCommande|date:'dd/MM/yyyy H:mm:ss':'+GMT'}}
+                    <br>
+                    <span ng-hide="commande.delivered">
+                    Livraison Dans : 
                             <neema-timer time="commande.dureeRestante"></neema-timer>
+                    </span>
+                    <span ng-show="commande.delivered">
+                    Duree Livraison : {{commande.durationExact*1000|humanizeTime}}
+                    </span>
                 </p>
                 <p  class="item item-icon-left" >
                     <i class="icon ion-levels"></i>
                          Etat : {{commande.etatCommande.libelle}}
                 </p>
-                <p  class="item item-icon-right" >
-                    <strong >{{commande.restaurant.nom}} ( {{commande.restaurant.telephone}} ) </strong>
+                <p ng-show="commande.aLivrer"  class="item item-icon-left" >
+                    <i class="icon ion-ios-location"></i>
+                         Adresse : {{commande.lieuLivraison.nom}}
+                </p>
+                <p  class="item item-icon-left" >
+                    <i class="icon ion-android-restaurant"></i>
+                         Restaurant : {{commande.restaurant.nom}} 
+                         <br>
+                         Telephone : {{commande.restaurant.telephone}}
                 </p>
                 <p  class="item item-icon-right" >
                     <i class="icon ion-key cursor-pointer" ng-click="showCodeCommande()"></i>
@@ -20,11 +34,16 @@
                             <span ng-hide="codeCommandeVisible">********</span>
                             <span ng-show="codeCommandeVisible">{{commande.codeCommande}}</span>
                 </p>
-                <h5 class="text-center">Les details de la commande</h5>
+                <div class="text-center item item-divider item-balanced">Les details de la commande</div>
                 <p ng-repeat="detailCommande in commande.detailCommandes track by detailCommande.id|orderBy:detailCommande.prix:false" class="item item-icon-left" > 
                     <i class="icon ion-android-restaurant"></i>  
-                    ({{detailCommande.quantite}}) {{detailCommande.plat.nom}}
-                    <span class="montant">{{detailCommande.prix|montant}}</span>
+                     {{detailCommande.plat.nom}}
+                    <span class="montant">({{detailCommande.quantite}}) x {{detailCommande.prix|montant}}</span>
+                </p>
+                <p ng-show="commande.aLivrer" class="item item-icon-left" > 
+                    <i class="icon ion-android-bicycle"></i>  
+                    Frais Livraison
+                    <span class="montant">{{commande.livraison.fraisCommande|montant}}</span>
                 </p>
                 <div class="row item">
                     <h2>MONTANT</h2>

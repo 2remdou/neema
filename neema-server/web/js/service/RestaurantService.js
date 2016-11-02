@@ -27,14 +27,13 @@ app.service('RestaurantService',
 
 
 
-            this.list = function(callback,callbackError){
-                _restaurantService.getList().then(function(response){
+            this.list = function(page,callback,callbackError){
+                _restaurantService.customGET(null,{page:page}).then(function(response){
                     $rootScope.$broadcast('restaurant.list',{restaurants:response});
-                    that.restaurants = response;
                     if(typeof callback == 'function')
-                        callback(response);
+                        callback(response.restaurants,response.paginator);
                 },function(error){
-                    callbackError(error);
+                    if(typeof callbackError == 'function') callbackError(error);
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
             };
@@ -43,8 +42,14 @@ app.service('RestaurantService',
                 return that.restaurants;
             };
 
-            this.get = function(id){
-                return _restaurantService.get(id);
+            this.get = function(id,callback){
+                _restaurantService.get(id).then(function(response){
+                    if(typeof callback === 'function')
+                        callback(response);
+                },function(error){
+                    log(error);
+                    $rootScope.$broadcast('show.message', {alert:error.data});
+                });
             };
 
             this.update = function(restaurant){

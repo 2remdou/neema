@@ -6,15 +6,33 @@
 app
     .controller('LieuLivraisonController',
         ['$scope','usSpinnerService','LieuLivraisonService','ModalService','$stateParams',
-        function($scope,usSpinnerService,LieuLivraisonService,ModalService,$stateParams){
+            'CommuneService','QuartierService',
+        function($scope,usSpinnerService,LieuLivraisonService,ModalService,$stateParams,
+                 CommuneService,QuartierService){
 
             $scope.lieuLivraison={};
+
+            $scope.nbreLoader = 3;
+            $scope.$watch('nbreLoader', function(newValue, oldValue, scope) {
+                if($scope.nbreLoader<=0) usSpinnerService.stop('nt-spinner');
+            });
+
+            CommuneService.list(function(communes){
+               $scope.communes = communes;
+                $scope.nbreLoader--;
+            });
+
+            QuartierService.list(function(quartiers){
+               $scope.quartiers = quartiers;
+                $scope.nbreLoader--;
+            });
 
             function loadList(){
                 usSpinnerService.spin('nt-spinner');
                 LieuLivraisonService.list(function(lieuLivraisons){
                     $scope.lieuLivraisons = lieuLivraisons;
                     usSpinnerService.stop('nt-spinner');
+                    $scope.nbreLoader--;
                 });
             }
 
@@ -30,8 +48,11 @@ app
                 $scope.formIsSubmit=true;
                 if($scope.form.$invalid) return;
 
+                var lieu = angular.copy(lieuLivraison);
+                lieu.quartier = lieu.quartier.id;
+
                 usSpinnerService.spin('nt-spinner');
-                LieuLivraisonService.post(lieuLivraison,function(alert){
+                LieuLivraisonService.post(lieu,function(alert){
                     $scope.$emit('show.message',{alert:alert});
                     $scope.lieuLivraison = {};
                     usSpinnerService.stop('nt-spinner');
@@ -53,9 +74,11 @@ app
                 $scope.formIsSubmit=true;
                 if($scope.form.$invalid) return;
 
+                lieuLivraison.quartier = lieuLivraison.quartier.id;
+
                 usSpinnerService.spin('nt-spinner');
 
-                LieuLivraisonService.update(angular.copy(lieuLivraison),function(alert){
+                LieuLivraisonService.update(lieuLivraison,function(alert){
                     $scope.$emit('show.message',{alert:alert});
                     usSpinnerService.stop('nt-spinner');
                     $scope.lieuLivraison = {};
@@ -87,6 +110,7 @@ app
                 })
 
             };
+
 
         }])
 .controller('ListLieuLivraisonController',

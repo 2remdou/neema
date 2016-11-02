@@ -19,11 +19,24 @@
                     <input type="text" name="longitude" id="longitude" tabindex="3" class="form-control"
                            placeholder="Longitude" ng-model="lieuLivraison.longitude">
                 </div>
+                <div class="col-sm-4" ng-class="{ 'has-error' : form.quartier.$invalid && formIsSubmit}">
+                    <label for="quartier" class="text-primary control-label">Quartier</label>
+                    <ui-select tabindex="4" ng-model="lieuLivraison.quartier" theme="bootstrap" name="quartier" id="quartier" required>
+                        <ui-select-match placeholder="Selectionner un quartier">{{$select.selected.nom}}</ui-select-match>
+                        <ui-select-choices repeat="quartier in quartiers|filter:$select.search">
+                            <div ng-bind-html="quartier.nom | highlight: $select.search"></div>
+                            <div ng-bind-html="quartier.commune.nom | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                    <p ng-show="form.nom.$invalid && formIsSubmit" class="help-block">Le quartier est obligatoire.</p>
+                </div>
+
 
                 <div class="col-sm-8">
                     <label for="description" class="text-primary control-label col-md-4">Description :</label>
                     <textarea class="form-control" tabindex="5" cols="20" id="description" ng-model="lieuLivraison.description" name="description" placeholder="Description du lieuLivraison" rows="4"></textarea>
                 </div>
+
             </div>
         </form>
     </div>
@@ -37,6 +50,7 @@
             <thead>
             <tr>
                 <th>Lieu</th>
+                <th>Quartier</th>
                 <th>Latitude,Longitude</th>
                 <th>description</th>
             </tr>
@@ -45,6 +59,9 @@
             <tr ng-repeat="lieuLivraison in lieuLivraisons">
                 <td>
                     <span>{{lieuLivraison.nom}}</span>
+                </td>
+                <td>
+                    <span>{{lieuLivraison.quartier.commune.nom}}-{{lieuLivraison.quartier.nom}}</span>
                 </td>
                 <td>
                     <span>{{lieuLivraison.latitude}},{{lieuLivraison.longitude}}</span>

@@ -1,0 +1,88 @@
+<ion-view>
+    <ion-content scroll="true" class="padding has-header">
+        <ion-list>
+            <div class="row">
+                <div class="col col-80">
+                    <h5>COMMANDE A EMPORTER</h5>
+                </div>
+                <div class="col">
+                    <label class="toggle">
+                        <input type="checkbox" ng-model="commande.aEmporter"  ng-click="aEmporter()">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col col-80">
+                    <h5>COMMANDE A LIVRER</h5>
+                </div>
+                <div class="col">
+                    <label class="toggle">
+                        <input type="checkbox" ng-model="commande.aLivrer" ng-click="aLivrer()">
+                        <div class="track">
+                            <div class="handle"></div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            <div class="row" ng-show="commande.aLivrer">
+                <div class="col col-80">
+                    Adresse : {{commande.lieuLivraison.nom}}
+                </div>
+            </div>
+            <ion-item class="item-thumbnail-left card" ng-repeat="plat in plats track by plat.id|orderBy:plat.prix:false">
+                <img ng-src="{{plat.imagePlat.webPath}}/{{plat.imagePlat.imageName}}" alt=""/>
+                <strong>{{ plat.nom }}</strong>
+                <div class="button button-small button-assertive button-card button-close" ng-click="removeInPanier(plat)">
+                    <i class="ion-close"></i>
+                </div>
+                <div>
+                    <h2 class="price pull-left assertive">
+                        <span class="dark">{{plat.prix|montant}} x {{ plat.quantite }}</span>
+                    </h2>
+                    <h2 class="price pull-left assertive">
+                        <strong class="dark">{{plat.prix*plat.quantite|montant}}</strong>
+                    </h2>
+                    <div class="pull-right button button-small button-balanced button-card" ng-click="plusQuantite(plat)">
+                        <i class="ion-plus"></i>
+                    </div>
+                    <div class="pull-right button button-small button-balanced button-card" ng-click="moinsQuantite(plat)">
+                        <i class="ion-minus"></i>
+                    </div>
+                </div>
+
+                <ion-option-button class="stable-bg" ng-click="remove($index)">
+                <i class="icon ion-trash-a padding"></i>
+                </ion-option-button>
+            </ion-item>
+
+        </ion-list>
+        <div class="row">
+                <h4 class="col col-25 text-left">Durée:</h4>
+                <h4 class="col text-right">{{commande.dureeCommande*1000|humanizeTime}}</h4>
+        </div>       
+
+        <div class="list">
+            <form name="form" novalidate>
+                <div ng-class="{ 'has-error' : form.telephone.$invalid && !form.telephone.$pristine}">
+                    N° telephone
+                    <label class="item item-input"> 
+                        <input type="text" disabled placeholder="Votre numero telephone" name="telephone" ng-model="commande.telephone" required>
+                    </label>
+                    <p ng-show="form.telephone.$invalid && !form.telephone.$pristine" class="help-block">Le numero telephone est obligatoire.</p>
+                </div>
+                <button class="button button-block button-balanced"  ng-click="valider(commande)">Valider</button>
+
+            </form>
+        </div>
+    </ion-content>
+    <ion-footer-bar class="bar-stable">
+        <h4> MONTANT </h4>
+        <h4 class="montant">{{ commande.totalCommande|montant }}</h4>
+  </ion-footer-bar>
+
+</ion-view>
+
+

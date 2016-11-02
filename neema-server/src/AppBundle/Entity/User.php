@@ -125,7 +125,7 @@ class User implements UserInterface
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateTentativeActivation", type="date")
+     * @ORM\Column(name="dateTentativeActivation", type="date",nullable=true)
      * @Expose()
      * @SerializedName("dateTentativeActivation")
      */

@@ -17,15 +17,16 @@ var app = angular.module('neema',
         'ngCordova',
         'angular-jwt',
         'permission',
-        'permission.ui' 
+        'permission.ui',
+        'ngSanitize'
     ]);
     
     app 
-                .constant('UrlApi','http://localhost:8000/api') 
-            //    .constant('UrlApi','http://10.10.200.69:8000/api') 
-         .constant('INTERVAL_TIME_FOR_TRY_AGAIN_LOADING',300000) //5 minutes
+                      .constant('UrlApi','http://localhost:8000/api') 
+                    // .constant('UrlApi','http://10.10.200.69:8000/api') 
+         .constant('TIME_FOR_TRY_TO_LOAD',86400000) //1 jour
          .constant('FRAIS_COMMANDE',0) //0% du montant de la commande
-                //   .constant('UrlApi','https://neema.herokuapp.com/api')
+                //    .constant('UrlApi','https://neema.herokuapp.com/api')
     ;
 
 

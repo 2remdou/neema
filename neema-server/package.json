@@ -10,8 +10,8 @@
     "bower": "*",
     "gulp": "^3.9.1",
     "gulp-concat": "*",
-    "gulp-concat-css": "*"
-
+    "gulp-concat-css": "*",
+    "gulp-copy": "0.0.2"
   },
   "devDependencies": {},
   "scripts": {

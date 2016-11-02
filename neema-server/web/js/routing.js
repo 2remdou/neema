@@ -273,6 +273,23 @@ app.config(['$stateProvider','$urlRouterProvider',function($stateProvider, $urlR
            }
 
        })
+       .state('typeCommande',{
+           url:'/type-commande',
+           views:{
+               'nav':nav,
+               'content':{
+                   templateUrl: 'js/view/typeCommande.html',
+                   controller: 'TypeCommandeController'
+               }
+           },
+           data: {
+               permissions: {
+                   only: ROLE_ADMIN,
+                   redirectTo:'neema'
+               }
+           }
+
+       })
 
 
    ;

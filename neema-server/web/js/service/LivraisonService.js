@@ -6,22 +6,68 @@
 
 
 app.service('LivraisonService',
-    ['$rootScope','Restangular',
-        function($rootScope,Restangular){
+    ['$rootScope','Restangular','CommandeService',
+        function($rootScope,Restangular,CommandeService){
 
             var that=this;
 
             var _livraisonService = Restangular.all('livraisons');
 
-            this.getCurrentLivrisonByLivreurConnected = function(){
+            this.getLivrisonEncoursByLivreurConnected = function(callback,callbackError){
                 _livraisonService.one('current').get().then(function(response){
-                    $rootScope.$broadcast('livraison.current',{livraison:response});
+                    var livraison = response;
+                    $rootScope.$broadcast('livraison.current',{livraison:livraison});
+                    callback(livraison);
+                },function(error){
+                    callbackError(error.data.alert);
+                });
+            };
+
+            function calculDureeLivraison(livraisons){
+                if(!_.isArray(livraisons)){
+                    var dureeLivraison = moment(livraisons.dateFinLivraison).diff(moment(livraisons.dateDebutLivraison));
+                    livraisons.dureeLivraison = humanizeDuration(dureeLivraison,{ language: 'fr',round:true });
+                    return livraisons;
+                }
+                angular.forEach(livraisons,function(livraison){
+                    var dureeLivraison = moment(livraison.dateFinLivraison).diff(moment(livraison.dateDebutLivraison));
+                    livraison.dureeLivraison = humanizeDuration(dureeLivraison,{ language: 'fr',round:true });
+                });
+                return livraisons;
+            }
+
+            this.getHistoriqueByLivreurConnected = function(callback){
+                _livraisonService.one('historique/livreur-connected').get().then(function(response){
+                    var livraisons = response;
+                    livraisons = calculDureeLivraison(livraisons);
+                    callback(livraisons);
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error);
                 });
             };
+
+            this.livrer = function(livraison,callback){
+                _livraisonService.customPUT(null,'commandes/'+livraison.commande.id+'/finished').then(function(response){
+                    callback(response.data.alert)
+                },function(error){
+                    var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                    log(error);
+                });
+            };
+
+
+            this.get = function(idLivraison,callback){
+                _livraisonService.customGET(idLivraison).then(function(response){
+                    var livraison = calculDureeLivraison(response);
+                    callback(livraison);
+                },function(error){
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
+
 
             /**
              * retourne la duree restante d'une livraison fournit en parametre
@@ -42,7 +88,6 @@ app.service('LivraisonService',
 
                 return dureeRestante<=0?0:dureeRestante;
             };
-
 
             /**
              * retourne la duree restante de préparation des plats de la commande

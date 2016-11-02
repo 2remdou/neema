@@ -14,6 +14,9 @@ use AppBundle\Entity\Notification;
 use AppBundle\Event\CommandeEnregistreEvent;
 use AppBundle\NeemaEvents;
 use AppBundle\Service\CommandeManager;
+use AppBundle\Service\LivraisonServiceInterface;
+use AppBundle\Service\LivreurServiceInterface;
+use AppBundle\Service\RabbitMQService;
 use AppBundle\Util\Util;
 use Doctrine\ORM\EntityManager;
 use OldSound\RabbitMqBundle\RabbitMq\Producer;
@@ -24,13 +27,18 @@ class CommandeSubscriber implements EventSubscriberInterface
     use Util;
     private $em;
     private $commandeManager;
-    private $producer;
+    private $rabbitMQService;
+    private $livreurService;
+    private $livraisonService;
 
 
-    public function __construct(EntityManager $em,CommandeManager $commandeManager,Producer $producer){
+    public function __construct(EntityManager $em,CommandeManager $commandeManager,RabbitMQService $rabbitMQService,
+                                LivreurServiceInterface $livreurService,LivraisonServiceInterface $livraisonService){
         $this->em = $em;
         $this->commandeManager = $commandeManager;
-        $this->producer = $producer;
+        $this->rabbitMQService = $rabbitMQService;
+        $this->livreurService = $livreurService;
+        $this->livraisonService = $livraisonService;
     }
 
     /**
@@ -42,7 +50,6 @@ class CommandeSubscriber implements EventSubscriberInterface
     public function onCommandeEnregistre(CommandeEnregistreEvent $commandeEnregistreEvent){
 
         $commande = $commandeEnregistreEvent->getCommande();
-        $this->producer->setContentType('application/json');
 
         $message = array('event'=>NeemaEvents::COMMANDE_ENREGISTRE,
             'commande'=>$commande->getId(),
@@ -55,7 +62,8 @@ class CommandeSubscriber implements EventSubscriberInterface
             ),
                 'dateMessage'=> new \DateTime()
         );
-        $this->producer->publish(json_encode($message),'commande.enregistre');
+        $this->rabbitMQService->publish(json_encode($message),'commande.enregistre');
+
     }
 
     /**
@@ -69,17 +77,24 @@ class CommandeSubscriber implements EventSubscriberInterface
         $commande = $commandeEnregistreEvent->getCommande();
         $deviceTokens = $commande->getUser()->getDeviceTokens();
         $telephone = $commande->getTelephone();
-        $this->producer->setContentType('application/json');
+
+        if($commande->getALivrer()){
+            $contentMessage = 'La commande que vous avez passé au restaurant '.$commande->getRestaurant()->getNom().' est prête.
+Adresse Livraison: '. $commande->getLieuLivraison()->getNom().'.
+Merci pour votre confiance';
+        }else{
+            $contentMessage = 'La commande que vous avez passé au restaurant '.$commande->getRestaurant()->getNom().' est prête.
+Merci pour votre confiance';
+        }
 
         $notification = new Notification();
         $notification->setTitle('Commande prête');
         $notification->setType('commande');
         $notification->setIdType($commande->getId());
-        $notification->setMessage('Votre commande au restaurant '.$commande->getRestaurant()->getNom().' est prête');
+        $notification->setMessage($contentMessage);
         $notification->setUser($commande->getUser());
 
         $this->em->persist($notification);
-        $this->em->flush();
 
         // notification par sms
 
@@ -90,16 +105,17 @@ class CommandeSubscriber implements EventSubscriberInterface
             'dateMessage'=> new \DateTime(),
         );
 
-//        $this->producer->publish(json_encode($message),'notification.sms');
+        $this->rabbitMQService->publish(json_encode($message),'notification.sms');
 
         //notification par push
 
         foreach($deviceTokens as $deviceToken){
             $message = array('token'=>$deviceToken->getToken(),
-                'content'=>$commande->getRestaurant()->getNom().' : '.'Votre commande est prête','commande'=>$commande->getId(),
+                'content'=>$contentMessage,
                 'dateMessage'=> new \DateTime(),
             );
-            $this->producer->publish(json_encode($message),'notification.'.$deviceToken->getOs());
+            $this->rabbitMQService->publish(json_encode($message),'notification.'.$deviceToken->getOs());
+
         }
     }
 

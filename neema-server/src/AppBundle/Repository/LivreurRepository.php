@@ -16,7 +16,8 @@ class LivreurRepository extends \Doctrine\ORM\EntityRepository
     private function mainQueryBuilder(){
         $queryBuilder = $this->createQueryBuilder('l')
             ->addSelect(['PARTIAL u.{id,nom,prenom,telephone}'])
-            ->leftJoin('l.user','u');
+            ->leftJoin('l.user','u')
+        ;
 
         return $queryBuilder;
     }
@@ -30,13 +31,12 @@ class LivreurRepository extends \Doctrine\ORM\EntityRepository
             ->getArrayResult();
     }
 
-
     public function findFree(){
 
-    return  $this->mainQueryBuilder()
-        ->where('l.isFree=true')
-        ->getQuery()
-        ->setMaxResults(1)
-        ->getOneOrNullResult();
+        return  $this->mainQueryBuilder()
+            ->where('l.isFree=true')
+            ->getQuery()
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 }

@@ -11,7 +11,7 @@ var paths = {
   sass: ['./scss/**/*.scss']
 };
 
-gulp.task('default', ['sass','app']);
+gulp.task('default', ['sass','app','controllers']);
 
 gulp.task('sass', function(done) {
   gulp.src('./scss/ionic.app.scss')
@@ -33,7 +33,7 @@ gulp.task('watch', function() {
         'www/lib/service',
         'www/js/**/*.js'
       ],
-      ['app']);
+      ['app','controllers']);
       //['sass']);
 });
 
@@ -56,13 +56,25 @@ gulp.task('app',function () {
         'www/lib/restangular/dist/restangular.min.js',
         'www/lib/angular-jwt/dist/angular-jwt.min.js',
         'www/lib/angular-timer/dist/angular-timer.min.js',
+        'www/lib/angular-ui-select/dist/select.min.js',
+        'www/lib/angular-sanitize/angular-sanitize.min.js',
         'www/lib/moment/min/moment.min.js',
         'www/lib/moment/min/locales.min.js',
         'www/lib/humanize-duration/humanize-duration.js',
-        'www/js/**/*.js',
-        'www/lib/service'
+        'www/js/*.js'
+        // 'www/lib/service'
     ])
         .pipe(concat('lib.js'))
+        .pipe(gulp.dest('www/lib/'));
+});
+
+gulp.task('controllers',function () {
+    return gulp.src([
+        'www/js/controller/*.js',
+        'www/js/service/*.js'
+        // 'www/lib/service'
+    ])
+        .pipe(concat('neemaClientControllers.js'))
         .pipe(gulp.dest('www/lib/'));
 });
 

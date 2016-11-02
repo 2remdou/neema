@@ -12,6 +12,10 @@ class PlatRepository extends \Doctrine\ORM\EntityRepository
 {
     use UtilForRepository;
 
+    private function minQueryBuilder(){
+        $queryBuilder = $this->createQueryBuilder('p');
+        return $queryBuilder;
+    }
     private function mainQueryBuilder(){
         $queryBuilder = $this->createQueryBuilder('p')
             ->addSelect(['r','ir','q','c','ip'])
@@ -28,32 +32,62 @@ class PlatRepository extends \Doctrine\ORM\EntityRepository
             ->getQuery()
             ->getArrayResult();    }
 
-    public function findOnMenu(){
+    public function findOnMenu($page=1,$countPerPage=10){
 
-        return $this->mainQueryBuilder()
-            ->where('p.onMenu=:onMenu')
-            ->setParameter('onMenu',true)
+        $p = $this->minQueryBuilder()
+            ->where('p.onMenu=true')
+            ->setFirstResult(($page-1)*$countPerPage)
+            ->setMaxResults($countPerPage)
             ->getQuery()
             ->getArrayResult();
+
+        $plats = $this->mainQueryBuilder()
+            ->where('p.id IN (:plats)')
+            ->setParameter(':plats',$p)
+            ->getQuery()
+            ->getArrayResult();
+        return $plats;
     }
 
-    public function findByRestaurant($idRestaurant=''){
+    public function findByRestaurant($idRestaurant='',$page=1,$countPerPage=10){
 
-        return $this->mainQueryBuilder()
+        $p = $this->minQueryBuilder()
+            ->leftJoin('p.restaurant','r')
             ->where('r.id LIKE :idRestaurant')
             ->setParameter('idRestaurant',$idRestaurant)
+            ->setFirstResult(($page-1)*$countPerPage)
+            ->setMaxResults($countPerPage)
             ->getQuery()
             ->getArrayResult();
+
+        $plats = $this->mainQueryBuilder()
+            ->where('p.id IN (:plats)')
+            ->setParameter(':plats',$p)
+            ->getQuery()
+            ->getArrayResult();
+
+        return $plats;
+
     }
-    public function findByRestaurantOnMenu($idRestaurant){
 
-        return $this->mainQueryBuilder()
-            ->where('r.id LIKE :idRestaurant')
+    public function findOnMenuByRestaurant($idRestaurant,$page=1,$countPerPage=10){
+        $p = $this->minQueryBuilder()
+            ->leftJoin('p.restaurant','r')
+            ->where('r.id=:idRestaurant')
+            ->andWhere('p.onMenu=true')
             ->setParameter('idRestaurant',$idRestaurant)
-            ->andWhere('p.onMenu=:onMenu')
-            ->setParameter('onMenu',true)
+            ->setFirstResult(($page-1)*$countPerPage)
+            ->setMaxResults($countPerPage)
             ->getQuery()
             ->getArrayResult();
+
+               $plats = $this->mainQueryBuilder()
+                   ->where('p.id IN (:plats)')
+                   ->setParameter(':plats',$p)
+                   ->getQuery()
+                   ->getArrayResult();
+
+        return $plats;
     }
 
     public function findById($id){

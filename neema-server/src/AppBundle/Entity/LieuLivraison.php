@@ -65,6 +65,15 @@ class LieuLivraison
      */
     private $description;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Quartier")
+     * @ORM\JoinColumn(nullable=false)
+     * @Expose()
+     * @Assert\NotNull(message="Le quartier est obligatoire")
+     */
+    private $quartier;
+
+
 
     /**
      * Get id
@@ -170,5 +179,29 @@ class LieuLivraison
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * Set quartier
+     *
+     * @param \AppBundle\Entity\Quartier $quartier
+     *
+     * @return LieuLivraison
+     */
+    public function setQuartier(\AppBundle\Entity\Quartier $quartier)
+    {
+        $this->quartier = $quartier;
+
+        return $this;
+    }
+
+    /**
+     * Get quartier
+     *
+     * @return \AppBundle\Entity\Quartier
+     */
+    public function getQuartier()
+    {
+        return $this->quartier;
     }
 }

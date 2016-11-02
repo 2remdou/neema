@@ -53,6 +53,16 @@ app.service('CommandeService',
                 });
 
             };
+
+            this.getHistoriqueByClientConnected = function(page,from,callback){
+                _commandeService.customGET('historique/client-connected',{page:page,from:from}).then(function(response){
+                    var commandes = response.commandes;
+                    callback(commandes,response.paginator);
+                },function(error){
+                    log(error);
+                });
+            };
+
             this.refreshListByClient = function(from,callback,callbackError){
                 _commandeService.customPOST({from:from},'refresh-client').then(function(response){
                     $rootScope.$broadcast('commande.list',{commandes:response});
@@ -67,7 +77,7 @@ app.service('CommandeService',
 
             this.listByUserConnected = function(callback,page){
                 _commandeService.customGET('userConnected',{page:page}).then(function(response){
-                    $rootScope.$broadcast('commande.list',{commandes:response.commandes,});
+                    $rootScope.$broadcast('commande.list',{commandes:response.commandes});
                     callback(response.commandes,response.currentPage);
                 },function(error){
                    log(error)
@@ -83,13 +93,13 @@ app.service('CommandeService',
                 });
             };
 
-            this.finishPreparation = function(detail,callback){
+            this.finishPreparation = function(detail,callback,callbackError){
                 _commandeService.customPUT(null,'details/'+detail.id+'/finish').then(function(response){
                     var alert = response.data;
                     $rootScope.$broadcast('commande.detail.updated',{alert:alert});
                     callback(alert)
                 },function(error){
-                    $rootScope.$broadcast('show.message',{alert:error.data});
+                    callbackError(error.data.alert);
                 });
             };
 
@@ -102,13 +112,23 @@ app.service('CommandeService',
             };
 
             this.delivered = function(commande,callback){
-                _commandeService.customPUT({code:commande.code},commande.id+'/delivered').then(function(response){
-                    var alert = response.data;
-                    $rootScope.$broadcast('commande.delivered',{alert:alert});
-                    callback(alert);
-                },function(error){
-                    $rootScope.$broadcast('show.message',{alert:error.data});
-                });
+                if(commande.aLivrer){
+                    _commandeService.customPUT(null,commande.id+'/give-to-livreur').then(function(response){
+                        log(response);
+                        callback(response.data.alert);
+                    },function(error){
+                        log(error);
+                        $rootScope.$broadcast('show.message',{alert:error.data});
+                    })
+                }else{
+                    _commandeService.customPUT({code:commande.code},commande.id+'/delivered').then(function(response){
+                        var alert = response.data;
+                        $rootScope.$broadcast('commande.delivered',{alert:alert});
+                        callback(alert);
+                    },function(error){
+                        $rootScope.$broadcast('show.message',{alert:error.data});
+                    });
+                }
             };
 
             this.update = function(commande){
@@ -143,6 +163,7 @@ app.service('CommandeService',
                 }else if(angular.isObject(commandes)){
                     commandes.dureeRestante = Math.round(dureeRestante(commandes.dateCommande,commandes.durationEstimative*1000));
                 }
+
                 return commandes;
             };
 }]);

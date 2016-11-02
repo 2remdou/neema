@@ -34,6 +34,18 @@ app.service('UserService',
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });
             };
+            this.loginLivreur = function(user,callback){
+                _userService.one('login-livreur').post('',user).then(function(response){
+                    that.setToken(response.token);
+                    that.setRefreshToken(response.refresh_token);
+                    $rootScope.userConnnected = that.getUser();
+                    $rootScope.$broadcast('user.connected',{token:response.token});
+                    callback(response.token);
+                },function(error){
+                    that.clear();
+                    $rootScope.$broadcast('show.message',{alert:error.data});
+                });
+            };
             this.loginRestaurant = function(user,callback){
                 _userService.one('login-restaurant').post('',user).then(function(response){
                     that.setToken(response.token);
@@ -89,9 +101,11 @@ app.service('UserService',
                 });
             };
 
-            this.inscriptionLivreur = function(user){
+            this.inscriptionLivreur = function(user,callback){
                 _userService.one('user-livreur').post('',user).then(function(response){
                     $rootScope.$broadcast('user.registred',{alert:response.data});
+                    if(typeof callback === 'function')
+                        callback(response.data.alert);
                 },function(error){
                     $rootScope.$broadcast('show.message',{alert:error.data});
                 });

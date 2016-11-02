@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Hydrator\Hydrator;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use JMS\Serializer\Annotation\ExclusionPolicy,
@@ -20,6 +21,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class Livraison
 {
+    use Hydrator;
     /**
      * @var int
      *
@@ -33,32 +35,23 @@ class Livraison
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateLivraison", type="datetime")
+     * @ORM\Column(name="dateDebutLivraison", type="datetime", nullable=true)
      * @Expose()
-     * @SerializedName("dateLivraison")
+     * @SerializedName("dateDebutLivraison")
      */
-    private $dateLivraison;
+    private $dateDebutLivraison;
 
     /**
-     * @var string
+     * @var \DateTime
      *
-     * @ORM\Column(name="longitude", type="string", length=255)
+     * @ORM\Column(name="dateFinLivraison", type="datetime", nullable=true)
      * @Expose()
-     * @Assert\NotBlank(message="la longitude est obligatoire")
+     * @SerializedName("dateFinLivraison")
      */
-    private $longitude;
+    private $dateFinLivraison;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="latitude", type="string", length=255)
-     * @Expose()
-     * @Assert\NotBlank(message="la latitude est obligatoire")
-     */
-    private $latitude;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Commande")
+     * @ORM\OneToOne(targetEntity="Commande", inversedBy="livraison")
      * @ORM\JoinColumn(nullable=false)
      * @Expose()
      * @Assert\NotNull(message="La commande est obligatoire")
@@ -67,14 +60,36 @@ class Livraison
 
     /**
      * @ORM\ManyToOne(targetEntity="Livreur")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      * @Expose()
      * @Assert\NotNull(message="Le livreur est obligatoire")
      */
     private $livreur;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="finished", type="boolean", options={"default":false})
+     * @Expose()
+     * @SerializedName("finished")
+     */
+    private $finished;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="fraisCommande", type="float")
+     * @Assert\NotBlank(message="Les frais de livraison sont obligatoire")
+     * @Expose()
+     */
+    private $fraisCommande;
 
 
+
+
+    public function __construct(){
+        $this->finished = false;
+    }
 
     /**
      * Get id
@@ -87,75 +102,134 @@ class Livraison
     }
 
     /**
-     * Set dateLivraison
+     * @return boolean
+     */
+    public function isFinished()
+    {
+        return $this->finished;
+    }
+
+    /**
+     * @param boolean $finished
+     */
+    public function setFinished($finished)
+    {
+        $this->finished = $finished;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+
+
+    /**
+     * Set commande
      *
-     * @param \DateTime $dateLivraison
+     * @param \AppBundle\Entity\Commande $commande
      *
      * @return Livraison
      */
-    public function setDateLivraison($dateLivraison)
+    public function setCommande(\AppBundle\Entity\Commande $commande)
     {
-        $this->dateLivraison = $dateLivraison;
+        $this->commande = $commande;
 
         return $this;
     }
 
     /**
-     * Get dateLivraison
+     * Get commande
+     *
+     * @return \AppBundle\Entity\Commande
+     */
+    public function getCommande()
+    {
+        return $this->commande;
+    }
+
+    /**
+     * Set livreur
+     *
+     * @param \AppBundle\Entity\Livreur $livreur
+     *
+     * @return Livraison
+     */
+    public function setLivreur(\AppBundle\Entity\Livreur $livreur)
+    {
+        $this->livreur = $livreur;
+
+        return $this;
+    }
+
+    /**
+     * Get livreur
+     *
+     * @return \AppBundle\Entity\Livreur
+     */
+    public function getLivreur()
+    {
+        return $this->livreur;
+    }
+
+    /**
+     * Set dateDebutLivraison
+     *
+     * @param \DateTime $dateDebutLivraison
+     *
+     * @return Livraison
+     */
+    public function setDateDebutLivraison($dateDebutLivraison)
+    {
+        $this->dateDebutLivraison = $dateDebutLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get dateDebutLivraison
      *
      * @return \DateTime
      */
-    public function getDateLivraison()
+    public function getDateDebutLivraison()
     {
-        return $this->dateLivraison;
+        return $this->dateDebutLivraison;
     }
 
     /**
-     * Set longitude
+     * Set dateFinLivraison
      *
-     * @param string $longitude
+     * @param \DateTime $dateFinLivraison
      *
      * @return Livraison
      */
-    public function setLongitude($longitude)
+    public function setDateFinLivraison($dateFinLivraison)
     {
-        $this->longitude = $longitude;
+        $this->dateFinLivraison = $dateFinLivraison;
 
         return $this;
     }
 
     /**
-     * Get longitude
+     * Get dateFinLivraison
      *
-     * @return string
+     * @return \DateTime
      */
-    public function getLongitude()
+    public function getDateFinLivraison()
     {
-        return $this->longitude;
+        return $this->dateFinLivraison;
     }
 
     /**
-     * Set latitude
+     * Get finished
      *
-     * @param string $latitude
-     *
-     * @return Livraison
+     * @return boolean
      */
-    public function setLatitude($latitude)
+    public function getFinished()
     {
-        $this->latitude = $latitude;
-
-        return $this;
-    }
-
-    /**
-     * Get latitude
-     *
-     * @return string
-     */
-    public function getLatitude()
-    {
-        return $this->latitude;
+        return $this->finished;
     }
 }
-

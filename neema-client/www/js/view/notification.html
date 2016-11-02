@@ -5,7 +5,7 @@
         on-refresh="doRefresh()">
     </ion-refresher>
     <div class="card" ng-repeat="notification in notifications track by notification.id" ng-click="showDetail(notification)">
-        <div class="item item-divider text-center">
+        <div class="item item-balanced item-divider text-center">
             {{ notification.dateNotification|date:'dd/MM/yyyy H:mm:ss':'+GMT' }}
             <div>{{ notification.title }}</div>
         </div>

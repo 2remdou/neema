@@ -23,9 +23,12 @@ app.service('LivreurService',
                 });
             };
 
-            this.list = function(){
+            this.list = function(callback){
                 _livreurService.getList().then(function(response){
+                    log(response);
                     $rootScope.$broadcast('livreur.list',{livreurs:response});
+                    if(typeof callback==='function')
+                        callback(response);
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:error.data});

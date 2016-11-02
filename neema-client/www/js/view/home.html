@@ -8,8 +8,8 @@
          </div>		
  		
      </ion-header-bar>
-    <ion-content scroll="true" padding="true">
-        <div class="list card" ng-repeat="plat in plats" ui-sref="plat({idPlat:plat.id})">
+    <ion-content scroll="true" padding="true" delegate-handle="mainScroll">
+        <div class="list card animated bounceInUp" ng-repeat="plat in plats" ui-sref="plat({idPlat:plat.id})">
             <div class="item item-avatar">
                 <h2>{{plat.nom}}</h2>
                 <p>{{plat.restaurant.nom}}-{{plat.restaurant.quartier.nom}}</p>
@@ -23,7 +23,8 @@
             </div>       
         </div>
         <ion-infinite-scroll
-        on-infinite="loadMore()"
+        ng-if="canBeLoad"
+        on-infinite="onInfiniteLoad()"
         icon="ion-loading-c"
         distance="1%">
         </ion-infinite-scroll>

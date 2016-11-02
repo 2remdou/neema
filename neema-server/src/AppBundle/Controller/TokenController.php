@@ -81,6 +81,56 @@ class TokenController extends FOSRestController
 
     }
     /**
+     * Se connecter et Generer un token avec le role livreur
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Se connecter et Generer un token avec le role livreur",
+     *   statusCodes = {
+     *     200 = "Created",
+     *     400 = "Bad credentiel",
+     *   }
+     * )
+     * @RequestParam(name="username",nullable=false, description="username")
+     * @RequestParam(name="password",nullable=false, description="password")
+     * @Route("api/users/login-livreur",name="login_livreur", options={"expose"=true})
+     * @Method({"POST"})
+     */
+
+    public function loginLivreurAction(Request $request, ParamFetcher $paramFetcher){
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')
+                     ->findOneBy(['username'=>$paramFetcher->get('username')]);
+
+        if(!$user){
+            return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
+        }
+
+        $isValid = $this->get('security.password_encoder')
+                        ->isPasswordValid($user,$paramFetcher->get('password'));
+
+        if(!$isValid){
+            return MessageResponse::message('Nom utilisateur ou mot de passe incorrect','danger',400);
+        }
+
+        if(!$user->hasRole('ROLE_LIVREUR')){
+            return MessageResponse::message("Vous n'êtes autorisé à acceder à cette application",'danger',400);
+        }
+
+        $jwt = $this->get('lexik_jwt_authentication.jwt_manager')->create($user);
+
+        $response = new JsonResponse();
+        $event    = new AuthenticationSuccessEvent(['token' => $jwt], $user, $request, $response);
+
+        $dispatcher = $this->get('event_dispatcher');
+
+        $dispatcher->dispatch(Events::AUTHENTICATION_SUCCESS, $event);
+        $response->setData($event->getData());
+
+        return $response;
+
+
+    }
+    /**
      * Se connecter et Generer un token avec le role restaurant
      *
      * @ApiDoc(

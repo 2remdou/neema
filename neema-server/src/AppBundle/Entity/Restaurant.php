@@ -118,6 +118,16 @@ class Restaurant
      */
     private $latitude;
 
+    /**
+     * pour savoir si le restaurant est fermé
+     * @var boolean
+     *
+     * @ORM\Column(name="close", type="boolean", options={"default":false})
+     * @Expose()
+     * @SerializedName("close")
+     */
+    private $close;
+
 
 
     /**
@@ -405,4 +415,22 @@ class Restaurant
     {
         return $this->imageRestaurants;
     }
+
+    /**
+     * @return boolean
+     */
+    public function isClose()
+    {
+        return $this->close;
+    }
+
+    /**
+     * @param boolean $close
+     */
+    public function setClose($close)
+    {
+        $this->close = $close;
+    }
+
+
 }

@@ -27,6 +27,7 @@ class LieuLivraison
      * @ORM\Column(name="id", type="guid")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
+     * @Expose()
      */
     private $id;
 
@@ -45,7 +46,6 @@ class LieuLivraison
      *
      * @ORM\Column(name="latitude", type="string", length=255, nullable=true)
      * @Expose()
-     * @Assert\NotBlank(message="la latitude est obligatoire")
      */
     private $latitude;
 
@@ -54,7 +54,6 @@ class LieuLivraison
      *
      * @ORM\Column(name="longitude", type="string", length=255, nullable=true)
      * @Expose()
-     * @Assert\NotBlank(message="la longitude est obligatoire")
      */
     private $longitude;
 
@@ -65,6 +64,15 @@ class LieuLivraison
      * @Expose()
      */
     private $description;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="Quartier")
+     * @ORM\JoinColumn(nullable=false)
+     * @Expose()
+     * @Assert\NotNull(message="Le quartier est obligatoire")
+     */
+    private $quartier;
+
 
 
     /**
@@ -147,5 +155,53 @@ class LieuLivraison
     public function getNom()
     {
         return $this->nom;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return LieuLivraison
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set quartier
+     *
+     * @param \AppBundle\Entity\Quartier $quartier
+     *
+     * @return LieuLivraison
+     */
+    public function setQuartier(\AppBundle\Entity\Quartier $quartier)
+    {
+        $this->quartier = $quartier;
+
+        return $this;
+    }
+
+    /**
+     * Get quartier
+     *
+     * @return \AppBundle\Entity\Quartier
+     */
+    public function getQuartier()
+    {
+        return $this->quartier;
     }
 }

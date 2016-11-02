@@ -35,11 +35,20 @@ class Livraison
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="dateLivraison", type="datetime", nullable=true)
+     * @ORM\Column(name="dateDebutLivraison", type="datetime", nullable=true)
      * @Expose()
-     * @SerializedName("dateLivraison")
+     * @SerializedName("dateDebutLivraison")
      */
-    private $dateLivraison;
+    private $dateDebutLivraison;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="dateFinLivraison", type="datetime", nullable=true)
+     * @Expose()
+     * @SerializedName("dateFinLivraison")
+     */
+    private $dateFinLivraison;
 
     /**
      * @ORM\OneToOne(targetEntity="Commande", inversedBy="livraison")
@@ -65,6 +74,16 @@ class Livraison
      * @SerializedName("finished")
      */
     private $finished;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="fraisCommande", type="float")
+     * @Assert\NotBlank(message="Les frais de livraison sont obligatoire")
+     * @Expose()
+     */
+    private $fraisCommande;
+
 
 
 
@@ -106,30 +125,6 @@ class Livraison
         $this->id = $id;
     }
 
-
-    /**
-     * Set dateLivraison
-     *
-     * @param \DateTime $dateLivraison
-     *
-     * @return Livraison
-     */
-    public function setDateLivraison($dateLivraison)
-    {
-        $this->dateLivraison = $dateLivraison;
-
-        return $this;
-    }
-
-    /**
-     * Get dateLivraison
-     *
-     * @return \DateTime
-     */
-    public function getDateLivraison()
-    {
-        return $this->dateLivraison;
-    }
 
 
     /**
@@ -178,5 +173,87 @@ class Livraison
     public function getLivreur()
     {
         return $this->livreur;
+    }
+
+    /**
+     * Set dateDebutLivraison
+     *
+     * @param \DateTime $dateDebutLivraison
+     *
+     * @return Livraison
+     */
+    public function setDateDebutLivraison($dateDebutLivraison)
+    {
+        $this->dateDebutLivraison = $dateDebutLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get dateDebutLivraison
+     *
+     * @return \DateTime
+     */
+    public function getDateDebutLivraison()
+    {
+        return $this->dateDebutLivraison;
+    }
+
+    /**
+     * Set dateFinLivraison
+     *
+     * @param \DateTime $dateFinLivraison
+     *
+     * @return Livraison
+     */
+    public function setDateFinLivraison($dateFinLivraison)
+    {
+        $this->dateFinLivraison = $dateFinLivraison;
+
+        return $this;
+    }
+
+    /**
+     * Get dateFinLivraison
+     *
+     * @return \DateTime
+     */
+    public function getDateFinLivraison()
+    {
+        return $this->dateFinLivraison;
+    }
+
+    /**
+     * Get finished
+     *
+     * @return boolean
+     */
+    public function getFinished()
+    {
+        return $this->finished;
+    }
+
+    /**
+     * Set fraisCommande
+     *
+     * @param float $fraisCommande
+     *
+     * @return Livraison
+     */
+    public function setFraisCommande($fraisCommande)
+    {
+        $this->fraisCommande = $fraisCommande;
+
+        return $this;
+    }
+
+    /**
+     * Get fraisCommande
+     *
+     * @return float
+     */
+    public function getFraisCommande()
+    {
+        return $this->fraisCommande;
     }
 }

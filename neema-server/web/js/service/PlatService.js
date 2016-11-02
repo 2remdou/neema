@@ -69,26 +69,35 @@ app.service('PlatService',
 
             this.listOnMenu = function(page,callback,callbackError){
 
-                _platService.one('onMenu').customGET(null,{page:page}).then(function(response){
+                _platService.one('on-menu').customGET(null,{page:page}).then(function(response){
                     $rootScope.$broadcast('plat.list',{plats:response.plats});
                     if(typeof  callback === 'function')
-                        callback(response.plats,response.currentPage,response.pageCount);
+                        callback(response.plats,response.paginator);
                 },function(error){
                     log(error);
-                    callbackError(error);
+                    if(typeof  callbackError === 'function')
+                        callbackError(error);
                 });
             };
 
-            this.listByRestaurantWithPaginator = function(idRestaurant,page){
-                var deffered = $q.defer();
-                _platService.one('by-restaurant/'+idRestaurant).customGET(null,{page:page}).then(function(response){
-                    $rootScope.$broadcast('plat.list',{plats:response});
-                    deffered.resolve({plats:response.plats,currentPage:response.currentPage,pageCount:response.pageCount});
+            this.search = function(key,callback){
+                _platService.customGET('search',{key:key}).then(function(response){
+                    var plats = _.uniqBy(response.plats,'id');
+                    callback(plats);
                 },function(error){
-                    deffered.reject(error);
+                    $rootScope.$broadcast('show.message',{alert:error.data});
                     log(error);
                 });
-                return deffered.promise;
+
+            };
+
+            this.listOnMenuByRestaurant = function(idRestaurant,page,callback){
+                _platService.one('by-restaurant/'+idRestaurant).customGET(null,{page:page}).then(function(response){
+                    $rootScope.$broadcast('plat.list',{plats:response});
+                    callback(response.plats,response.paginator);
+                },function(error){
+                    log(error);
+                });
             };
 
             this.listByRestaurant = function(restaurant){

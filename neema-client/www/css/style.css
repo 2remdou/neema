@@ -6,6 +6,27 @@
 
 }*/
 
+.bounce-enter, .bounce-leave
+{ 
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  -moz-animation-duration: 1s;
+  -moz-animation-fill-mode: both;
+  -o-animation-duration: 1s;
+  -o-animation-fill-mode: both;
+} 
+
+.bounce-enter.bounce-enter-active{
+    -webkit-animation-name: bounceInLeft;
+    -moz-animation-name: bounceInLeft;
+    -o-animation-name: bounceInLeft;
+}
+.bounce-leave.bounce-leave-active{
+    -webkit-animation-name: bounceOutRight;
+    -moz-animation-name: bounceOutRight;
+    -o-animation-name: bounceOutRight;
+}
+
 .has-subheader {
     top: 90px !important;
 }
@@ -30,6 +51,7 @@
 .montant{
     position: absolute;
     right: 0px;
+    font-weight: bold;
 }
 
 .has-error {

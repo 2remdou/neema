@@ -1,0 +1,23 @@
+<!--<script id="modalListLieuLivraison.html" type="text/ng-template">-->
+    <ion-modal-view>
+        <ion-header-bar>
+            <a class="button button-close button-icon icon ion-close" ng-click="closeModal()"></a>
+        </ion-header-bar>
+        
+        <ion-content>
+            <h4 class="text-center">Selectionner une adresse de livraison</h4>
+           <div class="list list-inset">
+                <label class="item item-input">
+                    <i class="icon ion-search placeholder-icon"></i>
+                    <input type="text" placeholder="Rechercher" ng-model="searchKey" ng-change="search(searchKey)">
+                </label>
+            </div>
+            <ion-list>
+                <ion-radio ng-repeat="lieuLivraison in lieuLivraisons" ng-model="commande.lieuLivraison" ng-value="lieuLivraison">
+                    <h2>{{lieuLivraison.nom}}</h2> 
+                    <p>{{lieuLivraison.quartier.commune.nom}}-{{lieuLivraison.quartier.nom}}</p>
+                </ion-radio>
+            </ion-list>
+        </ion-content>
+    </ion-modal-view>
+<!--</script>-->

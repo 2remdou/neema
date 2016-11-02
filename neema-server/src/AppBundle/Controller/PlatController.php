@@ -6,7 +6,10 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\ImagePlat;
+use AppBundle\Entity\Restaurant;
+use AppBundle\Exception\ApiException;
 use AppBundle\Util\FillAttributes;
+use Elastica\Aggregation\Terms;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
 	FOS\RestBundle\Controller\Annotations\RequestParam,
@@ -29,6 +32,73 @@ use AppBundle\Entity\Plat;
  */
 class PlatController extends FOSRestController
 {
+
+    /**
+     * Faire une recherche en fonction d'une key
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   description = "Faire une recherche en fonction d'une key",
+     *   statusCodes = {
+     *     404 = "Not Found",
+     *   }
+     * )
+     * @Route("api/plats/search",name="search_restaurant", options={"expose"=true})
+     * @Method({"GET"})
+     */
+    public function searchKeyAction(Request $request){
+        $key = $request->query->get('key');
+
+
+        if($key){
+            $boolPlat = new \Elastica\Query\BoolQuery();
+
+            $boolRestaurant = new \Elastica\Query\BoolQuery();
+            $boolQuartier = new \Elastica\Query\BoolQuery();
+            $boolCommune = new \Elastica\Query\BoolQuery();
+
+            $boolRestaurant->addShould(new \Elastica\Query\Match('restaurant.nom',$key));
+            $boolQuartier->addShould(new \Elastica\Query\Match('restaurant.quartier.nom',$key));
+            $boolCommune->addShould(new \Elastica\Query\Match('restaurant.quartier.commune.nom',$key));
+
+            $nestedRestaurant = new \Elastica\Query\Nested();
+            $nestedRestaurant->setPath('restaurant');
+            $nestedRestaurant->setQuery($boolRestaurant);
+
+            $nestedQuartier = new \Elastica\Query\Nested();
+            $nestedQuartier->setPath('restaurant.quartier');
+            $nestedQuartier->setQuery($boolQuartier);
+            $boolRestaurant->addShould($nestedQuartier);
+
+            $nestedCommune = new \Elastica\Query\Nested();
+            $nestedCommune->setPath('restaurant.quartier.commune');
+            $nestedCommune->setQuery($boolCommune);
+            $boolQuartier->addShould($nestedCommune);
+
+
+            $boolPlat->addShould(new \Elastica\Query\Match('nom',$key));
+            $boolPlat->addShould($nestedRestaurant);
+
+            $query = \Elastica\Query::create($boolPlat);
+        }
+        else{
+            $match = new \Elastica\Query\MatchAll();
+
+            $query = \Elastica\Query::create($match);
+        }
+
+        $type = $this->get('fos_elastica.index.neema.plat');
+        $platsElastica = $type->search($query);
+        if(count($platsElastica->getResults())===0){
+            throw new ApiException("Aucun resultat",404,'info');
+        }
+        $plats = array();
+        foreach($platsElastica->getResults() as $plat){
+            $plats[] = $plat->getData();
+        }
+
+        return array('plats'=>$plats);
+    }
 	/**
      * Ajouter un plat
      *
@@ -159,21 +229,25 @@ class PlatController extends FOSRestController
      *		404= "Not found"
      *   }
      * )
-     * @Route("api/plats/onMenu",name="get_plats_onmenu", options={"expose"=true})
+     * @Route("api/plats/on-menu",name="get_plats_onmenu", options={"expose"=true})
      * @Method({"GET"})
      */
 
 	public function getPlatsOnMenuAction(Request $request){
-        $em = $this->getDoctrine()->getManager();
+        $platService = $this->get('app.plat.service');
 
-        $plats = $em->getRepository('AppBundle:Plat')->findOnMenu();
+        $page = $request->query->getInt('page', 1);
+        $page = $page<=0?1:$page;
 
-        $paginator  = $this->get('knp_paginator');
-        $platsPaginate = $paginator->paginate($plats,$request->query->getInt('page', 1),10);
-        return array('plats'=>$platsPaginate->getItems(),
-            'currentPage'=>$platsPaginate->getCurrentPageNumber(),
-            'pageCount'=>$platsPaginate->getPaginationData()['pageCount'],
-            'itemPerPage'=>$platsPaginate->getPaginationData()['numItemsPerPage']);
+        $plats = $platService->getPlatOnMenu($page);
+
+        if(!$plats){
+            $paginator = array('currentPage'=>$page,'nextPage'=>$page);
+        }else{
+            $paginator = array('currentPage'=>$page,'nextPage'=>$page+1);
+        }
+
+        return array('plats'=>$plats,'paginator'=>$paginator);
 	}
 
     /**
@@ -248,21 +322,29 @@ class PlatController extends FOSRestController
      *		404= "Not found"
      *   }
      * )
-     * @Route("api/plats/by-restaurant/{id}",name="get_plats_by_restaurant", options={"expose"=true})
+     * @Route("api/plats/by-restaurant/{id}",name="get_plats_on_menu_by_restaurant", options={"expose"=true})
+     * @ParamConverter("restaurant", class="AppBundle:Restaurant")
      * @Method({"GET"})
      */
 
-    public function getPlatsByRestaurantWithPaginatorAction($id,Request $request){
-        $em = $this->getDoctrine()->getManager();
-        $plats = $em->getRepository('AppBundle:Plat')->findByRestaurant($id);
+    public function getPlatsOnMenuByRestaurantAction(Restaurant $restaurant,Request $request){
 
-        $paginator  = $this->get('knp_paginator');
-        $platsPaginate = $paginator->paginate($plats,$request->query->getInt('page', 1),10);
+        $platService = $this->get('app.plat.service');
 
-        return array('plats'=>$platsPaginate->getItems(),
-            'currentPage'=>$platsPaginate->getCurrentPageNumber(),
-            'pageCount'=>$platsPaginate->getPaginationData()['pageCount'],
-            'itemPerPage'=>$platsPaginate->getPaginationData()['numItemsPerPage']);
+        $page = $request->query->getInt('page', 1);
+        $page = $page<=0?1:$page;
+
+        $plats = $platService->getPlatByRestaurant($restaurant,$page);
+
+        if(!$plats && $page==1) throw new ApiException('Aucun plat retrouvé',404,'info');
+
+        if(!$plats){
+            $paginator = array('currentPage'=>$page,'nextPage'=>$page);
+        }else{
+            $paginator = array('currentPage'=>$page,'nextPage'=>$page+1);
+        }
+
+        return array('plats'=>$plats,'paginator'=>$paginator);
 
     }
 

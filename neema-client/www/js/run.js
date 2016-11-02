@@ -17,7 +17,7 @@ app
             if(window.StatusBar) {
                 StatusBar.styleDefault();
             }
-            $state.go('home');
+            // $state.go('home');
 /*            if($rootScope.userConnected){
                 $state.go('home');
             }else{
@@ -28,27 +28,23 @@ app
 
     }])
     .run(
-    ['$rootScope','UserService','SpinnerService','$state','Restangular',
-        function($rootScope,UserService,SpinnerService,$state,Restangular){
+    ['$rootScope','UserService','SpinnerService','$state','PlatService',
+        function($rootScope,UserService,SpinnerService,$state,PlatService){
 
             UserService.initUser();
 
             $rootScope.search = function(key){
                 SpinnerService.start();
-                Restangular.all('search').customGET(null,{key:key}).then(function(response){
-                    var plats = _.uniqBy(response.plats,'id');
+                PlatService.search(key,function(plats){
                     $rootScope.$broadcast('search.finished',{plats:plats});
                     SpinnerService.stop();
-                },function(error){
-                    $rootScope.$broadcast('show.message',{alert:error.data});
-                    log(error);
-                });
+                })
             };
 
     }])
     .run(
-    ['PopupService','$rootScope','SpinnerService','$cordovaNetwork',
-        function(PopupService,$rootScope,SpinnerService,$cordovaNetwork){
+    ['PopupService','$rootScope','SpinnerService','$cordovaNetwork','$state',
+        function(PopupService,$rootScope,SpinnerService,$cordovaNetwork,$state){
                 $rootScope.$on('show.message',function(event,args){
                     SpinnerService.stop();
                     var defaultMessage = {textAlert:'Ooops, nous allons régler ce petit souci dans quelques instants',typeAlert:'danger'};
@@ -69,9 +65,23 @@ app
                         message:alert.textAlert,
                         cssClass:'popup'+capitalizeFirstLetter(alert.typeAlert)
                     };
-                    PopupService.show(popup);
+                    PopupService.show(popup).then(function(){
+                        if(args.hasOwnProperty('callback')){
+                            if(typeof args.callback === 'function'){
+                                args.callback();
+                            }
+                        }
+                    });
                 });
 
+                $rootScope.notFound = function(event,args){
+                    $rootScope.$broadcast('show.message',{
+                        alert:args.alert,
+                        callback:function(){
+                            $state.go('home');
+                        }
+                    });
+                };
         }])
     .run(
     ['Restangular','$state','SpinnerService','$rootScope','$location',
@@ -82,6 +92,11 @@ app
                     $state.go('login');
                 }
 
+                if(response.status === 404) {
+                    SpinnerService.stop();
+                    $rootScope.$broadcast('not.found',{alert:response.data.alert});
+                    return false;
+                }
                 if(response.status === 409) {
                     SpinnerService.stop();
                     // $location.path('/codeForActivation');
@@ -92,7 +107,6 @@ app
                 SpinnerService.stop();
 
             });
-
         }])
     .run(
     ['PanierService','$rootScope',

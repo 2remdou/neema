@@ -3,81 +3,64 @@
  */
 
 app.controller('HomeController',
-    ['$scope','PlatService','PlatDataService','SpinnerService','INTERVAL_TIME_FOR_TRY_AGAIN_LOADING',
-    'FirstLoad',
-    function($scope,PlatService,PlatDataService,SpinnerService,INTERVAL_TIME_FOR_TRY_AGAIN_LOADING,
-    FirstLoad){
+    ['$scope','PlatService','SpinnerService',
+    'PaginatorService','$timeout','$ionicScrollDelegate','TIME_FOR_TRY_TO_LOAD',
+    function($scope,PlatService,SpinnerService,
+    PaginatorService,$timeout,$ionicScrollDelegate,TIME_FOR_TRY_TO_LOAD){
 
-        var loading = false;
-        PlatDataService.data.type='onMenu';
+        var tempsEcoule = new Date().getTime()- new Date(PaginatorService.getMenu().dateToLastLoad).getTime();        
+        if( tempsEcoule  >= TIME_FOR_TRY_TO_LOAD){
+            PaginatorService.remove('menu');
+        }
 
-        if(!Array.isArray($scope.plats)) $scope.plats = [];
+        $scope.plats = PaginatorService.getMenu().plats||[];
+        
 
-        $scope.loadMore = function(){
-            if(PlatDataService.data.type==='other') return;
+        $scope.canBeLoad = true;
+
+        $scope.load = function(callback){
             SpinnerService.start();
-            if(loading) return;//encours de chargement
-
-            //toujours recharger, si la liste des plats est vide
-            //  if($scope.plats.length === 0) PlatDataService.allPlatAreAlreadyLoaded.onMenu = false;
-            //si l'intervalle est expiré
-            //ou tous les plats ne sont pas chargés(pour la pagination)
-            if(PlatDataService.timeForLoadingExpired() || 
-                !PlatDataService.allPlatAreAlreadyLoaded.onMenu ||
-                $scope.plats.length === 0) {
-                loading=true;
-                PlatService.listOnMenu(PlatDataService.currentPage.onMenu+1,function(plats,currentPage,pageCount){
-                    loading=false;
-                    PlatDataService.lastTimeToLoad = new Date().getTime();
-                    if(plats.length === 0){
-                        // // PlatDataService.currentPage.onMenu=pageCount;
-                        PlatDataService.allPlatAreAlreadyLoaded.onMenu = true;
-                    }else{
-                        PlatDataService.setData(plats);
-                        PlatDataService.currentPage.onMenu++;
+            PlatService.listOnMenu(PaginatorService.getMenu().paginator.nextPage,
+                function(plats,paginator){
+                    PaginatorService.addPlatOnMenu({plats:plats,paginator:paginator});
+                    if(plats.length!==0) {
+                        $scope.plats = PaginatorService.getMenu().plats;
                     }
-                    $scope.plats = PlatDataService.getData();            
-                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                    $scope.canBeLoad = PaginatorService.getMenu().canBeLoad;
                     SpinnerService.stop();
-
-                },function(err){
-                    log(err);
-                });
-            }else{
-                if(PlatDataService.allPlatAreAlreadyLoaded.onMenu){
-                    $scope.plats = PlatDataService.getData();
+                    if(typeof callback === 'function')
+                        callback();
                 }
-                SpinnerService.stop();
-            }
+            )
+
         };
 
 
-        if(FirstLoad.controller.HomeController){
-            $scope.loadMore();
-            FirstLoad.controller.HomeController=false;
-        }else{
-            $scope.plats = PlatDataService.getData();
+        if($scope.plats.length===0){
+            $scope.load();
         }
 
+        $scope.onInfiniteLoad = function(){
+            $scope.load(function(){
+                //bug que je ne comprends pas dans safari et ios
+                var posTop = $ionicScrollDelegate.$getByHandle('mainScroll').getScrollPosition().top;
+                $ionicScrollDelegate.$getByHandle('mainScroll').scrollTo(0,posTop-200);
 
-
-
+                $timeout(function() {
+                    $scope.$broadcast('scroll.infiniteScrollComplete');
+                },1000);
+            });
+        };
 
         //***************LISTENER*******************
 
         $scope.$on('search.finished',function(event,args){
-            PlatDataService.data.type='other';//pouvoir parcourir les resultats de la recherche
             $scope.plats = args.plats;
-            PlatDataService.setData(args.plats);
         });
 
-        $scope.$on('scroll.infiniteScrollComplete',function(){
-            $scope.$broadcast('scroll.refreshComplete');
-        });
-/*
-        $scope.$on('$stateChangeSuccess', function() {
-            $scope.loadMore();
-        });
+        $scope.$on('not.found',function(event,args){
+             $scope.notFound(event,args);
+         });
 
-*/}
+}
 ]);

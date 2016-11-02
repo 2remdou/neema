@@ -33,10 +33,12 @@ class RestaurantRepository extends \Doctrine\ORM\EntityRepository
         return $queryBuilder;
     }
 
-    public function findAll(){
+    public function findAll($page=1,$countPerPage=10){
 
         $query = $this->mainQueryBuilder()
-                ->getQuery();
+            ->setFirstResult(($page-1)*$countPerPage)
+            ->setMaxResults($countPerPage)
+            ->getQuery();
         return $query->getArrayResult();
     }
 

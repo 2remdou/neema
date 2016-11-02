@@ -8,8 +8,18 @@ app.controller('LivreurController',
     function($scope,usSpinnerService,LivreurService,ModalService,UserService){
 
         $scope.livreur={};
-        LivreurService.list();
 
+
+        function loadList(){
+            usSpinnerService.spin('nt-spinner');
+            LivreurService.list(function(livreurs){
+                $scope.livreurs = livreurs;
+                usSpinnerService.stop('nt-spinner');
+                $scope.formIsSubmit=false;
+                $scope.livreur={};
+            });
+        }
+        loadList();
         $scope.save = function(livreur){
             $scope.formIsSubmit=true;
             if($scope.form.$invalid) return;
@@ -22,7 +32,11 @@ app.controller('LivreurController',
                 password:livreur.password,
                 telephone:livreur.telephone
             };
-            UserService.inscriptionLivreur(user);
+            UserService.inscriptionLivreur(user,function(alert) {
+                $scope.$emit('show.message', {alert: alert});
+                LivreurService.list();
+                loadList();
+            });
 
         };
 
@@ -34,24 +48,11 @@ app.controller('LivreurController',
 
 
 
-        $scope.$on('user.registred',function(event,args){
-            $scope.$emit('show.message',{alert:args.alert});
-            LivreurService.list();
-            usSpinnerService.stop('nt-spinner');
-        });
-
         $scope.$on('user.password.reseted',function(event,args){
             $scope.$emit('show.message',{alert:args.alert});
 
             usSpinnerService.stop('nt-spinner');
         });
 
-
-        $scope.$on('livreur.list',function(event,args){
-            $scope.livreurs = args.livreurs;
-            usSpinnerService.stop('nt-spinner');
-            $scope.formIsSubmit=false;
-            $scope.livreur={};
-        });
 
     }]);

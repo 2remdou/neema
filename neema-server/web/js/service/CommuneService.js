@@ -23,9 +23,11 @@ app.service('CommuneService',
                 });
             };
 
-            this.list = function(){
+            this.list = function(callback){
                 _communeService.getList().then(function(response){
                     $rootScope.$broadcast('commune.list',{communes:response});
+                    if(typeof callback === 'function')
+                        callback(response);
                 },function(error){
                     var alert = {textAlert:error.data.textAlert,typeAlert:error.data.typeAlert};
                     $rootScope.$broadcast('show.message',{alert:error.data});
