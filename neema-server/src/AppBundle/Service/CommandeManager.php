@@ -20,6 +20,7 @@ use AppBundle\Exception\ApiException;
 use AppBundle\NeemaEvents;
 use Doctrine\ORM\EntityManager;
 use FOS\RestBundle\Request\ParamFetcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpKernel\Debug\TraceableEventDispatcher;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -37,7 +38,7 @@ class CommandeManager implements CommandeManagerInterface
     private $dispatcher;
 
     public function __construct(EntityManager $em, $timeMarge, $timeLivraison,UtilServiceInterface $utilService,
-                                ValidatorInterface $validator,TokenStorage $tokenStorage,TraceableEventDispatcher $dispatcher){
+                                ValidatorInterface $validator,TokenStorage $tokenStorage,EventDispatcherInterface $dispatcher){
         $this->em = $em;
         $this->timeMarge = $timeMarge;
         $this->timeLivraison = $timeLivraison;

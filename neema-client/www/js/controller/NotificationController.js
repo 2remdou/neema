@@ -18,5 +18,11 @@ app
             $scope.showDetail = function(notification){
                 $state.go(notification.routeName,notification.routeParams);
             };
+
+            $scope.$on('not.found',function(event,args){
+                $scope.notFound(event,args);
+                $scope.$broadcast('scroll.refreshComplete');
+            });
+
         }])
 ;

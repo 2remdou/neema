@@ -48,6 +48,9 @@ app
         usSpinnerConfigProvider.setDefaults(opts);
     }])
     .config(['$httpProvider', function ($httpProvider) {
+        //definir la version de l'application
+        $httpProvider.defaults.headers.common.version = '1.0.0';
+
         $httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
         $httpProvider.defaults.headers.put['Content-Type'] = 'application/json; charset=utf-8';
         $httpProvider.defaults.headers.common['Content-Type'] = 'application/json; charset=utf-8';
@@ -55,9 +58,6 @@ app
 
     }])
     .config(['$httpProvider','jwtInterceptorProvider',function Config($httpProvider, jwtInterceptorProvider) {
-
-        //definir la version de l'application
-        $httpProvider.defaults.headers.common.version = '1.0.0';
 
         var requestForRefreshAlreadySend = false;
         jwtInterceptorProvider.tokenGetter = ['jwtHelper','UserService', function(jwtHelper,UserService) {

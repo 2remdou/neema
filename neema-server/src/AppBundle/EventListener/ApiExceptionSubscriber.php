@@ -35,11 +35,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ApiExceptionSubscriber implements EventSubscriberInterface
 {
 
-    private $tokenStorage;
-
-    public function __construct(TokenStorage $tokenStorage){
-        $this->tokenStorage = $tokenStorage;
-    }
     public function onKernelException(GetResponseForExceptionEvent $event){
 
         $e = $event->getException();
@@ -102,20 +97,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
 
     }
 
-    public function onKernelController(FilterControllerEvent $event){
-
-        if(!$this->tokenStorage->getToken()) return;
-        $user=$this->tokenStorage->getToken()->getUser();
-        if($user instanceof UserInterface){
-            if($user->getIsReseted() && $event->getController()[1]!=='changePasswordAction'){
-                throw new ChangePasswordException('Vous devez changer votre mot de passe, après réinitialisation');
-            }
-            if(!$user->getEnabled() && $event->getController()[1]!=='enabledAction' && $event->getController()[1]!=='sendBackActivationCodeAction'){
-                throw new AccountEnabledException('Tapez le code réçu par sms, pour activer votre compte');
-            }
-        }
-    }
-
     /**
      * Returns an array of event names this subscriber wants to listen to.
      *
@@ -138,7 +119,6 @@ class ApiExceptionSubscriber implements EventSubscriberInterface
     {
         return array(
             KernelEvents::EXCEPTION=> 'onKernelException',
-            KernelEvents::CONTROLLER => 'onKernelController'
         );
     }
 }

@@ -5,6 +5,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Exception\ApiException;
 use AppBundle\Util\FillAttributes;
 use FOS\RestBundle\Controller\FOSRestController,
 	FOS\RestBundle\Request\ParamFetcher,
@@ -71,6 +72,10 @@ class NotificationController extends FOSRestController
         $em = $this->getDoctrine()->getManager();
 
         $notifications = $em->getRepository('AppBundle:Notification')->findByUser($user->getId());
+
+        if(!$notifications){
+            throw new ApiException('Aucune notification',404,'info');
+        }
 
         return $notifications;
 	}

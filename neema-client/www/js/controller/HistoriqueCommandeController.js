@@ -59,6 +59,7 @@ app
             };
 
             $scope.$on('not.found',function(event,args){
+                $scope.notFound(event,args);
                 $scope.$broadcast('scroll.refreshComplete');
             });
         }])

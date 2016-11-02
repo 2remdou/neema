@@ -40,13 +40,18 @@ services:
 
     app.api.exception.subscriber:
         class: AppBundle\EventListener\ApiExceptionSubscriber
-        arguments: ["@security.token_storage"]
         tags:
             - { name: kernel.event_subscriber }
 
     app.request.subscriber:
         class: AppBundle\EventListener\RequestSubscriber
         arguments: ["@kernel"]
+        tags:
+            - { name: kernel.event_subscriber }
+
+    app.controller.subscriber:
+        class: AppBundle\EventListener\ControllerSubscriber
+        arguments: ["@security.token_storage"]
         tags:
             - { name: kernel.event_subscriber }
 

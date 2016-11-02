@@ -10,7 +10,6 @@ namespace AppBundle\EventListener;
 
 
 use AppBundle\Exception\ApiException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Kernel;
@@ -24,11 +23,7 @@ class RequestSubscriber implements EventSubscriberInterface
         $this->kernel = $kernel;
     }
     public function onKernelRequest(GetResponseEvent $event){
-        $request = $event->getRequest();
-        $version = $request->headers->get('version');
-        if(!$version && $this->kernel->getEnvironment()==="prod"){
-            throw new ApiException('Veuillez mettre à jour neema, pour beneficier des nouvelles fonctionalités. Merci !',400,'info');
-        }
+
     }
 
     public static function getSubscribedEvents()
