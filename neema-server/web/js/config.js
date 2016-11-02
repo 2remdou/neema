@@ -55,6 +55,10 @@ app
 
     }])
     .config(['$httpProvider','jwtInterceptorProvider',function Config($httpProvider, jwtInterceptorProvider) {
+
+        //definir la version de l'application
+        $httpProvider.defaults.headers.common.version = '1.0.0';
+
         var requestForRefreshAlreadySend = false;
         jwtInterceptorProvider.tokenGetter = ['jwtHelper','UserService', function(jwtHelper,UserService) {
 
